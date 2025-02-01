@@ -1,0 +1,38 @@
+---
+layout: base
+---
+
+<div class="wrapper">
+  <header class="full | section" style="--spot-color: var(--color-primary)">
+    <div class="section__inner flow region">
+      <h1 class="text-center" style="color: var(--color-light);">{{ title }}</h1>
+    </div>
+
+    {% svg "divider/pixels", null, "seperator" %}
+  </header>
+
+
+  <article class="full | region">
+    <div class="wrapper flow prose">{{ content | safe }}</div>
+  </article>
+
+  <section class="full | region">
+    <div class="wrapper flow prose">
+      <h2>{{ blog.title }}</h2>
+
+      {% if blog.intro %}
+        <p>{{ blog.intro }}</p>
+      {% endif %}
+
+      <div class="feature |  region region-space-l">
+        <custom-masonry layout="50-50">
+          {% set itemList = collections.posts %}
+					{% asyncEach item in itemList.slice(0, 4) %}
+						{% set definedDate = item.date %}
+						{% include "partials/card-blog.njk" %}
+					{% endeach %}
+        </custom-masonry>
+      </div>
+    </div>
+  </section>
+</div>

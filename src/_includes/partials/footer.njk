@@ -1,0 +1,43 @@
+<footer class="site-footer mt-s-m p-s-m">
+  <div class="wrapper">
+    <div class="cluster gutter-xs">
+      <nav class="cluster text-step-0" aria-label="{{ meta.navigation.ariaBottom }}">
+        &copy; {% year %}
+        <a href="/" {{ indicateActiveHome }}>
+          {{ meta.author.name.split(" ")[0] }}
+        </a>
+
+        {% for item in navigation.bottom %}
+          <a href="{{ item.url }}" {{ helpers.getLinkActiveState(item.url, page.url) | safe }}>
+            {{ item.text }}
+          </a>
+        {% endfor %}
+      </nav>
+    </div>
+
+    <nav class="cluster" aria-label="{{ meta.navigation.ariaPlatforms }}">
+      <a href="{{ meta.blog.feedLinks[0].url }}" rel="alternate" type="{{ meta.blog.feedLinks[0].type }}">
+        <span class="visually-hidden">{{ meta.blog.feedLinks[0].title }}</span>
+        {% svg "misc/rss" %}
+      </a>
+
+      {% for key, value in personal.platforms %}
+        {% if value != "" %}
+          <a href="{{ value }}" rel="me">
+            <span class="visually-hidden">{{ key | capitalize }}</span>
+            {% svg 'platform/' + key %}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+
+    <aside class="creator | cluster gutter-2xs text-step-min-1 mt-s">
+      Made with <span class="visually-hidden">Eleventy Excellent</span>
+      <a href="https://eleventy-excellent.netlify.app/">
+      <span>{% svg "misc/star" %}</span>
+      </a>
+      and
+      <a href="https://www.11ty.dev/">{% svg "misc/11ty", "Eleventy" %}</a>
+    </aside>
+  </div>
+</footer>
