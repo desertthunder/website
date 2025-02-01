@@ -11,7 +11,7 @@ export const author = {
   avatar: '/icon-512x512.png',
   email: 'info@stormlightlabs.com',
   website: 'https://desertthunder.pages.dev',
-  fediverse: 'https://bsky.app/profile/@desertthunder.substack.com'
+  fediverse: 'https://social.lol/@owais'
 };
 export const creator = {
   name: 'Owais Jamil',

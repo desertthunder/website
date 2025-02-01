@@ -12,7 +12,7 @@ import {slugifyString} from '../filters/slugify.js';
 
 export const markdownLib = markdownIt({
   html: true,
-  breaks: true,
+  breaks: false,
   linkify: true,
   typographer: true
 })
