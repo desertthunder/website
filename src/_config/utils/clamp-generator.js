@@ -1,9 +1,7 @@
 /**
  * Credits:
  * - © Andy Bell - https://buildexcellentwebsit.es/
- */
-
-/**
+ *
  * Takes an array of tokens and sends back and array of name
  * and clamp pairs for CSS fluid values.
  *

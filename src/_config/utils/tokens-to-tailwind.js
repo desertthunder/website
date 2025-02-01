@@ -1,9 +1,7 @@
 /**
  * Credits:
  * - © Andy Bell - https://buildexcellentwebsit.es/
- */
-
-/**
+ *
  * Converts human readable tokens into tailwind config friendly ones
  *
  * @param {array} tokens {name: string, value: any}

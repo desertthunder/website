@@ -10,7 +10,7 @@ export const author = {
   name: 'Owais Jamil',
   avatar: '/icon-512x512.png',
   email: 'info@stormlightlabs.com',
-  website: 'https://desertthunder.github.io',
+  website: 'https://desertthunder.pages.dev',
   fediverse: 'https://bsky.app/profile/@desertthunder.substack.com'
 };
 export const creator = {

@@ -16,7 +16,7 @@ $ pwd
 /github/desertthunder/
 
 $ hostname
-https://desertthunder.github.io/
+https://desertthunder.pages.dev/
 
 $ cat welcome.txt
 See below
@@ -36,6 +36,6 @@ computer science communities. There are a lot of tools, information, and
 resources out there, many of them freely available. They've been paramount to my
 transition from the natural sciences in to engineering (I double majored in
 microbiology and biochemistry). As I've been learning new technologies and concepts,
-I've taken a lot of notes and would like to [share](https://desertthunder.github.io/garden/)
+I've taken a lot of notes and would like to [share](https://desertthunder.pages.dev/garden/)
 publicly. I also want to try my hand at writing essays to help break down
 complex topics.
