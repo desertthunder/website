@@ -9,34 +9,17 @@ layout: page
 $ whoami
 "Owais J. <https://github.com/desertthunder>"
 
-$ cat ~/.config/.me
-DESCRIPTION = "I'm a software engineer with a passion for learning. In late 2024 \
-I started a company called Stormlight Labs that focuses on enginnering projects \
-that serve the community and help others. My greatest joy comes from learning \
-sharing knowledge with others."
-SKILLS = "Full Stack Development", "Mobile Development", "Problem Solving"
-OTHER = "Team Collaboration", "Mentoring", "Technical Writing"
-
 $ history | grep "favorite"
-142  nvim favorite_language.go
-143  ls music/favorite_albums/
-144  open favorite_books.pdf
-
-$ ls music/favorite_albums/
-/glassjaw__worship_and_tribute
-/dismemberment_plan__emergency_and_i
-/weezer__pinkerton
-/black_flag__damaged
-/descendents__milo_goes_to_college
+142  nvim favorite_language_is.go
+143  open favorite_books.pdf
 
 $ open favorite_books.pdf
 Opening PDF...
-Title                    Author
-Slaughterhouse-Five      Kurt Vonnegut
-The Crossing             Cormac McCarthy
-The End of Eternity      Isaac Asimov
-Dark Lord of Derkholm    Diana Wynne Jones
-Guards! Guards!          Terry Pratchett
+Slaughterhouse-Five (Vonnegut)
+The Crossing (McCarthy)
+The End of Eternity (Asimov)
+Dark Lord of Derkholm (Wynne Jones)
+Guards! Guards! (Pratchett)
 
 $ uptime
 {% uptime "1993-08-02" %}
@@ -57,3 +40,8 @@ Flutter
 InkScape
 Aseprite
 ```
+
+I'm a software engineer with a passion for learning. In late 2024 I started a
+company called Stormlight Labs that focuses on enginnering projects that serve
+the community and help others. My greatest joy comes from learning sharing
+knowledge with others.
