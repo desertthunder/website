@@ -47,3 +47,7 @@ export function random() {
   };
   return `${segment()}-${segment()}-${segment()}`;
 }
+
+export function getLinkTarget(url) {
+  return url.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+}

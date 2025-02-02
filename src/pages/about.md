@@ -9,12 +9,13 @@ layout: page
 $ whoami
 "Owais J. <https://github.com/desertthunder>"
 
-$ history | grep "favorite"
-142  nvim favorite_language_is.go
-143  open favorite_books.pdf
+$ hostname
+https://desertthunder.pages.dev/
 
-$ open favorite_books.pdf
-Opening PDF...
+$ ls ~/skills/
+Go    Rust    Flutter    Python    React    TypeScript
+
+$ ls ~/books/
 Slaughterhouse-Five (Vonnegut)
 The Crossing (McCarthy)
 The End of Eternity (Asimov)
@@ -33,12 +34,17 @@ https://stormlightlabs.org
 $ cat tools.txt
 NeoVim
 Markdown
-Rust
-Go
-Flutter
-.NET (F#)
+Rider
+DataGrip
+VSCode
+Nix/OS
 InkScape
 Aseprite
+
+$ pwd
+/github/desertthunder/about # There was this guy at my first job would
+                            # constantly enter "pwd" in the company Slack.
+                            # Best response was "<COMPANY NAME REDACTED>".
 ```
 
 I'm a software engineer with a passion for learning. In late 2024 I started a

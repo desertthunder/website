@@ -8,23 +8,9 @@ blog:
   title: 'Recent Posts'
 ---
 
-```bash
-$ whoami
-Owais J.
-
-$ pwd
-/github/desertthunder/
-
-$ hostname
-https://desertthunder.pages.dev/
-
-$ cat welcome.txt
-See below
-```
-
 ## Welcome
 
-Hey there! I'm a software engineer with roots in New England and Austin, TX.
+Hey there! I'm Owais, a software engineer with roots in New England and Austin, TX.
 Right now I'm building some of the projects at my company [Stormlight Labs](https://stormlightlabs.org).
 I'm enrolled as a master's candidate at the University of Texas, and was most
 recently working as a senior backend engineer at [Edlink](https://ed.link/).

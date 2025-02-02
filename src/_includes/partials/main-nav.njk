@@ -5,16 +5,11 @@
   <ul class="cluster" role="list" no-flash>
     {% for item in navigation.top %}
       <li>
-        <a
-          href="{{ item.url }}"
-          {{
-            helpers.getLinkActiveState(item.url,
-            page.url)
-            |
-            safe
-          }}
-          >{{ item.text }}</a
-        >
+        <a href="{{ item.url }}"
+          {{ helpers.getLinkActiveState(item.url, page.url) | safe }}
+          {{ helpers.getLinkTarget(item.url) }}>
+          {{ item.text }}
+        </a>
       </li>
     {% endfor %}
   </ul>

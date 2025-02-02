@@ -3,10 +3,7 @@
     <a href="{{ item.url | url }}">{{ item.data.title }}</a>
   </h2>
   <span slot="date"> {% include "partials/date.njk" %} </span>
-  {%
-    if
-    item.data.tags.length > 1
-  %}
+  {% if item.data.tags.length > 1 %}
     <div slot="tag" webc:nokeep>
       {% for tag in item.data.tags %}
         {% if tag != "posts" %}
