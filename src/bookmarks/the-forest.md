@@ -7,6 +7,7 @@ categories:
     - web
     - indieweb
     - discovery
+permalink: false
 ---
 
 Walk through the forest to find new personal websites.

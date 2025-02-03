@@ -6,6 +6,7 @@ categories:
     - community
     - web
     - indieweb
+permalink: false
 ---
 
 This is a community for people who like personal websites and use them as a form

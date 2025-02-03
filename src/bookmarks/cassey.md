@@ -4,6 +4,7 @@ url: https://cassey.dev/
 date: 2025-02-02
 categories:
     - blog
+permalink: false
 ---
 
 I found this [article](https://cassey.dev/adding-decap-cms-to-11ty/)

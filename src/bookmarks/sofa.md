@@ -5,6 +5,7 @@ date: 2025-02-02
 categories:
     - essay
     - productivity
+permalink: false
 ---
 
 Read a lot of books, write a lot of words, and make a lot of things. Its okay

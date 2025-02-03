@@ -10,7 +10,7 @@ $ whoami
 "Owais J. <https://github.com/desertthunder>"
 
 $ hostname
-https://desertthunder.pages.dev/
+https://desertthunder.dev/
 
 $ ls ~/skills/
 Go    Rust    Flutter    Python    React    TypeScript

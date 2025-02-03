@@ -1,10 +1,10 @@
 article
-  a[href^='http']:not([href*='localhost:8080']):not([href*='desertthunder.pages.dev']):not(.button) {
+  a[href^='http']:not([href*='localhost:8080']):not([href*='desertthunder.dev']):not(.button) {
   padding-inline-end: 0.8em;
 }
 
 article
-  a[href^='http']:not([href*='localhost:8080']):not([href*='desertthunder.pages.dev']):not(
+  a[href^='http']:not([href*='localhost:8080']):not([href*='desertthunder.dev']):not(
     .no-indicator
   )::after {
   position: absolute;

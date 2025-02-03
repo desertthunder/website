@@ -6,6 +6,7 @@ categories:
     - blog
     - design
     - web
+permalink: false
 ---
 
 The blog of the designer and builder of the theme I use on my personal website.

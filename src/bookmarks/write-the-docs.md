@@ -6,6 +6,7 @@ categories:
     - community
     - documentation
     - writing
+permalink: false
 ---
 
 Write the Docs is a global community of technical writers who care deeply about

@@ -7,6 +7,7 @@ categories:
     - radio
     - music
     - indieweb
+permalink: false
 ---
 
 Tilde Radio is a community radio project that broadcasts live shows, podcasts, and

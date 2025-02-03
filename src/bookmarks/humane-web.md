@@ -7,6 +7,7 @@ categories:
     - accessibility
     - web
     - climate
+permalink: false
 ---
 
 The Humane Web Manifesto is a call to action for a more inclusive, sustainable,
