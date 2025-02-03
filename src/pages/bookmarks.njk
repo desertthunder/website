@@ -24,13 +24,11 @@ permalink: /bookmarks/index.html
                     </header>
                     {{ entry.content | safe }}
                     {% if bookmark.categories %}
-                        <div>
-                            {% for tag in bookmark.categories %}
-                                <span class="button" data-small-button>
-                                    {{ tag }}
-                                </span>
-                            {% endfor %}
-                        </div>
+                        {% for tag in bookmark.categories %}
+                            <span class="button" data-small-button>
+                                {{ tag }}
+                            </span>
+                        {% endfor %}
                     {% endif %}
                     <footer>
                         <a href="{{ bookmark.url }}" target="_blank" rel="noopener noreferrer">
