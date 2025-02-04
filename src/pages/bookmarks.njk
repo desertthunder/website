@@ -17,20 +17,22 @@ permalink: /bookmarks/index.html
         <div class="grid" data-layout="50-50">
             {% for entry in collections.sortedBookmarks %}
                 {% set bookmark = entry.data %}
-                <section>
+                <section class="bookmark">
                     <header>
                         <strong>{{ bookmark.title }}</strong>
                         <div>Added: {% include "partials/date.njk" %} </div>
                     </header>
-                    {{ entry.content | safe }}
+                    <section>{{ entry.content | safe }}</section>
                     {% if bookmark.categories %}
-                        {% for tag in bookmark.categories %}
-                            <span class="button" data-small-button>
-                                {{ tag }}
-                            </span>
-                        {% endfor %}
+                        <section>
+                            {% for tag in bookmark.categories %}
+                                <div class="button" data-small-button>
+                                    {{ tag }}
+                                </div>
+                            {% endfor %}
+                        </section>
                     {% endif %}
-                    <footer>
+                    <footer class="repel">
                         <a href="{{ bookmark.url }}" target="_blank" rel="noopener noreferrer">
                             {{ bookmark.url }}
                         </a>
