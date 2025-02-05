@@ -29,4 +29,4 @@ export const sortedBookmarks = collection => {
   return collection.getFilteredByGlob('./src/bookmarks/**/*.md').sort((a, b) => {
     return a.date - b.date || a.url - b.url;
   });
-}
+};
