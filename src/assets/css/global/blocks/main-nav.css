@@ -102,6 +102,7 @@
   --nav-item-decoration-color: transparent;
 
   background: var(--nav-item-background);
+  font-family: var(--font-display);
   color: var(--nav-item-text-color);
   padding: var(--nav-item-padding);
   display: block;
