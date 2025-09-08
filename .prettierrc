@@ -1,14 +1,14 @@
 {
-  "printWidth": 110,
+  "printWidth": 121,
   "tabWidth": 2,
+  "objectWrap": "collapse",
+  "bracketSameLine": true,
   "singleQuote": true,
   "bracketSpacing": false,
   "quoteProps": "consistent",
   "trailingComma": "none",
   "arrowParens": "avoid",
-  "plugins": [
-    "prettier-plugin-jinja-template"
-  ],
+  "plugins": ["prettier-plugin-jinja-template"],
   "overrides": [
     {
       "files": "*.njk",

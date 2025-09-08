@@ -1,16 +1,7 @@
-/**
- * Configures Eleventy with various settings, collections, plugins, filters, shortcodes, and more.
- * Hint VS Code for eleventyConfig autocompletion.
- * © Henry Desroches - https://gist.github.com/xdesro/69583b25d281d055cd12b144381123bf
- * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig -
- * @returns {Object} -
- */
-
 import dotenv from 'dotenv';
 dotenv.config();
 
 import yaml from 'js-yaml';
-
 import {getAllPosts, showInSitemap, sortedBookmarks, tagList} from './src/_config/collections.js';
 import events from './src/_config/events.js';
 import filters from './src/_config/filters.js';
@@ -18,6 +9,10 @@ import plugins from './src/_config/plugins.js';
 import shortcodes from './src/_config/shortcodes.js';
 
 export default async function (eleventyConfig) {
+  eleventyConfig.on('eleventy.before', async () => {
+    await import('./src/_config/setup/process-css.js').then(m => m.processCss());
+  });
+
   eleventyConfig.addWatchTarget('./src/assets/**/*.{css,js,svg,png,jpeg}');
   eleventyConfig.addWatchTarget('./src/_includes/**/*.{webc}');
 
@@ -96,24 +91,14 @@ export default async function (eleventyConfig) {
   }
 
   eleventyConfig.addPassthroughCopy({
-    // -- to root
     'src/assets/images/favicon/*': '/',
-
-    // -- node_modules
-    'node_modules/lite-youtube-embed/src/lite-yt-embed.{css,js}': "assets/components/"
+    'node_modules/lite-youtube-embed/src/lite-yt-embed.{css,js}': 'assets/components/'
   });
 
-  // --------------------- Build Settings
   eleventyConfig.setDataDeepMerge(true);
 
-  // --------------------- general config
   return {
     markdownTemplateEngine: 'njk',
-    dir: {
-      output: 'dist',
-      input: 'src',
-      includes: '_includes',
-      layouts: '_layouts'
-    }
+    dir: {output: 'dist', input: 'src', includes: '_includes', layouts: '_layouts'}
   };
 }
