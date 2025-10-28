@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Terminal from '../components/Terminal.astro';
+---
+
+<Base title="Projects — Owais Jamil">
+  <Terminal command="ls ~/projects">
+noteleaf/   volkara/   fulgurite/   lazo/
+
+<span data-prompt="$" data-cmd>cat noteleaf/README.md</span>
+Noteleaf — A local-first productivity system written in Go + TUI magic.
+
+<span data-prompt="$" data-cmd>cat volkara/README.md</span>
+Volkara — A SvelteKit + PGlite productivity suite, focused on calm workflows.
+  </Terminal>
+</Base>

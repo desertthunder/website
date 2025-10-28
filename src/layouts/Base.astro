@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content={Astro.generator}>
+  {description && <meta name="description" content={description}>}
+  <title>{title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Owais Jamil</h1>
+    <p>Engineer · Writer · Musician · Artist</p>
+  </header>
+
+  <nav>
+    <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>$ about</a>
+    <a href="/projects" aria-current={Astro.url.pathname === '/projects' ? 'page' : undefined}>$ projects</a>
+    <a href="/blog" aria-current={Astro.url.pathname.startsWith('/blog') ? 'page' : undefined}>$ blog</a>
+    <a href="/bookmarks" aria-current={Astro.url.pathname === '/bookmarks' ? 'page' : undefined}>$ bookmarks</a>
+  </nav>
+
+  <slot />
+
+  <footer>© {currentYear} Owais Jamil</footer>
+</body>
+</html>

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import Terminal from '../components/Terminal.astro';
+---
+
+<Base title="Owais Jamil — About" description="Who even is Owais?">
+  <Terminal command="cat about-me.txt">
+Hi, I'm Owais — I build developer tools, design calm UIs, and write about code & creativity.
+
+<span data-prompt="$" data-cmd>ls interests/</span>
+music  writing  design  data  rust  go  elixir  python
+  </Terminal>
+</Base>

@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Terminal from '../../components/Terminal.astro';
+
+const posts = (await getCollection('blog'))
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Blog — Owais Jamil">
+  <Terminal command="ls ~/blog">
+{posts.map(post => post.slug + '.md').join('   ')}
+
+{posts[0] && (
+  <>
+<span data-prompt="$" data-cmd>cat {posts[0].slug}.md | head -n 3</span>
+{posts[0].data.title}
+&gt; {posts[0].data.description}
+  </>
+)}
+  </Terminal>
+</Base>

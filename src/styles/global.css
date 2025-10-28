@@ -1,0 +1,62 @@
+:root {
+    --bg: #161821;
+    --fg: #c6c8d1;
+    --muted: #6b7089;
+    --panel: #1e2132;
+    --line: #353a50;
+    --cursor: #d2d4de;
+    --red: #e27878;
+    --green: #b4be82;
+    --yellow: #e2a478;
+    --blue: #84a0c6;
+    --magenta: #a093c7;
+    --cyan: #89b8c2;
+    --shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 18px/1.6 "JetBrains Mono", monospace;
+    margin: 0 auto;
+    max-width: 46rem;
+    padding: 3rem 1.25rem 6rem;
+}
+
+a {
+    color: var(--cyan);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+header h1 {
+    color: var(--blue);
+    margin: 0;
+}
+
+nav {
+    margin: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.5rem;
+}
+
+nav a {
+    margin-right: 1rem;
+    color: var(--green);
+}
+
+nav a[aria-current="page"] {
+    color: var(--yellow);
+}
+
+footer {
+    margin-top: 3rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+}

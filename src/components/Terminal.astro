@@ -1,0 +1,81 @@
+---
+interface Props {
+  command?: string;
+}
+
+const { command } = Astro.props;
+---
+
+<section data-term>
+  <header>
+    <span data-dot="close"></span>
+    <span data-dot="min"></span>
+    <span data-dot="max"></span>
+    <span>&nbsp;terminal</span>
+  </header>
+  <pre>
+{command && <span data-prompt="$" data-cmd>{command}</span>}
+<slot />
+  </pre>
+</section>
+
+<style>
+  section[data-term] {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+
+  section[data-term] header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: color-mix(in oklab, var(--panel), black 8%);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  section[data-term] header span[data-dot] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid var(--line);
+  }
+
+  [data-dot="close"] {
+    background: var(--red);
+  }
+
+  [data-dot="min"] {
+    background: var(--yellow);
+  }
+
+  [data-dot="max"] {
+    background: var(--green);
+  }
+
+  section[data-term] pre {
+    margin: 0;
+    padding: 1rem 1.1rem 1.25rem;
+    white-space: pre-wrap;
+  }
+
+  [data-prompt]::before {
+    content: attr(data-prompt);
+    color: var(--cyan);
+    margin-right: 0.5rem;
+  }
+
+  [data-note] {
+    color: var(--magenta);
+  }
+
+  [data-cmd] {
+    display: block;
+  }
+</style>
