@@ -10,7 +10,9 @@
     "generate:og": "node scripts/oggen.js"
   },
   "dependencies": {
-    "astro": "^5.15.2"
+    "astro": "^5.15.2",
+    "linkify-string": "^4.3.2",
+    "linkifyjs": "^4.3.2"
   },
   "devDependencies": {
     "canvas": "^2.11.2",

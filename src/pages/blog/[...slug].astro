@@ -1,0 +1,94 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import Terminal from "../../components/Terminal.astro";
+import Command from "../../components/Command.astro";
+import Output from "../../components/Output.astro";
+import "../../styles/prose.css";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const dateStr = post.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Base title={`${post.data.title} — Owais Jamil`} description={post.data.description}>
+  <Terminal title={`blog/${post.slug}`}>
+    <Command>cat ~/blog/{post.slug}.md</Command>
+    <Output>
+      <article class="post-header">
+        <h2>{post.data.title}</h2>
+        <time datetime={post.data.date.toISOString()}>{dateStr}</time>
+        {
+          post.data.tags.length > 0 && (
+            <div class="tags">
+              {post.data.tags.map((tag) => (
+                <a href={`/tags/${tag}`} class="tag">
+                  {tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </article>
+
+      <article class="markdown-prose">
+        <Content />
+      </article>
+    </Output>
+  </Terminal>
+</Base>
+
+<style>
+  .post-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .post-header h2 {
+    color: var(--cyan);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.875rem;
+  }
+
+  time {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .tags {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: color-mix(in oklab, var(--panel), black 8%);
+    color: var(--green);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px dotted var(--line);
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .tag:hover {
+    background: var(--panel);
+    border-color: var(--green);
+    text-decoration: none;
+  }
+</style>

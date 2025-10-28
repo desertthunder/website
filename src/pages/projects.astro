@@ -1,16 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
 import Terminal from '../components/Terminal.astro';
+import Command from '../components/Command.astro';
+import Output from '../components/Output.astro';
 ---
 
 <Base title="Projects — Owais Jamil">
-  <Terminal command="ls ~/projects">
-noteleaf/   volkara/   fulgurite/   lazo/
+  <Terminal title="projects">
+<Command>ls ~/projects</Command>
+<Output>noteleaf/   volkara/   fulgurite/   lazo/</Output>
 
-<span data-prompt="$" data-cmd>cat noteleaf/README.md</span>
-Noteleaf — A local-first productivity system written in Go + TUI magic.
+<Command>cat noteleaf/README.md</Command>
+<Output>Noteleaf — A local-first productivity system written in Go + TUI magic.</Output>
 
-<span data-prompt="$" data-cmd>cat volkara/README.md</span>
-Volkara — A SvelteKit + PGlite productivity suite, focused on calm workflows.
+<Command>cat volkara/README.md</Command>
+<Output>Volkara — A SvelteKit + PGlite productivity suite, focused on calm workflows.</Output>
   </Terminal>
 </Base>

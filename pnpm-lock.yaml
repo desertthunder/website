@@ -11,6 +11,12 @@ importers:
       astro:
         specifier: ^5.15.2
         version: 5.15.2(@types/node@24.9.2)(rollup@4.52.5)(typescript@5.9.3)
+      linkify-string:
+        specifier: ^4.3.2
+        version: 4.3.2(linkifyjs@4.3.2)
+      linkifyjs:
+        specifier: ^4.3.2
+        version: 4.3.2
     devDependencies:
       canvas:
         specifier: ^2.11.2
@@ -951,6 +957,14 @@ packages:
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
+
+  linkify-string@4.3.2:
+    resolution: {integrity: sha512-JqBuQpSa+CSj2tskIII70SKOjPfjXwDFyjRRNFTrlg76gp2nap36xeRj/cWaXxukqBNrxM+L07XyKRsUtH/DpQ==}
+    peerDependencies:
+      linkifyjs: ^4.0.0
+
+  linkifyjs@4.3.2:
+    resolution: {integrity: sha512-NT1CJtq3hHIreOianA8aSXn6Cw0JzYOuDQbOrSPe7gqFnCpKP++MQe3ODgO3oh2GJFORkAAdqredOa60z63GbA==}
 
   longest-streak@3.1.0:
     resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
@@ -2645,6 +2659,12 @@ snapshots:
       argparse: 2.0.1
 
   kleur@3.0.3: {}
+
+  linkify-string@4.3.2(linkifyjs@4.3.2):
+    dependencies:
+      linkifyjs: 4.3.2
+
+  linkifyjs@4.3.2: {}
 
   longest-streak@3.1.0: {}
 

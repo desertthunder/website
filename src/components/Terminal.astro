@@ -1,9 +1,6 @@
 ---
-interface Props {
-  command?: string;
-}
-
-const { command } = Astro.props;
+type Props = { title?: string };
+const { title } = Astro.props;
 ---
 
 <section data-term>
@@ -11,12 +8,11 @@ const { command } = Astro.props;
     <span data-dot="close"></span>
     <span data-dot="min"></span>
     <span data-dot="max"></span>
-    <span>&nbsp;terminal</span>
+    {title ? <span>&nbsp;~/{title}/</span> : <span>&nbsp;/home/</span>}
   </header>
-  <pre>
-{command && <span data-prompt="$" data-cmd>{command}</span>}
-<slot />
-  </pre>
+  <div class="content">
+    <slot />
+  </div>
 </section>
 
 <style>
@@ -59,23 +55,9 @@ const { command } = Astro.props;
     background: var(--green);
   }
 
-  section[data-term] pre {
+  section[data-term] .content {
     margin: 0;
-    padding: 1rem 1.1rem 1.25rem;
-    white-space: pre-wrap;
-  }
-
-  [data-prompt]::before {
-    content: attr(data-prompt);
-    color: var(--cyan);
-    margin-right: 0.5rem;
-  }
-
-  [data-note] {
-    color: var(--magenta);
-  }
-
-  [data-cmd] {
-    display: block;
+    padding: 1rem 1.1rem;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
   }
 </style>

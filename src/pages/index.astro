@@ -1,13 +1,69 @@
 ---
-import Base from '../layouts/Base.astro';
-import Terminal from '../components/Terminal.astro';
+import Base from "../layouts/Base.astro";
+import Terminal from "../components/Terminal.astro";
+import Command from "../components/Command.astro";
+import Output from "../components/Output.astro";
+
+function calcUptime(dateStr: string): string {
+  const start = new Date(dateStr);
+  if (isNaN(start.getTime())) throw new Error("Invalid date format (expected YYYY-MM-DD)");
+
+  const now = new Date();
+  const diffMs = now.getTime() - start.getTime();
+
+  const minutes = Math.floor(diffMs / (1000 * 60));
+  const years = Math.floor(minutes / (60 * 24 * 365));
+  const days = Math.floor((minutes % (60 * 24 * 365)) / (60 * 24));
+  const hours = Math.floor((minutes % (60 * 24)) / 60);
+  const mins = minutes % 60;
+
+  const parts: string[] = [];
+
+  if (years > 0) parts.push(`${years} year${years > 1 ? "s" : ""}`);
+  if (days > 0) parts.push(`${days} day${days > 1 ? "s" : ""}`);
+
+  // Format like uptime: “up 3 years, 42 days, 5:07”
+  const timeStr = `${hours}:${mins.toString().padStart(2, "0")}`;
+  const prefix = "up";
+  return parts.length ? `${prefix} ${parts.join(", ")}, ${timeStr}` : `${prefix} ${timeStr}`;
+}
+
+const books = [
+  "Slaughterhouse-Five (Vonnegut)",
+  "The Crossing (McCarthy)",
+  "The End of Eternity (Asimov)",
+  "Dark Lord of Derkholm (Wynne Jones)",
+  "Guards! Guards! (Pratchett)",
+];
 ---
 
 <Base title="Owais Jamil — About" description="Who even is Owais?">
-  <Terminal command="cat about-me.txt">
-Hi, I'm Owais — I build developer tools, design calm UIs, and write about code & creativity.
+  <Terminal>
+    <Command>whoami</Command>
+    <Output>
+      <span>Owais J. https://github.com/desertthunder</span>
+      <p>
+        I'm a software engineer with a passion for learning. In late 2024 I started a company called
+        Stormlight Labs that focuses on enginnering projects that serve the community and help
+        others. My greatest joy comes from learning and sharing knowledge with others.
+      </p>
+    </Output>
 
-<span data-prompt="$" data-cmd>ls interests/</span>
-music  writing  design  data  rust  go  elixir  python
+    <Command>hostname</Command>
+    <Output> https://desertthunder.dev/ </Output>
+
+    <Command>ls ~/skills/</Command>
+    <Output>Go Rust Flutter Python React TypeScript</Output>
+
+    <Command>ps aux | grep "currently_working_on"</Command>
+    <Output>https://stormlightlabs.org</Output>
+
+    <Command>ls ~/books/</Command>
+    <Output>{books.map((b) => <div>{b}</div>)}</Output>
+    <Command>ls ~/hobbies/ </Command>
+    <Output>writing/ reading/ programming/ video_games/ rpgs/</Output>
+
+    <Command>uptime</Command>
+    <Output>{calcUptime("1993-08-02")}</Output>
   </Terminal>
 </Base>

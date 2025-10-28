@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Terminal from '../../components/Terminal.astro';
+import Command from '../../components/Command.astro';
+import Output from '../../components/Output.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog');
+  const tags = new Set<string>();
+
+  posts.forEach(post => {
+    post.data.tags.forEach(tag => tags.add(tag));
+  });
+
+  return Array.from(tags).map(tag => ({
+    params: { tag },
+    props: {
+      posts: posts
+        .filter(post => post.data.tags.includes(tag) && !post.data.draft)
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    }
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Base title={`Tag: ${tag} — Owais Jamil`}>
+  <Terminal title={`tags/${tag}`}>
+<Command>cat ~/blog/tags/{tag}/posts.txt</Command>
+<Output>
+{posts.map(post => (
+  <BlogPostCard
+    slug={post.slug}
+    title={post.data.title}
+    description={post.data.description}
+    date={post.data.date}
+    tags={post.data.tags}
+  />
+))}
+</Output>
+  </Terminal>
+</Base>

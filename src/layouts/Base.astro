@@ -1,5 +1,6 @@
 ---
-import '../styles/global.css';
+import Icon from "../components/Icon.astro";
+import "../styles/global.css";
 
 interface Props {
   title: string;
@@ -12,29 +13,42 @@ const currentYear = new Date().getFullYear();
 
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content={Astro.generator}>
-  {description && <meta name="description" content={description}>}
-  <title>{title}</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <header>
-    <h1>Owais Jamil</h1>
-    <p>Engineer · Writer · Musician · Artist</p>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <title>{title}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Owais Jamil</h1>
+    </header>
 
-  <nav>
-    <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>$ about</a>
-    <a href="/projects" aria-current={Astro.url.pathname === '/projects' ? 'page' : undefined}>$ projects</a>
-    <a href="/blog" aria-current={Astro.url.pathname.startsWith('/blog') ? 'page' : undefined}>$ blog</a>
-    <a href="/bookmarks" aria-current={Astro.url.pathname === '/bookmarks' ? 'page' : undefined}>$ bookmarks</a>
-  </nav>
+    <nav>
+      <a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}>λ about</a>
+      <a href="/projects" aria-current={Astro.url.pathname === "/projects" ? "page" : undefined}>
+        λ projects
+      </a>
+      <a href="/blog" aria-current={Astro.url.pathname.startsWith("/blog") ? "page" : undefined}>
+        λ blog
+      </a>
+      <a href="/tags" aria-current={Astro.url.pathname.startsWith("/tags") ? "page" : undefined}>
+        λ tags
+      </a>
+      <a href="/bookmarks" aria-current={Astro.url.pathname === "/bookmarks" ? "page" : undefined}>
+        λ bookmarks
+      </a>
+    </nav>
 
-  <slot />
+    <slot />
 
-  <footer>© {currentYear} Owais Jamil</footer>
-</body>
+    <footer>
+      © {currentYear} Owais Jamil <Icon name="gh" /><Icon name="linkedin" /><Icon name="bluesky" />
+    </footer>
+  </body>
 </html>
