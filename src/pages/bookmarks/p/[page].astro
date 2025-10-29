@@ -1,0 +1,224 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import BookmarkCard from "$components/BookmarkCard.astro";
+
+type Props = { page: Page<CollectionEntry<"bookmarks">> };
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const bookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return paginate(bookmarks, { pageSize: 4 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const categoryMap = new Map<string, number>();
+const yearMap = new Map<number, number>();
+
+for (const bookmark of page.data) {
+  bookmark.data.categories.forEach((category) => {
+    categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+  });
+}
+
+const categories = Array.from(categoryMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+for (const bookmark of page.data) {
+  const year = bookmark.data.date.getFullYear();
+  yearMap.set(year, (yearMap.get(year) || 0) + 1);
+}
+
+const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
+---
+
+<Base title="Bookmarks — Owais Jamil" ogImage="/og/page/bookmarks.png">
+  <Terminal title="bookmarks">
+    <Command>ls bookmarks/ | page {page.currentPage}/{page.lastPage}</Command>
+    <Output>
+      <div class="filters">
+        {
+          categories.length > 0 && (
+            <div class="category-filter">
+              <span class="filter-label">Categories:</span>
+              <div class="category-tags">
+                {categories.map(([category, count]) => (
+                  <a href={`/tags/${category}`} class="category-tag">
+                    {category} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          years.length > 0 && (
+            <div class="year-filter">
+              <span class="filter-label">Years:</span>
+              <div class="year-tags">
+                {years.map(([year, count]) => (
+                  <a href={`/bookmarks/${year}`} class="year-tag">
+                    {year} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="bookmarks-grid">
+        {
+          page.data.map((bookmark) => (
+            <BookmarkCard
+              title={bookmark.data.title}
+              url={bookmark.data.url}
+              date={bookmark.data.date}
+              categories={bookmark.data.categories}
+              content={bookmark.body}
+            />
+          ))
+        }
+      </div>
+
+      <nav class="pagination" aria-label="Bookmarks pagination">
+        <div class="pagination-links">
+          {
+            page.url.prev && (
+              <a href={page.url.prev} class="pagination-link">
+                ← Previous
+              </a>
+            )
+          }
+          <span class="pagination-info">
+            Page {page.currentPage} of {page.lastPage}
+          </span>
+          {
+            page.url.next && (
+              <a href={page.url.next} class="pagination-link">
+                Next →
+              </a>
+            )
+          }
+        </div>
+      </nav>
+    </Output>
+  </Terminal>
+</Base>
+
+<style>
+  .filters {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .category-filter,
+  .year-filter {
+    margin-bottom: 1.5rem;
+  }
+
+  .category-filter:last-child,
+  .year-filter:last-child {
+    margin-bottom: 0;
+  }
+
+  .filter-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .category-tags,
+  .year-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category-tag,
+  .year-tag {
+    background: color-mix(in oklab, var(--panel), black 8%);
+    color: var(--yellow);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px dotted var(--line);
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .category-tag:hover,
+  .year-tag:hover {
+    background: var(--panel);
+    border-color: var(--yellow);
+    text-decoration: none;
+  }
+
+  .bookmarks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .pagination {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dotted var(--line);
+  }
+
+  .pagination-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pagination-link {
+    color: var(--cyan);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px dotted var(--line);
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--panel), black 8%);
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .pagination-link:hover {
+    background: var(--panel);
+    border-color: var(--cyan);
+    text-decoration: none;
+  }
+
+  .pagination-info {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .bookmarks-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .pagination-links {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pagination-link {
+      text-align: center;
+    }
+  }
+</style>

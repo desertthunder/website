@@ -6,20 +6,19 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "generate:og": "node scripts/oggen.js"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^5.15.2",
     "linkify-string": "^4.3.2",
-    "linkifyjs": "^4.3.2"
+    "linkifyjs": "^4.3.2",
+    "satori": "^0.18.3"
   },
   "devDependencies": {
-    "canvas": "^2.11.2",
     "prettier": "3.6.2",
-    "prettier-plugin-astro": "0.14.1",
-    "yargs": "^17.7.2"
+    "prettier-plugin-astro": "0.14.1"
   }
 }

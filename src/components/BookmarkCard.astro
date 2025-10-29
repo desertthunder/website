@@ -1,21 +1,21 @@
 ---
+import { truncate, truncateWords } from "$utils/text";
+
 type Props = { title: string; url: string; date: Date; categories: string[]; content?: string };
 
 const { title, url, date, categories, content } = Astro.props;
-const dateStr = date.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-});
+const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+const displayTitle = truncate(title, 80);
+const displayContent = content ? truncateWords(content, 25) : undefined;
 ---
 
 <article class="tui-card">
   <a href={url} class="card-link" target="_blank" rel="noopener noreferrer">
     <header>
-      <h3 class="title">{title}</h3>
+      <h3 class="title">{displayTitle}</h3>
       <time datetime={date.toISOString()} class="date">{dateStr}</time>
     </header>
-    {content && <p class="content">{content}</p>}
+    {displayContent && <p class="content">{displayContent}</p>}
     <p class="url">{url}</p>
   </a>
   {

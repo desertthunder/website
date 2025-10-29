@@ -1,18 +1,22 @@
 ---
-import Header from "../components/Header.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
-import "../styles/global.css";
+import Header from "$components/Header.astro";
+import Nav from "$components/Nav.astro";
+import Footer from "$components/Footer.astro";
+import "$styles/global.css";
 
-type Props = { title: string; description?: string };
+type Props = { title: string; description?: string; ogImage?: string };
 
-const { title, description } = Astro.props;
+const { title, description, ogImage } = Astro.props;
 
 const SOCIALS = [
   { name: "gh" as const, url: "https://github.com/desertthunder", alt: "GitHub" },
   { name: "linkedin" as const, url: "https://linkedin.com/in/owais-jamil", alt: "LinkedIn" },
   { name: "bluesky" as const, url: "https://bsky.app/profile/desertthunder.dev", alt: "Bluesky" },
 ];
+
+const siteUrl = Astro.site || "https://desertthunder.dev";
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
+const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 ---
 
 <!doctype html>
@@ -22,12 +26,23 @@ const SOCIALS = [
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     {description && <meta name="description" content={description} />}
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="Desert Thunder RSS Feed"
-      href="/rss.xml"
-    />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+    <link rel="alternate" type="application/rss+xml" title="Desert Thunder RSS Feed" href="/rss.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl.toString()} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
     <title>{title}</title>
   </head>
   <body>

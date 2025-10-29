@@ -15,11 +15,7 @@ export const getStaticPaths = (async () => {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
-const dateStr = post.data.date.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const dateStr = post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
 const readingTime = calculateReadingTime(post.body);
 const allPosts = (await getCollection("blog"))
@@ -29,9 +25,10 @@ const allPosts = (await getCollection("blog"))
 const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
 const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const ogImage = `/og/${post.slug}.png`;
 ---
 
-<Base title={`${post.data.title} — Owais Jamil`} description={post.data.description}>
+<Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
   <Terminal title={`blog/${post.slug}`}>
     <Command>cat ~/blog/{post.slug}.md</Command>
     <Output>

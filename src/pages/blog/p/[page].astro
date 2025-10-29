@@ -20,7 +20,7 @@ type Props = { page: Page<CollectionEntry<"blog">> };
 const { page } = Astro.props;
 ---
 
-<Base title="Blog — Owais Jamil">
+<Base title="Blog — Owais Jamil" ogImage="/og/page/blog.png">
   <Terminal title="blog">
     <Command>ls ~/blog/ | page {page.currentPage}/{page.lastPage}</Command>
     <Output>

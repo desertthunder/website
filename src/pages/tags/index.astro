@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-import Base from "../../layouts/Base.astro";
-import Terminal from "../../components/Terminal.astro";
-import Command from "../../components/Command.astro";
-import Output from "../../components/Output.astro";
-import Token from "../../components/Token.astro";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import Token from "$components/Token.astro";
 
 const posts = await getCollection("blog");
 const bookmarks = await getCollection("bookmarks");
@@ -25,7 +25,7 @@ bookmarks.forEach((bookmark) => {
 const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
-<Base title="Tags — Owais Jamil">
+<Base title="Tags — Owais Jamil" ogImage="/og/page/tags.png">
   <Terminal title="tags">
     <Command>
       <Token color="cyan">ls</Token>

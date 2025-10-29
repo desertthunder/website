@@ -1,10 +1,13 @@
 ---
-import Base from "../layouts/Base.astro";
-import Terminal from "../components/Terminal.astro";
-import Command from "../components/Command.astro";
-import Output from "../components/Output.astro";
-import Token from "../components/Token.astro";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import Token from "$components/Token.astro";
 
+/**
+ * Format like uptime: "up 3 years, 42 days, 5:07"
+ */
 function calcUptime(dateStr: string): string {
   const start = new Date(dateStr);
   if (isNaN(start.getTime())) throw new Error("Invalid date format (expected YYYY-MM-DD)");
@@ -23,7 +26,6 @@ function calcUptime(dateStr: string): string {
   if (years > 0) parts.push(`${years} year${years > 1 ? "s" : ""}`);
   if (days > 0) parts.push(`${days} day${days > 1 ? "s" : ""}`);
 
-  // Format like uptime: “up 3 years, 42 days, 5:07”
   const timeStr = `${hours}:${mins.toString().padStart(2, "0")}`;
   const prefix = "up";
   return parts.length ? `${prefix} ${parts.join(", ")}, ${timeStr}` : `${prefix} ${timeStr}`;
@@ -38,7 +40,7 @@ const books = [
 ];
 ---
 
-<Base title="Owais Jamil — About" description="Who even is Owais?">
+<Base title="Owais Jamil — About" description="Who even is Owais?" ogImage="/og/page/home.png">
   <Terminal>
     <Command>
       <Token color="cyan">whoami</Token>
@@ -46,9 +48,9 @@ const books = [
     <Output>
       <span>Owais J. https://github.com/desertthunder</span>
       <p>
-        I'm a software engineer with a passion for learning. In late 2024 I started a company called
-        Stormlight Labs that focuses on enginnering projects that serve the community and help
-        others. My greatest joy comes from learning and sharing knowledge with others.
+        I'm a software engineer with a passion for learning. In late 2024 I started a company called Stormlight Labs
+        that focuses on enginnering projects that serve the community and help others. My greatest joy comes from
+        learning and sharing knowledge with others.
       </p>
     </Output>
 
