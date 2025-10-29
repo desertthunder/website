@@ -4,23 +4,14 @@
 
 ### Blog Post Layout
 
-- Create dedicated BlogPost.astro layout extending Base.astro
-- Include reading time calculation
+- Reading time calculation
 - Add previous/next post navigation with vim keybinds for navigation
-- Add table of contents for long posts
 
 ## Content Collection Enhancements
-
-### Pages Collection
-
-- Actually use the pages collection for static pages
-- Create dynamic page template at src/pages/[...slug].astro
-- Migrate about page content to collection
 
 ### Blog Listing Improvements
 
 - Add pagination for blog index
-- Add search functionality (client-side or build-time)
 
 ### Bookmark Improvements
 
@@ -29,6 +20,8 @@
 - Grid layout instead of terminal list
 
 ## Build Process
+
+- Aliases: `$components`, `$pages`, `$layouts`, `$styles`
 
 ### OG Images
 
@@ -62,27 +55,17 @@
 - Use font-display: swap for better performance
 - Subset fonts to reduce file size
 
-## Developer Experience
-
-### Type Safety
-
-- Add TypeScript interfaces for all component props
-- Type the content collection schemas more strictly
-- Add JSDoc comments for complex functions
-
-### Testing
-
-- Add Vitest for component testing
-- Test Terminal component rendering
-- Test content collection queries
-
-### Documentation
-
-- Document component API in README or Storybook
-- Add examples for each component usage
-- Document content frontmatter requirements
-
 ## Nice to Have
+
+### Pages Collection
+
+- Actually use the pages collection for static pages
+- Create dynamic page template at src/pages/[...slug].astro
+- Migrate about page content to collection
+
+### Blog Listing Improvements
+
+- Add search functionality (client-side or build-time)
 
 ### Dark/Light Mode Toggle
 
@@ -96,14 +79,10 @@
 - Show estimated reading time
 - Scroll-to-top button
 
-### Comments
+### Comments & Analytics
 
-- Integrate comment system (Giscus, utterances, etc.)
+- Integrate comment system (Giscus)
 - Add to blog post layout
-- Respect privacy and performance
-
-### Analytics
-
 - Add privacy-friendly analytics (Plausible, Fathom, etc.)
 - Track page views and popular content
 - Respect DNT header

@@ -4,9 +4,8 @@ import Base from "../../layouts/Base.astro";
 import Terminal from "../../components/Terminal.astro";
 import Command from "../../components/Command.astro";
 import Output from "../../components/Output.astro";
-import linkifyString from "linkify-string";
+import BookmarkCard from "../../components/BookmarkCard.astro";
 
-const linkedText = (text: string) => linkifyString(text);
 const bookmarks = (await getCollection("bookmarks")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
@@ -14,16 +13,17 @@ const bookmarks = (await getCollection("bookmarks")).sort(
 
 <Base title="Bookmarks — Owais Jamil">
   <Terminal title="bookmarks">
-    <Command>ls bookmarks.txt</Command>
+    <Command>ls bookmarks/</Command>
     <Output>
       {
         bookmarks.map((bookmark) => (
-          <div>
-            <span>
-              <strong>{bookmark.data.title}</strong> →
-            </span>
-            <span style="font-size:14px" set:html={linkedText(bookmark.data.url)} />
-          </div>
+          <BookmarkCard
+            title={bookmark.data.title}
+            url={bookmark.data.url}
+            date={bookmark.data.date}
+            categories={bookmark.data.categories}
+            content={bookmark.body}
+          />
         ))
       }
     </Output>

@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import Terminal from "../components/Terminal.astro";
 import Command from "../components/Command.astro";
 import Output from "../components/Output.astro";
+import Token from "../components/Token.astro";
 
 function calcUptime(dateStr: string): string {
   const start = new Date(dateStr);
@@ -39,7 +40,9 @@ const books = [
 
 <Base title="Owais Jamil — About" description="Who even is Owais?">
   <Terminal>
-    <Command>whoami</Command>
+    <Command>
+      <Token color="cyan">whoami</Token>
+    </Command>
     <Output>
       <span>Owais J. https://github.com/desertthunder</span>
       <p>
@@ -49,18 +52,21 @@ const books = [
       </p>
     </Output>
 
-    <Command>hostname</Command>
+    <Command><Token color="cyan">hostname</Token></Command>
     <Output> https://desertthunder.dev/ </Output>
 
-    <Command>ls ~/skills/</Command>
+    <Command><Token color="cyan">ls</Token> <Token color="green">~/skills/</Token></Command>
     <Output>Go Rust Flutter Python React TypeScript</Output>
 
-    <Command>ps aux | grep "currently_working_on"</Command>
+    <Command>
+      <Token color="cyan">ps</Token> aux |
+      <Token color="cyan">grep</Token> "currently_working_on"</Command
+    >
     <Output>https://stormlightlabs.org</Output>
 
-    <Command>ls ~/books/</Command>
+    <Command><Token color="cyan">ls</Token> <Token color="green">~/books/</Token></Command>
     <Output>{books.map((b) => <div>{b}</div>)}</Output>
-    <Command>ls ~/hobbies/ </Command>
+    <Command><Token color="cyan">ls</Token> <Token color="green">~/hobbies/ </Token></Command>
     <Output>writing/ reading/ programming/ video_games/ rpgs/</Output>
 
     <Command>uptime</Command>

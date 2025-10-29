@@ -1,14 +1,18 @@
 ---
-import Icon from "../components/Icon.astro";
+import Header from "../components/Header.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 
-interface Props {
-  title: string;
-  description?: string;
-}
+type Props = { title: string; description?: string };
 
 const { title, description } = Astro.props;
-const currentYear = new Date().getFullYear();
+
+const SOCIALS = [
+  { name: "gh" as const, url: "https://github.com/desertthunder", alt: "GitHub" },
+  { name: "linkedin" as const, url: "https://linkedin.com/in/owais-jamil", alt: "LinkedIn" },
+  { name: "bluesky" as const, url: "https://bsky.app/profile/desertthunder.dev", alt: "Bluesky" },
+];
 ---
 
 <!doctype html>
@@ -25,30 +29,9 @@ const currentYear = new Date().getFullYear();
     />
   </head>
   <body>
-    <header>
-      <h1>Owais Jamil</h1>
-    </header>
-
-    <nav>
-      <a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}>λ about</a>
-      <a href="/projects" aria-current={Astro.url.pathname === "/projects" ? "page" : undefined}>
-        λ projects
-      </a>
-      <a href="/blog" aria-current={Astro.url.pathname.startsWith("/blog") ? "page" : undefined}>
-        λ blog
-      </a>
-      <a href="/tags" aria-current={Astro.url.pathname.startsWith("/tags") ? "page" : undefined}>
-        λ tags
-      </a>
-      <a href="/bookmarks" aria-current={Astro.url.pathname === "/bookmarks" ? "page" : undefined}>
-        λ bookmarks
-      </a>
-    </nav>
-
+    <Header title="Owais Jamil" />
+    <Nav currentPath={Astro.url.pathname} />
     <slot />
-
-    <footer>
-      © {currentYear} Owais Jamil <Icon name="gh" /><Icon name="linkedin" /><Icon name="bluesky" />
-    </footer>
+    <Footer name="Owais Jamil" socialLinks={SOCIALS} />
   </body>
 </html>

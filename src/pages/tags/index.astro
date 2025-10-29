@@ -1,33 +1,45 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import Terminal from '../../components/Terminal.astro';
-import Command from '../../components/Command.astro';
-import Output from '../../components/Output.astro';
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Terminal from "../../components/Terminal.astro";
+import Command from "../../components/Command.astro";
+import Output from "../../components/Output.astro";
+import Token from "../../components/Token.astro";
 
-const posts = await getCollection('blog');
+const posts = await getCollection("blog");
+const bookmarks = await getCollection("bookmarks");
 const tagCounts = new Map<string, number>();
 
-posts.forEach(post => {
-  post.data.tags.forEach(tag => {
+posts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
     tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
   });
 });
 
-const tags = Array.from(tagCounts.entries())
-  .sort((a, b) => b[1] - a[1]);
+bookmarks.forEach((bookmark) => {
+  bookmark.data.categories.forEach((category) => {
+    tagCounts.set(category, (tagCounts.get(category) || 0) + 1);
+  });
+});
+
+const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
 <Base title="Tags — Owais Jamil">
   <Terminal title="tags">
-<Command>ls ~/blog/tags/</Command>
-<Output>
-{tags.map(([tag, count]) => (
-  <a href={`/tags/${tag}`} class="tag-link">
-    {tag}/ ({count})
-  </a>
-))}
-</Output>
+    <Command>
+      <Token color="cyan">ls</Token>
+      <Token color="green">~/tags/</Token>
+    </Command>
+    <Output>
+      {
+        tags.map(([tag, count]) => (
+          <a href={`/tags/${tag}`} class="tag-link">
+            {tag}/ ({count})
+          </a>
+        ))
+      }
+    </Output>
   </Terminal>
 </Base>
 

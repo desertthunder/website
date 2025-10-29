@@ -1,47 +1,79 @@
 ---
-import { getCollection } from 'astro:content';
-import type { GetStaticPaths } from 'astro';
-import Base from '../../layouts/Base.astro';
-import Terminal from '../../components/Terminal.astro';
-import Command from '../../components/Command.astro';
-import Output from '../../components/Output.astro';
-import BlogPostCard from '../../components/BlogPostCard.astro';
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import Terminal from "../../components/Terminal.astro";
+import Command from "../../components/Command.astro";
+import Output from "../../components/Output.astro";
+import BlogPostCard from "../../components/BlogPostCard.astro";
+import BookmarkCard from "../../components/BookmarkCard.astro";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog');
+  const posts = await getCollection("blog");
+  const bookmarks = await getCollection("bookmarks");
   const tags = new Set<string>();
 
-  posts.forEach(post => {
-    post.data.tags.forEach(tag => tags.add(tag));
+  posts.forEach((post) => {
+    post.data.tags.forEach((tag) => tags.add(tag));
   });
 
-  return Array.from(tags).map(tag => ({
+  bookmarks.forEach((bookmark) => {
+    bookmark.data.categories.forEach((category) => tags.add(category));
+  });
+
+  return Array.from(tags).map((tag) => ({
     params: { tag },
     props: {
       posts: posts
-        .filter(post => post.data.tags.includes(tag) && !post.data.draft)
-        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-    }
+        .filter((post) => post.data.tags.includes(tag) && !post.data.draft)
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+      bookmarks: bookmarks
+        .filter((bookmark) => bookmark.data.categories.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
   }));
 }) satisfies GetStaticPaths;
 
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const { posts, bookmarks } = Astro.props;
 ---
 
 <Base title={`Tag: ${tag} — Owais Jamil`}>
   <Terminal title={`tags/${tag}`}>
-<Command>cat ~/blog/tags/{tag}/posts.txt</Command>
-<Output>
-{posts.map(post => (
-  <BlogPostCard
-    slug={post.slug}
-    title={post.data.title}
-    description={post.data.description}
-    date={post.data.date}
-    tags={post.data.tags}
-  />
-))}
-</Output>
+    <Command>ls ~/tags/{tag}/</Command>
+    <Output>
+      {
+        posts.length > 0 && (
+          <div>
+            <h3 style="color: var(--cyan); margin: 1rem 0 0.5rem 0;">Posts</h3>
+            {posts.map((post) => (
+              <BlogPostCard
+                slug={post.slug}
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+              />
+            ))}
+          </div>
+        )
+      }
+      {
+        bookmarks.length > 0 && (
+          <div>
+            <h3 style="color: var(--yellow); margin: 1.5rem 0 0.5rem 0;">Bookmarks</h3>
+            {bookmarks.map((bookmark) => (
+              <BookmarkCard
+                title={bookmark.data.title}
+                url={bookmark.data.url}
+                date={bookmark.data.date}
+                categories={bookmark.data.categories}
+                content={bookmark.body}
+              />
+            ))}
+          </div>
+        )
+      }
+    </Output>
   </Terminal>
 </Base>
