@@ -1,11 +1,12 @@
 ---
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
-import Base from "../../layouts/Base.astro";
-import Terminal from "../../components/Terminal.astro";
-import Command from "../../components/Command.astro";
-import Output from "../../components/Output.astro";
-import "../../styles/prose.css";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import { calculateReadingTime } from "$utils/reading-time";
+import "$styles/prose.css";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("blog");
@@ -19,6 +20,15 @@ const dateStr = post.data.date.toLocaleDateString("en-US", {
   month: "long",
   day: "numeric",
 });
+
+const readingTime = calculateReadingTime(post.body);
+const allPosts = (await getCollection("blog"))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
+const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 ---
 
 <Base title={`${post.data.title} — Owais Jamil`} description={post.data.description}>
@@ -27,7 +37,10 @@ const dateStr = post.data.date.toLocaleDateString("en-US", {
     <Output>
       <article class="post-header">
         <h2>{post.data.title}</h2>
-        <time datetime={post.data.date.toISOString()}>{dateStr}</time>
+        <div class="post-meta">
+          <time datetime={post.data.date.toISOString()}>{dateStr}</time>
+          <span class="reading-time">{readingTime}</span>
+        </div>
         {
           post.data.tags.length > 0 && (
             <div class="tags">
@@ -44,9 +57,67 @@ const dateStr = post.data.date.toLocaleDateString("en-US", {
       <article class="markdown-prose">
         <Content />
       </article>
+
+      <nav class="post-navigation" aria-label="Post navigation">
+        <div class="nav-prev">
+          {
+            prevPost && (
+              <a href={`/blog/${prevPost.slug}/`} data-nav="prev">
+                <span class="nav-label">← Previous</span>
+                <span class="nav-title">{prevPost.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+        <div class="nav-next">
+          {
+            nextPost && (
+              <a href={`/blog/${nextPost.slug}/`} data-nav="next">
+                <span class="nav-label">Next →</span>
+                <span class="nav-title">{nextPost.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+      </nav>
     </Output>
   </Terminal>
 </Base>
+
+<script>
+  document.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
+    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
+
+    if (e.key === "ArrowLeft") {
+      prevLink?.click();
+    } else if (e.key === "ArrowRight") {
+      nextLink?.click();
+    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "[") {
+          prevLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "]") {
+          nextLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    }
+  });
+</script>
 
 <style>
   .post-header {
@@ -61,9 +132,20 @@ const dateStr = post.data.date.toLocaleDateString("en-US", {
     font-size: 1.875rem;
   }
 
-  time {
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     color: var(--muted);
     font-size: 0.9rem;
+  }
+
+  .reading-time {
+    color: var(--muted);
+  }
+
+  .reading-time::before {
+    content: "• ";
   }
 
   .tags {
@@ -90,5 +172,69 @@ const dateStr = post.data.date.toLocaleDateString("en-US", {
     background: var(--panel);
     border-color: var(--green);
     text-decoration: none;
+  }
+
+  .post-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dotted var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .nav-prev,
+  .nav-next {
+    min-width: 0;
+  }
+
+  .nav-next {
+    text-align: right;
+  }
+
+  .post-navigation a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--cyan);
+    text-decoration: none;
+    padding: 1rem;
+    border: 1px dotted var(--line);
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--panel), black 8%);
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .post-navigation a:hover {
+    background: var(--panel);
+    border-color: var(--cyan);
+    text-decoration: none;
+  }
+
+  .nav-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .nav-title {
+    font-size: 0.95rem;
+    color: var(--cyan);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .post-navigation {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-next {
+      text-align: left;
+    }
   }
 </style>

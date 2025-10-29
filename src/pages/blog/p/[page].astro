@@ -1,0 +1,111 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import BlogPostCard from "$components/BlogPostCard.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection("blog"))
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  return paginate(posts, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+type Props = { page: Page<CollectionEntry<"blog">> };
+const { page } = Astro.props;
+---
+
+<Base title="Blog — Owais Jamil">
+  <Terminal title="blog">
+    <Command>ls ~/blog/ | page {page.currentPage}/{page.lastPage}</Command>
+    <Output>
+      {
+        page.data.map((post) => (
+          <BlogPostCard
+            slug={post.slug}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            tags={post.data.tags}
+          />
+        ))
+      }
+
+      <nav class="pagination" aria-label="Blog pagination">
+        <div class="pagination-links">
+          {
+            page.url.prev && (
+              <a href={page.url.prev} class="pagination-link">
+                ← Previous
+              </a>
+            )
+          }
+          <span class="pagination-info">
+            Page {page.currentPage} of {page.lastPage}
+          </span>
+          {
+            page.url.next && (
+              <a href={page.url.next} class="pagination-link">
+                Next →
+              </a>
+            )
+          }
+        </div>
+      </nav>
+    </Output>
+  </Terminal>
+</Base>
+
+<style>
+  .pagination {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dotted var(--line);
+  }
+
+  .pagination-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pagination-link {
+    color: var(--cyan);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px dotted var(--line);
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--panel), black 8%);
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .pagination-link:hover {
+    background: var(--panel);
+    border-color: var(--cyan);
+    text-decoration: none;
+  }
+
+  .pagination-info {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    .pagination-links {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pagination-link {
+      text-align: center;
+    }
+  }
+</style>
