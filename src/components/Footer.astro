@@ -1,0 +1,21 @@
+---
+import Icon from "./Icon.astro";
+
+type SocialLink = { name: "gh" | "bluesky" | "linkedin"; url: string; alt?: string };
+type Props = { name: string; socialLinks: Array<SocialLink> };
+
+const { name, socialLinks } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+  © {currentYear}
+  {name}
+  {
+    socialLinks.map((link) => (
+      <a href={link.url} target="_blank" rel="noopener noreferrer">
+        <Icon name={link.name} alt={link.alt || link.name} />
+      </a>
+    ))
+  }
+</footer>

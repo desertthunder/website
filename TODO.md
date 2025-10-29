@@ -1,58 +1,12 @@
 # TODO: Component-Based Refactoring
 
-This site is currently using a layout-first approach. The following refactorings would improve modularity and maintainability:
-
-## Completed
-
-### Terminal Component System
-- Created Command.astro component for terminal commands with semantic API
-- Created Output.astro component for command output
-- Updated Terminal.astro to accept title prop displaying as /{title}/
-- Migrated all pages to use Command/Output pattern
-
-### Blog Components
-- Created BlogPostCard.astro for post listings with TUI-style dashed borders
-- Added prose styling (prose.css) for markdown content
-- Made tags clickable throughout the site
-
-### Tag System
-- Created /tags/index.astro showing all tags with post counts
-- Created /tags/[tag].astro for dynamic tag filtering
-- Added tags navigation link to main nav
-
-## Component Extraction
-
-### Navigation Component
-
-- Extract `<nav>` from Base.astro into separate Nav.astro component
-- Props: currentPath for active page highlighting
-- Benefits: Reusable, testable, easier to modify
-
-### Header Component
-
-- Extract site header from Base.astro
-- Props: title, subtitle (optional)
-- Benefits: Support different header styles per page type
-
-### Footer Component
-
-- Extract footer from Base.astro
-- Consider dynamic year calculation
-- Benefits: Centralized copyright management
-
-### Bookmark Card Component
-
-- Create component for individual bookmark display
-- Props: title, url, date, categories, content
-- Benefits: Consistent bookmark styling, easier A/B testing
-
 ## Layout Improvements
 
 ### Blog Post Layout
 
 - Create dedicated BlogPost.astro layout extending Base.astro
 - Include reading time calculation
-- Add previous/next post navigation
+- Add previous/next post navigation with vim keybinds for navigation
 - Add table of contents for long posts
 
 ## Content Collection Enhancements
@@ -72,7 +26,7 @@ This site is currently using a layout-first approach. The following refactorings
 
 - Group bookmarks by category
 - Add date range filtering
-- Consider grid layout instead of terminal list
+- Grid layout instead of terminal list
 
 ## Build Process
 

@@ -1,0 +1,41 @@
+---
+/**
+ * Inline token component for coloring portions of terminal commands.
+ * Use within Command component to highlight different command elements.
+ *
+ * Recommended color usage:
+ * - cyan: Commands, executables, URLs (e.g., git, npm, ls)
+ * - green: Directory names, success states, filenames
+ * - yellow: Flags, options, arguments (e.g., --verbose, -rf)
+ * - blue: Keywords, builtins, strings
+ * - magenta: Variables, special characters (e.g., $PATH, ~)
+ * - red: Destructive operations, sudo, errors
+ * - muted: Comments, secondary text, extensions
+ *
+ * Example:
+ * <Command>
+ *   <Token color="cyan">git</Token> <Token color="yellow">commit</Token>
+ *   <Token color="blue">-m</Token> "Initial commit"
+ * </Command>
+ */
+type Props = { color: "red" | "green" | "yellow" | "blue" | "cyan" | "magenta" | "muted" };
+
+const { color } = Astro.props;
+const colorMap = {
+  red: "var(--red)",
+  green: "var(--green)",
+  yellow: "var(--yellow)",
+  blue: "var(--blue)",
+  cyan: "var(--cyan)",
+  magenta: "var(--magenta)",
+  muted: "var(--muted)",
+};
+---
+
+<span class="token" style={`color: ${colorMap[color]}`}><slot /></span>
+
+<style>
+  .token {
+    display: inline;
+  }
+</style>

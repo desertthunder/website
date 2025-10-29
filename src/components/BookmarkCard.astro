@@ -1,0 +1,121 @@
+---
+type Props = { title: string; url: string; date: Date; categories: string[]; content?: string };
+
+const { title, url, date, categories, content } = Astro.props;
+const dateStr = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+---
+
+<article class="tui-card">
+  <a href={url} class="card-link" target="_blank" rel="noopener noreferrer">
+    <header>
+      <h3 class="title">{title}</h3>
+      <time datetime={date.toISOString()} class="date">{dateStr}</time>
+    </header>
+    {content && <p class="content">{content}</p>}
+    <p class="url">{url}</p>
+  </a>
+  {
+    categories.length > 0 && (
+      <div class="categories">
+        {categories.map((category) => (
+          <span class="category">{category}</span>
+        ))}
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .tui-card {
+    margin: 1.5rem 0;
+    background: var(--panel);
+    border: 2px dashed var(--line);
+    border-radius: 4px;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .tui-card:hover {
+    border-color: var(--cyan);
+    box-shadow: 0 2px 12px rgba(137, 184, 194, 0.15);
+  }
+
+  .card-link {
+    display: block;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .title {
+    color: var(--cyan);
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .card-link:hover .title {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .date {
+    color: var(--muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .content {
+    color: var(--fg);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.6;
+  }
+
+  .url {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+    word-break: break-all;
+  }
+
+  .categories {
+    margin-top: 0;
+    padding: 0 1.5rem 1.25rem 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category {
+    background: color-mix(in oklab, var(--panel), black 8%);
+    color: var(--yellow);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    border: 1px dotted var(--line);
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .tui-card:hover .category {
+    background: var(--panel);
+    border-color: var(--yellow);
+  }
+</style>
