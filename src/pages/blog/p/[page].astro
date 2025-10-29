@@ -7,6 +7,7 @@ import Terminal from "$components/Terminal.astro";
 import Command from "$components/Command.astro";
 import Output from "$components/Output.astro";
 import BlogPostCard from "$components/BlogPostCard.astro";
+import Token from "$components/Token.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = (await getCollection("blog"))
@@ -22,7 +23,10 @@ const { page } = Astro.props;
 
 <Base title="Blog — Owais Jamil" ogImage="/og/page/blog.png">
   <Terminal title="blog">
-    <Command>ls ~/blog/ | page {page.currentPage}/{page.lastPage}</Command>
+    <Command>
+      <Token color="green">ls</Token> ~/blog/ | <Token color="green">page</Token>
+      {page.currentPage}/{page.lastPage}
+    </Command>
     <Output>
       {
         page.data.map((post) => (
@@ -60,52 +64,3 @@ const { page } = Astro.props;
     </Output>
   </Terminal>
 </Base>
-
-<style>
-  .pagination {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px dotted var(--line);
-  }
-
-  .pagination-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .pagination-link {
-    color: var(--cyan);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px dotted var(--line);
-    border-radius: 4px;
-    background: color-mix(in oklab, var(--panel), black 8%);
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  .pagination-link:hover {
-    background: var(--panel);
-    border-color: var(--cyan);
-    text-decoration: none;
-  }
-
-  .pagination-info {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 640px) {
-    .pagination-links {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .pagination-link {
-      text-align: center;
-    }
-  }
-</style>

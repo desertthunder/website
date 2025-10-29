@@ -1,12 +1,14 @@
+@import "./pagination.css";
+
 @font-face {
-  font-family: 'JetBrains Mono';
+  font-family: "JetBrains Mono";
   font-style: normal;
   font-display: swap;
   font-weight: 100 800;
-  src: url(/fonts/jetbrains-mono_5.2.6_latin-wght-normal.woff2) format('woff2-variations');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  src: url(/fonts/jetbrains-mono_5.2.6_latin-wght-normal.woff2) format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 :root {
@@ -40,14 +42,37 @@
   --fs-3xl: 3.052rem; /* 54.9px */
 }
 
-html,
+.icon svg {
+  display: inline-block;
+  width: var(--fs-sm);
+  height: var(--fs-sm);
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.icon:hover {
+  color: var(--accent-color, #58a6ff);
+}
+
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100%;
   background: var(--bg);
   color: var(--fg);
+  font-size: var(--fs-base);
+  padding: 0;
+  margin: 0;
+}
+
+#application {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0 auto;
   max-width: 46rem;
-  padding: 3rem 1.25rem 6rem;
-  font-size: var(--fs-base);
 }
 
 a {

@@ -64,6 +64,7 @@ const { posts, bookmarks } = Astro.props;
             <h3 style="color: var(--yellow); margin: 1.5rem 0 0.5rem 0;">Bookmarks</h3>
             {bookmarks.map((bookmark) => (
               <BookmarkCard
+                slug={bookmark.slug}
                 title={bookmark.data.title}
                 url={bookmark.data.url}
                 date={bookmark.data.date}

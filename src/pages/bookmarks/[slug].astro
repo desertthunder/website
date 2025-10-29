@@ -1,0 +1,215 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import { truncateWords } from "$utils/text";
+import "$styles/prose.css";
+
+export const getStaticPaths = (async () => {
+  const bookmarks = await getCollection("bookmarks");
+  return bookmarks.map((bookmark) => ({
+    params: { slug: bookmark.slug },
+    props: { bookmark },
+  }));
+}) satisfies GetStaticPaths;
+
+const { bookmark } = Astro.props;
+const { Content } = await bookmark.render();
+
+const description = bookmark.body ? truncateWords(bookmark.body, 40) : `Bookmark: ${bookmark.data.title}`;
+const dateStr = bookmark.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+const allBookmarks = (await getCollection("bookmarks")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const currentIndex = allBookmarks.findIndex((b) => b.slug === bookmark.slug);
+const prevBookmark = currentIndex < allBookmarks.length - 1 ? allBookmarks[currentIndex + 1] : null;
+const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
+---
+
+<Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/bookmarks.png">
+  <Terminal title={`bookmarks/${bookmark.slug}`}>
+    <Command>cat ~/bookmarks/{bookmark.slug}.md</Command>
+    <Output>
+      <article class="bookmark-header">
+        <h2>{bookmark.data.title}</h2>
+        <div class="bookmark-meta">
+          <time datetime={bookmark.data.date.toISOString()}>{dateStr}</time>
+          <a href={bookmark.data.url} target="_blank" rel="noopener noreferrer" class="bookmark-visit">
+            Visit Site ↗
+          </a>
+        </div>
+        {
+          bookmark.data.categories.length > 0 && (
+            <div class="categories">
+              {bookmark.data.categories.map((category) => (
+                <a href={`/tags/${category}`} class="category">
+                  {category}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </article>
+
+      {bookmark.body && (
+        <article class="bookmark-content markdown-prose">
+          <Content />
+        </article>
+      )}
+
+      <nav class="bookmark-navigation" aria-label="Bookmark navigation">
+        <a href="/bookmarks" class="back-link">← All Bookmarks</a>
+        <div class="nav-links">
+          {
+            prevBookmark && (
+              <a href={`/bookmarks/${prevBookmark.slug}/`} class="nav-link prev">
+                ← {prevBookmark.data.title}
+              </a>
+            )
+          }
+          {
+            nextBookmark && (
+              <a href={`/bookmarks/${nextBookmark.slug}/`} class="nav-link next">
+                {nextBookmark.data.title} →
+              </a>
+            )
+          }
+        </div>
+      </nav>
+    </Output>
+  </Terminal>
+</Base>
+
+<style>
+  .bookmark-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .bookmark-header h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.75rem;
+    color: var(--cyan);
+  }
+
+  .bookmark-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .bookmark-visit {
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  .bookmark-visit:hover,
+  .bookmark-visit:focus-visible {
+    text-decoration: underline;
+  }
+
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category {
+    background: color-mix(in oklab, var(--panel), black 8%);
+    color: var(--yellow);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px dotted var(--line);
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .category:hover,
+  .category:focus-visible {
+    background: var(--panel);
+    border-color: var(--yellow);
+  }
+
+  .bookmark-content {
+    margin-bottom: 2.5rem;
+  }
+
+  .bookmark-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px dotted var(--line);
+  }
+
+  .back-link {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    text-decoration: underline;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .nav-link {
+    color: var(--muted);
+    text-decoration: none;
+    max-width: 16rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: var(--cyan);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .nav-link.prev {
+    justify-content: flex-start;
+  }
+
+  .nav-link.next {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    .bookmark-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .nav-links {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .nav-link {
+      max-width: 100%;
+    }
+  }
+</style>

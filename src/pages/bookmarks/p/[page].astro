@@ -39,6 +39,21 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
   <Terminal title="bookmarks">
     <Command>ls bookmarks/ | page {page.currentPage}/{page.lastPage}</Command>
     <Output>
+      <div class="bookmarks-grid">
+        {
+          page.data.map((bookmark) => (
+            <BookmarkCard
+              slug={bookmark.slug}
+              title={bookmark.data.title}
+              url={bookmark.data.url}
+              date={bookmark.data.date}
+              categories={bookmark.data.categories}
+              content={bookmark.body}
+            />
+          ))
+        }
+      </div>
+
       <div class="filters">
         {
           categories.length > 0 && (
@@ -71,25 +86,11 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
         }
       </div>
 
-      <div class="bookmarks-grid">
-        {
-          page.data.map((bookmark) => (
-            <BookmarkCard
-              title={bookmark.data.title}
-              url={bookmark.data.url}
-              date={bookmark.data.date}
-              categories={bookmark.data.categories}
-              content={bookmark.body}
-            />
-          ))
-        }
-      </div>
-
       <nav class="pagination" aria-label="Bookmarks pagination">
         <div class="pagination-links">
           {
             page.url.prev && (
-              <a href={page.url.prev} class="pagination-link">
+              <a href={page.url.prev} class="pagination-link" data-nav="prev">
                 ← Previous
               </a>
             )
@@ -99,7 +100,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
           </span>
           {
             page.url.next && (
-              <a href={page.url.next} class="pagination-link">
+              <a href={page.url.next} class="pagination-link" data-nav="next">
                 Next →
               </a>
             )
@@ -110,11 +111,45 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
   </Terminal>
 </Base>
 
+<script>
+  document.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
+    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
+
+    if (e.key === "ArrowLeft") {
+      prevLink?.click();
+    } else if (e.key === "ArrowRight") {
+      nextLink?.click();
+    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "[") {
+          prevLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "]") {
+          nextLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    }
+  });
+</script>
+
 <style>
   .filters {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px dotted var(--line);
   }
 
   .category-filter,
@@ -165,60 +200,16 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 
   .bookmarks-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    align-items: stretch;
+    justify-items: stretch;
     gap: 1.5rem;
-  }
-
-  .pagination {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px dotted var(--line);
-  }
-
-  .pagination-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .pagination-link {
-    color: var(--cyan);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px dotted var(--line);
-    border-radius: 4px;
-    background: color-mix(in oklab, var(--panel), black 8%);
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  .pagination-link:hover {
-    background: var(--panel);
-    border-color: var(--cyan);
-    text-decoration: none;
-  }
-
-  .pagination-info {
-    color: var(--muted);
-    font-size: 0.9rem;
+    width: 100%;
   }
 
   @media (max-width: 768px) {
     .bookmarks-grid {
       grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .pagination-links {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .pagination-link {
-      text-align: center;
     }
   }
 </style>

@@ -2,16 +2,21 @@
 import Header from "$components/Header.astro";
 import Nav from "$components/Nav.astro";
 import Footer from "$components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
+import { createSlideTransition } from "$utils/animations";
 import "$styles/global.css";
+import "$styles/animations.css";
 
 type Props = { title: string; description?: string; ogImage?: string };
 
 const { title, description, ogImage } = Astro.props;
+const transition = createSlideTransition({ stiffness: 200, damping: 28, min: 220, max: 360 });
+const transitionFallback = transition.fallback;
 
 const SOCIALS = [
-  { name: "gh" as const, url: "https://github.com/desertthunder", alt: "GitHub" },
-  { name: "linkedin" as const, url: "https://linkedin.com/in/owais-jamil", alt: "LinkedIn" },
-  { name: "bluesky" as const, url: "https://bsky.app/profile/desertthunder.dev", alt: "Bluesky" },
+  { label: "Github", name: "gh" as const, url: "https://github.com/desertthunder", alt: "GitHub" },
+  { label: "LinkedIn", name: "linkedin" as const, url: "https://linkedin.com/in/owais-jamil", alt: "LinkedIn" },
+  { label: "BlueSky", name: "bluesky" as const, url: "https://bsky.app/profile/desertthunder.dev", alt: "Bluesky" },
 ];
 
 const siteUrl = Astro.site || "https://desertthunder.dev";
@@ -23,6 +28,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     {description && <meta name="description" content={description} />}
@@ -46,9 +52,14 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
     <title>{title}</title>
   </head>
   <body>
-    <Header title="Owais Jamil" />
-    <Nav currentPath={Astro.url.pathname} />
-    <slot />
-    <Footer name="Owais Jamil" socialLinks={SOCIALS} />
+    <div id="application">
+      <ClientRouter fallback={transitionFallback} />
+      <Header title="Owais Jamil" />
+      <Nav currentPath={Astro.url.pathname} />
+      <div style="flex-grow: 1;">
+        <slot />
+      </div>
+      <Footer name="Owais Jamil" socialLinks={SOCIALS} />
+    </div>
   </body>
 </html>

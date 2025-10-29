@@ -2,26 +2,13 @@
 import gh from "./icons/gh.svg?raw";
 import bluesky from "./icons/bluesky.svg?raw";
 import linkedin from "./icons/linkedin.svg?raw";
+import rss from "./icons/rss.svg?raw";
 
-// TODO: rss (./icons/rss.svg?raw)
-type Props = { name: "gh" | "bluesky" | "linkedin"; class?: string; alt?: string };
+type Props = { name: "gh" | "bluesky" | "linkedin" | "rss"; class?: string; alt?: string };
 
 const { name, class: className = "", alt = "" } = Astro.props;
-const icons: Record<Props["name"], string> = { gh, bluesky, linkedin };
+const icons: Record<Props["name"], string> = { gh, bluesky, linkedin, rss };
 const svgContent = icons[name];
 ---
 
 <span class={`icon ${className}`} set:html={svgContent} aria-label={alt} />
-
-<style>
-  .icon svg {
-    display: inline-block;
-    width: var(--fs-xs);
-    height: var(--fs-xs);
-    vertical-align: middle;
-    transition: color 0.2s ease;
-  }
-  .icon:hover {
-    color: var(--accent-color, #58a6ff);
-  }
-</style>

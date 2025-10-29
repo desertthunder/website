@@ -34,6 +34,7 @@ const bookmarks = allBookmarks
         {
           bookmarks.map((bookmark) => (
             <BookmarkCard
+              slug={bookmark.slug}
               title={bookmark.data.title}
               url={bookmark.data.url}
               date={bookmark.data.date}
@@ -77,8 +78,11 @@ const bookmarks = allBookmarks
 
   .bookmarks-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    align-items: stretch;
+    justify-items: stretch;
     gap: 1.5rem;
+    width: 100%;
   }
 
   .no-bookmarks {
