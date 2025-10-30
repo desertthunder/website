@@ -1,7 +1,7 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z } from "astro:content";
 
 const blog = defineCollection({
-  type: 'content',
+  type: "content",
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -12,7 +12,7 @@ const blog = defineCollection({
 });
 
 const bookmarks = defineCollection({
-  type: 'content',
+  type: "content",
   schema: z.object({
     title: z.string(),
     url: z.string().url(),
@@ -21,17 +21,19 @@ const bookmarks = defineCollection({
   }),
 });
 
-const pages = defineCollection({
-  type: 'content',
+const projects = defineCollection({
+  type: "content",
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(),
-    permalink: z.string().optional(),
+    description: z.string(),
+    repo: z.string().url(),
+    link: z.optional(z.string().url()),
+    status: z.string(),
+    tech: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    date: z.coerce.date(),
+    featured: z.boolean().default(false),
   }),
 });
 
-export const collections = {
-  blog,
-  bookmarks,
-  pages,
-};
+export const collections = { blog, bookmarks, projects };

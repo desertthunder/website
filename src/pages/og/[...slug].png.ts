@@ -5,12 +5,8 @@ import { resolve } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 
-/**
- * Generate static paths for all blog posts.
- */
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
-
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { title: post.data.title, description: post.data.description, date: post.data.date },

@@ -10,10 +10,7 @@ import "$styles/prose.css";
 
 export const getStaticPaths = (async () => {
   const bookmarks = await getCollection("bookmarks");
-  return bookmarks.map((bookmark) => ({
-    params: { slug: bookmark.slug },
-    props: { bookmark },
-  }));
+  return bookmarks.map((bookmark) => ({ params: { slug: bookmark.slug }, props: { bookmark } }));
 }) satisfies GetStaticPaths;
 
 const { bookmark } = Astro.props;
@@ -22,16 +19,17 @@ const { Content } = await bookmark.render();
 const description = bookmark.body ? truncateWords(bookmark.body, 40) : `Bookmark: ${bookmark.data.title}`;
 const dateStr = bookmark.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
-const allBookmarks = (await getCollection("bookmarks")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const allBookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const currentIndex = allBookmarks.findIndex((b) => b.slug === bookmark.slug);
 const prevBookmark = currentIndex < allBookmarks.length - 1 ? allBookmarks[currentIndex + 1] : null;
 const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
 ---
 
-<Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/bookmarks.png">
+<Base
+  title={`${bookmark.data.title} — Bookmarks — Owais Jamil`}
+  description={description}
+  ogImage="/og/page/bookmarks.png">
   <Terminal title={`bookmarks/${bookmark.slug}`}>
     <Command>cat ~/bookmarks/{bookmark.slug}.md</Command>
     <Output>
@@ -56,14 +54,15 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
         }
       </article>
 
-      {bookmark.body && (
-        <article class="bookmark-content markdown-prose">
-          <Content />
-        </article>
-      )}
+      {
+        bookmark.body && (
+          <article class="bookmark-content markdown-prose">
+            <Content />
+          </article>
+        )
+      }
 
       <nav class="bookmark-navigation" aria-label="Bookmark navigation">
-        <a href="/bookmarks" class="back-link">← All Bookmarks</a>
         <div class="nav-links">
           {
             prevBookmark && (
@@ -80,6 +79,7 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
             )
           }
         </div>
+        <a href="/bookmarks" class="back-link">← All Bookmarks</a>
       </nav>
     </Output>
   </Terminal>
@@ -154,6 +154,7 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
     gap: 1rem;
     padding-top: 2rem;
     border-top: 1px dotted var(--line);
+    border-bottom: 0;
   }
 
   .back-link {

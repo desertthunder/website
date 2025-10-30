@@ -1,18 +1,10 @@
-# TODO: Component-Based Refactoring
+# To-Do
 
-- Add favicon
+## Pre-Deployment
+
+- Only build blog post & project OG-images in addition to default
 
 ## Nice to Have
-
-### Pages Collection
-
-- Convert the pages collection to "Projects" for static pages
-    - Start with open source:
-        1. <https://github.com/stormlightlabs/noteleaf>
-        2. <https://github.com/stormlightlabs/beacon>
-        3. <https://github.com/stormlightlabs/volt>
-- Create dynamic project template at src/pages/projects/[...slug].astro
-- Draft project pages (markdown) & remove old about page
 
 ### Blog Listing Improvements (later)
 

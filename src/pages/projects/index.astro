@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import ProjectCard from "$components/ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort((a, b) => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+---
+
+<Base title="Projects — Owais J" description="Open source projects by Stormlight Labs" ogImage="/og/page/projects.png">
+  <Terminal title="projects">
+    <Command>ls ~/projects</Command>
+    <Output>
+      {
+        projects.map((project) => (
+          <ProjectCard
+            slug={project.slug}
+            title={project.data.title}
+            description={project.data.description}
+            status={project.data.status}
+            tech={project.data.tech}
+            tags={project.data.tags}
+            repo={project.data.repo}
+          />
+        ))
+      }
+    </Output>
+  </Terminal>
+</Base>

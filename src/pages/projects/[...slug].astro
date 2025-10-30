@@ -1,0 +1,269 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import Terminal from "$components/Terminal.astro";
+import Command from "$components/Command.astro";
+import Output from "$components/Output.astro";
+import "$styles/prose.css";
+import type { CollectionEntry } from "astro:content";
+
+type Props = { project: CollectionEntry<"projects"> };
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+
+const allProjects = (await getCollection("projects")).toSorted((a, b) => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+
+const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
+const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+const ogImage = `/og/projects/${project.slug}.png`;
+---
+
+<Base title={`${project.data.title} — Owais Jamil`} description={project.data.description} ogImage={ogImage}>
+  <Terminal title={`projects/${project.slug}`}>
+    <Command>cat ~/projects/{project.slug}/README.md</Command>
+    <Output>
+      <article class="project-header">
+        <h2>{project.data.title}</h2>
+        <div class="project-meta">
+          <span class="status">{project.data.status}</span>
+          <a href={project.data.repo} target="_blank" rel="noopener noreferrer" class="repo-link"> GitHub → </a>
+        </div>
+        {
+          project.data.tech.length > 0 && (
+            <div class="tech-stack">
+              <span class="tech-label">Tech Stack:</span>
+              {project.data.tech.map((tech: string) => (
+                <span class="tech-badge">{tech}</span>
+              ))}
+            </div>
+          )
+        }
+        {
+          project.data.tags.length > 0 && (
+            <div class="tags">
+              {project.data.tags.map((tag: string) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )
+        }
+      </article>
+
+      <article class="markdown-prose">
+        <Content />
+      </article>
+
+      <nav class="project-navigation" aria-label="Project navigation">
+        <div class="nav-prev">
+          {
+            prevProject && (
+              <a href={`/projects/${prevProject.slug}/`} data-nav="prev">
+                <span class="nav-label">← Previous</span>
+                <span class="nav-title">{prevProject.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+        <div class="nav-next">
+          {
+            nextProject && (
+              <a href={`/projects/${nextProject.slug}/`} data-nav="next">
+                <span class="nav-label">Next →</span>
+                <span class="nav-title">{nextProject.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+      </nav>
+    </Output>
+  </Terminal>
+</Base>
+
+<script>
+  document.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
+    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
+
+    if (e.key === "ArrowLeft") {
+      prevLink?.click();
+    } else if (e.key === "ArrowRight") {
+      nextLink?.click();
+    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "[") {
+          prevLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "]") {
+          nextLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    }
+  });
+</script>
+
+<style>
+  .project-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dotted var(--line);
+  }
+
+  .project-header h2 {
+    color: var(--cyan);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.875rem;
+  }
+
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .status {
+    color: var(--yellow);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .repo-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .repo-link:hover {
+    text-decoration: underline;
+  }
+
+  .tech-stack {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .tech-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .tech-badge {
+    background: color-mix(in oklab, var(--panel), black 12%);
+    color: var(--cyan);
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    border: 1px solid var(--line);
+    font-family: monospace;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: color-mix(in oklab, var(--panel), black 8%);
+    color: var(--green);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px dotted var(--line);
+  }
+
+  .project-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dotted var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .nav-prev,
+  .nav-next {
+    min-width: 0;
+  }
+
+  .nav-next {
+    text-align: right;
+  }
+
+  .project-navigation a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--cyan);
+    text-decoration: none;
+    padding: 1rem;
+    border: 1px dotted var(--line);
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--panel), black 8%);
+    transition:
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .project-navigation a:hover {
+    background: var(--panel);
+    border-color: var(--cyan);
+    text-decoration: none;
+  }
+
+  .nav-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .nav-title {
+    font-size: 0.95rem;
+    color: var(--cyan);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .project-navigation {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-next {
+      text-align: left;
+    }
+  }
+</style>

@@ -12,7 +12,7 @@
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@resvg/resvg-js": "^2.6.2",
-    "astro": "^5.15.2",
+    "astro": "5.14.8",
     "linkify-string": "^4.3.2",
     "linkifyjs": "^4.3.2",
     "satori": "^0.18.3"

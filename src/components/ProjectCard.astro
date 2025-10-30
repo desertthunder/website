@@ -1,0 +1,65 @@
+---
+import "$styles/cards.css";
+
+type Props = {
+  slug: string;
+  title: string;
+  description: string;
+  status: string;
+  tech: string[];
+  tags: string[];
+  repo: string;
+};
+
+const { slug, title, description, status, tech, tags, repo } = Astro.props;
+const initialTags = tags.slice(0, 2);
+const hiddenTags = tags.slice(2);
+---
+
+<article class="tui-card">
+  <a href={`/projects/${slug}`} class="card-link">
+    <header>
+      <h3 class="title">{title}</h3>
+      <span class="status">{status}</span>
+    </header>
+    <p class="description">{description}</p>
+    {
+      tech.length > 0 && (
+        <div class="tech-stack">
+          <span class="tech-label">Tech:</span>
+          {tech.map((t) => (
+            <span class="tech-badge">{t}</span>
+          ))}
+        </div>
+      )
+    }
+  </a>
+  {
+    tags.length > 0 && (
+      <div class="categories" data-expanded="false">
+        {initialTags.map((tag) => (
+          <span class="category">{tag}</span>
+        ))}
+        {hiddenTags.map((tag) => (
+          <span class="category is-hidden" data-hidden>
+            {tag}
+          </span>
+        ))}
+        {hiddenTags.length > 0 && (
+          <button type="button" class="category toggle" data-toggle aria-expanded="false">
+            <span aria-hidden="true">…</span>
+            <span class="sr-only">Show all tags</span>
+          </button>
+        )}
+      </div>
+    )
+  }
+  <div class="card-footer">
+    <a href={repo} target="_blank" rel="noopener noreferrer" class="repo-link"> View on GitHub → </a>
+  </div>
+</article>
+
+<script>
+  import { setupTagToggles } from "$utils/tag-toggle";
+  setupTagToggles();
+</script>
