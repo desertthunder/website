@@ -12,10 +12,14 @@ export function initializeTagToggles() {
 
   document.querySelectorAll<HTMLDivElement>(".categories").forEach((categories) => {
     const toggle = categories.querySelector<HTMLButtonElement>("[data-toggle]");
-    if (!toggle) return;
+    if (!toggle) {
+      return;
+    }
 
-    // Skip if already initialized
-    if (toggle.dataset.initialized === "true") return;
+    if (toggle.dataset.initialized === "true") {
+      return;
+    }
+
     toggle.dataset.initialized = "true";
 
     const visualLabel = toggle.querySelector<HTMLSpanElement>('[aria-hidden="true"]');

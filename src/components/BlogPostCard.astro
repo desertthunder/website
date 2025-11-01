@@ -7,19 +7,19 @@ const { slug, title, description, date, tags } = Astro.props;
 const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 ---
 
-<article class="tui-card">
-  <a href={`/blog/${slug}`} class="card-link">
-    <header>
-      <h3 class="title">{title}</h3>
-      <time datetime={date.toISOString()} class="date">{dateStr}</time>
-    </header>
-    <p class="description">{description}</p>
-  </a>
+<article data-card>
+  <header>
+    <a href={`/blog/${slug}`}>
+      <h3>{title}</h3>
+    </a>
+    <time datetime={date.toISOString()}>{dateStr}</time>
+  </header>
+  <p>{description}</p>
   {
     tags.length > 0 && (
       <div class="tags">
         {tags.map((tag) => (
-          <a href={`/tags/${tag}`} class="tag">
+          <a class="tag" href={`/tags/${tag}`}>
             {tag}
           </a>
         ))}

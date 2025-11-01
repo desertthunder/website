@@ -12,50 +12,110 @@ const initialCategories = categories.slice(0, 2);
 const hiddenCategories = categories.slice(2);
 ---
 
-<article class="tui-card bookmark-card">
-  <div class="card-body">
-    <header>
-      <h3 class="title">
-        <a href={`/bookmarks/${slug}/`} class="title-link" title={`View ${displayTitle}`}>
-          {displayTitle}
-        </a>
-      </h3>
-      <time datetime={date.toISOString()} class="date">{dateStr}</time>
-    </header>
-    {displayContent && <p class="content">{displayContent}</p>}
-    <a href={url} class="url" target="_blank" rel="noopener noreferrer" title={url}>
-      {url}
-    </a>
-    {
-      categories.length > 0 && (
-        <div class="categories" data-expanded="false">
-          {initialCategories.map((category) => (
-            <a href={`/tags/${encodeURIComponent(category)}/`} class="category" data-category={category}>
-              {category}
-            </a>
-          ))}
-          {hiddenCategories.map((category) => (
-            <a
-              href={`/tags/${encodeURIComponent(category)}/`}
-              class="category is-hidden"
-              data-hidden
-              data-category={category}>
-              {category}
-            </a>
-          ))}
-          {hiddenCategories.length > 0 && (
-            <button type="button" class="category toggle" data-toggle aria-expanded="false">
-              <span aria-hidden="true">…</span>
-              <span class="sr-only">Show all tags</span>
-            </button>
-          )}
-        </div>
-      )
-    }
-  </div>
+<article data-card>
+  <header>
+    <h3>
+      <a href={`/bookmarks/${slug}/`} class="title-link" title={`View ${displayTitle}`}>
+        {displayTitle}
+      </a>
+    </h3>
+    <time datetime={date.toISOString()}>{dateStr}</time>
+  </header>
+  {displayContent && <p>{displayContent}</p>}
+  <a href={url} target="_blank" rel="noopener noreferrer" title={url}>
+    {url}
+  </a>
+  {
+    categories.length > 0 && (
+      <div class="categories" data-expanded="false">
+        {initialCategories.map((category) => (
+          <a href={`/tags/${encodeURIComponent(category)}/`} class="category" data-category={category}>
+            {category}
+          </a>
+        ))}
+        {hiddenCategories.map((category) => (
+          <a
+            href={`/tags/${encodeURIComponent(category)}/`}
+            class="category is-hidden"
+            data-hidden
+            data-category={category}>
+            {category}
+          </a>
+        ))}
+        {hiddenCategories.length > 0 && (
+          <button type="button" class="category toggle" data-toggle aria-expanded="false">
+            <span aria-hidden="true">…</span>
+            <span class="sr-only">Show all tags</span>
+          </button>
+        )}
+      </div>
+    )
+  }
 </article>
 
 <script>
   import { setupTagToggles } from "$utils/tag-toggle";
   setupTagToggles();
 </script>
+
+<style>
+  header {
+    margin: 0;
+    flex-wrap: nowrap;
+  }
+
+  header h3 {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  header h3 a {
+    color: inherit;
+    text-decoration: none;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  p {
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 1.5rem;
+  }
+
+  a[target="_blank"] {
+    display: block;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 var(--space-lg);
+  }
+
+  a[target="_blank"]:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .categories {
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .category {
+    color: var(--yellow);
+  }
+
+  .category:hover {
+    border-color: var(--yellow);
+  }
+</style>

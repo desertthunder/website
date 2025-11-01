@@ -26,52 +26,51 @@ const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
 const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const ogImage = `/og/${post.slug}.png`;
+const hasTags = post.data.tags.length > 0;
 ---
 
 <Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
   <Terminal title={`blog/${post.slug}`}>
     <Command>cat ~/blog/{post.slug}.md</Command>
     <Output>
-      <article class="post-header">
+      <header>
         <h2>{post.data.title}</h2>
-        <div class="post-meta">
+        <section>
           <time datetime={post.data.date.toISOString()}>{dateStr}</time>
           <span class="reading-time">{readingTime}</span>
-        </div>
+        </section>
         {
-          post.data.tags.length > 0 && (
-            <div class="tags">
+          hasTags && (
+            <section>
               {post.data.tags.map((tag) => (
-                <a href={`/tags/${tag}`} class="tag">
-                  {tag}
-                </a>
+                <a href={`/tags/${tag}`}>{tag}</a>
               ))}
-            </div>
+            </section>
           )
         }
-      </article>
+      </header>
 
-      <article class="markdown-prose">
+      <article data-prose>
         <Content />
       </article>
 
-      <nav class="post-navigation" aria-label="Post navigation">
-        <div class="nav-prev">
+      <nav aria-label="Post navigation">
+        <div>
           {
             prevPost && (
               <a href={`/blog/${prevPost.slug}/`} data-nav="prev">
-                <span class="nav-label">← Previous</span>
-                <span class="nav-title">{prevPost.data.title}</span>
+                <span>← Previous</span>
+                <span>{prevPost.data.title}</span>
               </a>
             )
           }
         </div>
-        <div class="nav-next">
+        <div>
           {
             nextPost && (
               <a href={`/blog/${nextPost.slug}/`} data-nav="next">
-                <span class="nav-label">Next →</span>
-                <span class="nav-title">{nextPost.data.title}</span>
+                <span>Next →</span>
+                <span>{nextPost.data.title}</span>
               </a>
             )
           }
@@ -99,37 +98,43 @@ const ogImage = `/og/${post.slug}.png`;
         if (e2.key === "[") {
           prevLink?.click();
         }
+
         document.removeEventListener("keydown", handleSecondBracket);
       };
+
       document.addEventListener("keydown", handleSecondBracket);
+
       setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
     } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
       const handleSecondBracket = (e2: KeyboardEvent) => {
         if (e2.key === "]") {
           nextLink?.click();
         }
+
         document.removeEventListener("keydown", handleSecondBracket);
       };
+
       document.addEventListener("keydown", handleSecondBracket);
+
       setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
     }
   });
 </script>
 
 <style>
-  .post-header {
+  header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px dotted var(--line);
   }
 
-  .post-header h2 {
+  header h2 {
     color: var(--cyan);
     margin: 0 0 0.5rem 0;
     font-size: 1.875rem;
   }
 
-  .post-meta {
+  header > *:nth-child(2) {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -137,22 +142,22 @@ const ogImage = `/og/${post.slug}.png`;
     font-size: 0.9rem;
   }
 
-  .reading-time {
+  header > *:nth-child(2) span {
     color: var(--muted);
   }
 
-  .reading-time::before {
+  header > *:nth-child(2) span::before {
     content: "• ";
   }
 
-  .tags {
+  header > *:nth-child(3) {
     margin-top: 1rem;
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
 
-  .tag {
+  header > *:nth-child(3) a {
     background: color-mix(in oklab, var(--panel), black 8%);
     color: var(--green);
     padding: 0.25rem 0.75rem;
@@ -165,31 +170,31 @@ const ogImage = `/og/${post.slug}.png`;
       border-color 0.2s;
   }
 
-  .tag:hover {
+  header > *:nth-child(3) a:hover {
     background: var(--panel);
     border-color: var(--green);
     text-decoration: none;
   }
 
-  .post-navigation {
+  nav {
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px dotted var(--line);
+    border-bottom: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
 
-  .nav-prev,
-  .nav-next {
+  nav div {
     min-width: 0;
   }
 
-  .nav-next {
+  nav div:nth-child(2) {
     text-align: right;
   }
 
-  .post-navigation a {
+  nav a {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -204,19 +209,19 @@ const ogImage = `/og/${post.slug}.png`;
       border-color 0.2s;
   }
 
-  .post-navigation a:hover {
+  nav a:hover {
     background: var(--panel);
     border-color: var(--cyan);
     text-decoration: none;
   }
 
-  .nav-label {
+  nav div a span:first-child {
     font-size: 0.85rem;
     color: var(--muted);
     font-weight: 600;
   }
 
-  .nav-title {
+  nav div a span:last-child {
     font-size: 0.95rem;
     color: var(--cyan);
     overflow: hidden;
@@ -225,12 +230,12 @@ const ogImage = `/og/${post.slug}.png`;
   }
 
   @media (max-width: 640px) {
-    .post-navigation {
+    nav {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
 
-    .nav-next {
+    nav div a span:last-child {
       text-align: left;
     }
   }

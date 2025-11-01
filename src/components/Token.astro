@@ -32,10 +32,4 @@ const colorMap = {
 };
 ---
 
-<span class="token" style={`color: ${colorMap[color]}`}><slot /></span>
-
-<style>
-  .token {
-    display: inline;
-  }
-</style>
+<span style={`display: inline; color: ${colorMap[color]}`}><slot /></span>

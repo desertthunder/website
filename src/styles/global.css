@@ -31,16 +31,22 @@
     18px/1.6 "JetBrains Mono",
     monospace;
 
-  /* Font scale (1.25 modular scale) */
-  --fs-2xs: 0.64rem; /* 11.5px */
-  --fs-xs: 0.8rem; /* 14.4px */
-  --fs-sm: 0.9rem; /* 16.2px */
-  --fs-base: 1rem; /* 18px */
-  --fs-md: 1.25rem; /* 22.5px */
-  --fs-lg: 1.563rem; /* 28.1px */
-  --fs-xl: 1.953rem; /* 35.1px */
-  --fs-2xl: 2.441rem; /* 43.9px */
-  --fs-3xl: 3.052rem; /* 54.9px */
+  /* Font scale (1.25 modular scale): 1rem = 18px */
+  --fs-2xs: 0.64rem;
+  --fs-xs: 0.8rem;
+  --fs-sm: 0.9rem;
+  --fs-base: 1rem;
+  --fs-md: 1.25rem;
+  --fs-lg: 1.563rem;
+  --fs-xl: 1.953rem;
+  --fs-2xl: 2.441rem;
+  --fs-3xl: 3.052rem;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-base: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
 }
 
 .icon svg {
@@ -296,4 +302,16 @@ footer {
 
 .auto-cols-fr {
   grid-auto-columns: minmax(0, 1fr);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

@@ -7,6 +7,7 @@ import Terminal from "$components/Terminal.astro";
 import Command from "$components/Command.astro";
 import Output from "$components/Output.astro";
 import BookmarkCard from "$components/BookmarkCard.astro";
+import Token from "$components/Token.astro";
 
 type Props = { page: Page<CollectionEntry<"bookmarks">> };
 
@@ -37,7 +38,11 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 
 <Base title="Bookmarks — Owais Jamil" ogImage="/og/page/bookmarks.png">
   <Terminal title="bookmarks">
-    <Command>ls bookmarks/ | page {page.currentPage}/{page.lastPage}</Command>
+    <Command
+      ><Token color="cyan">ls</Token> bookmarks/ <Token color="magenta">|</Token> page {page.currentPage}/{
+        page.lastPage
+      }</Command
+    >
     <Output>
       <div class="bookmarks-grid">
         {
