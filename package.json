@@ -12,10 +12,12 @@
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/vite": "^4.1.16",
     "astro": "5.14.8",
     "linkify-string": "^4.3.2",
     "linkifyjs": "^4.3.2",
-    "satori": "^0.18.3"
+    "satori": "^0.18.3",
+    "tailwindcss": "^4.1.16"
   },
   "devDependencies": {
     "prettier": "3.6.2",

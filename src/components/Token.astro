@@ -20,16 +20,26 @@
  */
 type Props = { color: "red" | "green" | "yellow" | "blue" | "cyan" | "magenta" | "muted" };
 
-const { color } = Astro.props;
-const colorMap = {
-  red: "var(--red)",
-  green: "var(--green)",
-  yellow: "var(--yellow)",
-  blue: "var(--blue)",
-  cyan: "var(--cyan)",
-  magenta: "var(--magenta)",
-  muted: "var(--muted)",
-};
+const colorCls = (function () {
+  switch (Astro.props.color) {
+    case "red":
+      return "text-red";
+    case "green":
+      return "text-green";
+    case "yellow":
+      return "text-yellow";
+    case "blue":
+      return "text-blue";
+    case "cyan":
+      return "text-cyan";
+    case "magenta":
+      return "text-magenta";
+    case "muted":
+      return "text-muted";
+  }
+})();
 ---
 
-<span style={`display: inline; color: ${colorMap[color]}`}><slot /></span>
+<span class={`inline ${colorCls}`}>
+  <slot />
+</span>

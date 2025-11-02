@@ -8,15 +8,15 @@ const { name, socialLinks } = Astro.props;
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="grid grid-cols-2">
+<footer class="grid grid-cols-2 mt-4 py-4 text-muted border-t border-t-line">
   © {currentYear}
   {name}
-  <section class="flex flex-col">
+  <section class="flex flex-col gap-2 text-sm">
     {
       socialLinks.map((link) => (
-        <a href={link.url} target="_blank" rel="noopener noreferrer">
+        <a href={link.url} target="_blank" rel="noopener noreferrer" class="inline-flex gap-2 items-center group">
           <Icon name={link.name} alt={link.alt || link.name} />
-          <span>{link.label}</span>
+          <span class="group-hover:text-sky-300">{link.label}</span>
         </a>
       ))
     }

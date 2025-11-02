@@ -44,7 +44,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
       }</Command
     >
     <Output>
-      <div class="bookmarks-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         {
           page.data.map((bookmark) => (
             <BookmarkCard
@@ -59,7 +59,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
         }
       </div>
 
-      <div class="filters">
+      <div class="mb-6">
         {
           categories.length > 0 && (
             <div class="category-filter">
@@ -92,20 +92,20 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
       </div>
 
       <nav class="pagination" aria-label="Bookmarks pagination">
-        <div class="pagination-links">
+        <div class="links">
           {
             page.url.prev && (
-              <a href={page.url.prev} class="pagination-link" data-nav="prev">
+              <a href={page.url.prev} class="link" data-nav="prev">
                 ← Previous
               </a>
             )
           }
-          <span class="pagination-info">
+          <span class="info">
             Page {page.currentPage} of {page.lastPage}
           </span>
           {
             page.url.next && (
-              <a href={page.url.next} class="pagination-link" data-nav="next">
+              <a href={page.url.next} class="link" data-nav="next">
                 Next →
               </a>
             )
@@ -152,68 +152,26 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 </script>
 
 <style>
-  .filters {
-    margin-bottom: 1.5rem;
-  }
+  @reference "../../../styles/global.css";
 
   .category-filter,
   .year-filter {
-    margin-bottom: 0.5rem;
-  }
-
-  .category-filter:last-child,
-  .year-filter:last-child {
-    margin-bottom: 0;
+    @apply mb-2 last:mb-0;
   }
 
   .filter-label {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0.75rem;
+    @apply text-muted font-semibold block mb-3;
   }
 
   .category-tags,
   .year-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    @apply flex flex-wrap gap-2;
   }
 
   .category-tag,
   .year-tag {
-    background: color-mix(in oklab, var(--panel), black 8%);
-    color: var(--yellow);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    border: 1px dotted var(--line);
-    text-decoration: none;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  .category-tag:hover,
-  .year-tag:hover {
-    background: var(--panel);
-    border-color: var(--yellow);
-    text-decoration: none;
-  }
-
-  .bookmarks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    align-items: stretch;
-    justify-items: stretch;
-    gap: 1.5rem;
-    width: 100%;
-  }
-
-  @media (max-width: 768px) {
-    .bookmarks-grid {
-      grid-template-columns: 1fr;
-    }
+    background: color-mix(in oklab, var(--color-panel), black 8%);
+    @apply text-yellow px-3 py-1 rounded-sm text-sm border border-dotted border-line duration-300;
+    @apply hover:bg-panel hover:border-yellow hover:no-underline;
   }
 </style>

@@ -1,6 +1,4 @@
 ---
-import "$styles/cards.css";
-
 type Props = {
   slug: string;
   title: string;
@@ -27,9 +25,9 @@ const hiddenTags = tags.slice(2);
   {
     tech.length > 0 && (
       <div class="tech-stack">
-        <span class="tech-label">Tech:</span>
+        <span class="label">Tech:</span>
         {tech.map((t) => (
-          <span class="tech-badge">{t}</span>
+          <span class="badge">{t}</span>
         ))}
       </div>
     )
@@ -48,16 +46,16 @@ const hiddenTags = tags.slice(2);
         ))}
         {hiddenTags.length > 0 && (
           <button type="button" class="category toggle" data-toggle aria-expanded="false">
-            <span aria-hidden="true">…</span>
+            <span aria-hidden="true">...</span>
             <span class="sr-only">Show all tags</span>
           </button>
         )}
       </div>
     )
   }
-  <div class="card-footer">
+  <footer>
     <a href={repo} target="_blank" rel="noopener noreferrer" class="repo-link"> View on GitHub → </a>
-  </div>
+  </footer>
 </article>
 
 <script>
@@ -66,47 +64,27 @@ const hiddenTags = tags.slice(2);
 </script>
 
 <style>
+  @reference "../styles/global.css";
+
   .tech-stack {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 1.5rem;
+    @apply flex items-center gap-2 flex-wrap mb-1 px-6 py-2;
   }
 
-  .tech-label {
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-weight: 600;
+  .tech-stack .label {
+    @apply text-muted text-sm font-semibold;
   }
 
-  .tech-badge {
+  .tech-stack .badge {
     background: color-mix(in oklab, var(--panel), black 12%);
-    color: var(--cyan);
-    padding: 0.2rem 0.6rem;
-    border-radius: 3px;
-    font-size: 0.75rem;
-    border: 1px solid var(--line);
-    font-family: monospace;
+    @apply text-cyan px-2.5 py-1 rounded-sm text-xs border border-line;
   }
 
-  .card-footer {
-    padding: 0 1.5rem 1.25rem 1.5rem;
-    border-top: 1px dotted var(--line);
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+  [data-card] footer {
+    @apply px-5 py-4 mt-2 border-t border-dotted border-line;
   }
 
-  .repo-link {
-    color: var(--muted);
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .repo-link:hover {
-    color: var(--cyan);
-    text-decoration: underline;
+  [data-card] footer a {
+    @apply text-muted text-sm;
+    @apply duration-200 hover:underline hover:text-cyan;
   }
 </style>

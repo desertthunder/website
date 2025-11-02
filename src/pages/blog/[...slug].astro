@@ -7,6 +7,7 @@ import Command from "$components/Command.astro";
 import Output from "$components/Output.astro";
 import { calculateReadingTime } from "$utils/reading-time";
 import "$styles/prose.css";
+import Token from "$components/Token.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("blog");
@@ -31,7 +32,7 @@ const hasTags = post.data.tags.length > 0;
 
 <Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
   <Terminal title={`blog/${post.slug}`}>
-    <Command>cat ~/blog/{post.slug}.md</Command>
+    <Command><Token color="blue">cat</Token> ~/blog/{post.slug}.md</Command>
     <Output>
       <header>
         <h2>{post.data.title}</h2>
@@ -122,28 +123,18 @@ const hasTags = post.data.tags.length > 0;
 </script>
 
 <style>
+  @reference "../../styles/global.css";
+
   header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dotted var(--line);
+    @apply mb-8 pb-4 border-b border-line border-dotted;
   }
 
   header h2 {
-    color: var(--cyan);
-    margin: 0 0 0.5rem 0;
-    font-size: 1.875rem;
+    @apply text-cyan mr-2 text-2xl font-medium;
   }
 
   header > *:nth-child(2) {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  header > *:nth-child(2) span {
-    color: var(--muted);
+    @apply flex items-center gap-4 text-muted;
   }
 
   header > *:nth-child(2) span::before {
@@ -151,92 +142,35 @@ const hasTags = post.data.tags.length > 0;
   }
 
   header > *:nth-child(3) {
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    @apply mt-4 flex gap-2 flex-wrap;
   }
 
   header > *:nth-child(3) a {
     background: color-mix(in oklab, var(--panel), black 8%);
-    color: var(--green);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    border: 1px dotted var(--line);
-    text-decoration: none;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  header > *:nth-child(3) a:hover {
-    background: var(--panel);
-    border-color: var(--green);
-    text-decoration: none;
+    @apply text-green px-3 py-2 rounded-sm text-sm border border-line border-dotted no-underline duration-300;
+    @apply hover:bg-panel hover:border-green hover:no-underline;
   }
 
   nav {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px dotted var(--line);
-    border-bottom: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    @apply mt-12 pt-8 border-t border-line border-dotted grid grid-cols-2 gap-8;
+    @apply nth-[2]:text-right;
   }
 
   nav div {
-    min-width: 0;
-  }
-
-  nav div:nth-child(2) {
-    text-align: right;
+    @apply min-w-0;
   }
 
   nav a {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    color: var(--cyan);
-    text-decoration: none;
-    padding: 1rem;
-    border: 1px dotted var(--line);
-    border-radius: 4px;
     background: color-mix(in oklab, var(--panel), black 8%);
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  nav a:hover {
-    background: var(--panel);
-    border-color: var(--cyan);
-    text-decoration: none;
+    @apply grid grid-cols-1 md:flex md:flex-col gap-1 text-cyan no-underline p-4 border border-dotted border-line rounded-sm duration-300;
+    @apply hover:bg-panel hover:border-cyan hover:no-underline;
   }
 
   nav div a span:first-child {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-weight: 600;
+    @apply text-sm text-muted font-semibold;
   }
 
   nav div a span:last-child {
-    font-size: 0.95rem;
-    color: var(--cyan);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 640px) {
-    nav {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    nav div a span:last-child {
-      text-align: left;
-    }
+    @apply max-md:text-left text-cyan overflow-hidden text-ellipsis whitespace-nowrap;
   }
 </style>

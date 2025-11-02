@@ -4,14 +4,10 @@ type Props = { currentPath: string };
 const { currentPath } = Astro.props;
 ---
 
-<nav>
+<nav class="pb-2 border-b border-b-line">
   <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>λ about</a>
-  <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>
-    λ projects
-  </a>
-  <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}> λ blog </a>
-  <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}> λ tags </a>
-  <a href="/bookmarks" aria-current={currentPath === "/bookmarks" ? "page" : undefined}>
-    λ bookmarks
-  </a>
+  <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>λ projects</a>
+  <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>λ blog</a>
+  <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>λ tags</a>
+  <a href="/bookmarks" aria-current={currentPath === "/bookmarks" ? "page" : undefined}>λ bookmarks</a>
 </nav>

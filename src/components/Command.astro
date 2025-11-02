@@ -1,20 +1,10 @@
 ---
 type Props = { prompt?: string };
+
 const { prompt = "$" } = Astro.props;
 ---
 
-<span class="command">
-  <span class="prompt">{prompt}</span>
+<span class="block text-fg">
+  <span class="text-cyan">{prompt}</span>
   <slot />
 </span>
-
-<style is:global>
-  .command {
-    display: block;
-    color: var(--fg);
-  }
-
-  .command .prompt {
-    color: var(--cyan);
-  }
-</style>

@@ -1,17 +1,10 @@
 ---
-/**
- * Site header component displaying the main site title.
- * Future-proofed with optional subtitle support.
- */
-interface Props {
-  title: string;
-  subtitle?: string;
-}
+type Props = { title: string; subtitle?: string };
 
-const { title, subtitle } = Astro.props;
+const { title, subtitle = "SUBTITLE" } = Astro.props;
 ---
 
-<header>
-  <h1>{title}</h1>
-  {subtitle && <p class="subtitle">{subtitle}</p>}
+<header class="py-4">
+  <h1 class="text-blue text-2xl">{title}</h1>
+  {subtitle && <p class="text-muted">{subtitle}</p>}
 </header>

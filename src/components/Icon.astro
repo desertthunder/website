@@ -11,4 +11,16 @@ const icons: Record<Props["name"], string> = { gh, bluesky, linkedin, rss };
 const svgContent = icons[name];
 ---
 
-<span class={`icon ${className}`} set:html={svgContent} aria-label={alt} />
+<span class={className} set:html={svgContent} aria-label={alt} />
+
+<style>
+  @reference "../styles/global.css";
+
+  span {
+    @apply group-hover:text-sky-400 text-sm;
+  }
+
+  span svg {
+    @apply inline-flex align-middle duration-300;
+  }
+</style>
