@@ -6,7 +6,6 @@ import Terminal from "$components/Terminal.astro";
 import Command from "$components/Command.astro";
 import Output from "$components/Output.astro";
 import { truncateWords } from "$utils/text";
-import "$styles/prose.css";
 
 export const getStaticPaths = (async () => {
   const bookmarks = await getCollection("bookmarks");
@@ -86,131 +85,67 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
 </Base>
 
 <style>
+  @reference "../../styles/global.css";
+
   .bookmark-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px dotted var(--line);
+    @apply mb-8 pb-6 border-b border-dotted border-line;
   }
 
   .bookmark-header h2 {
-    margin: 0 0 0.75rem 0;
-    font-size: 1.75rem;
-    color: var(--cyan);
+    @apply mb-3 text-cyan text-2xl;
   }
 
   .bookmark-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin-bottom: 1.25rem;
+    @apply flex flex-col items-start flex-wrap text-muted text-base mb-5;
+    @apply sm:flex-row sm:justify-between sm:items-baseline;
   }
 
   .bookmark-visit {
-    color: var(--green);
-    text-decoration: none;
-  }
-
-  .bookmark-visit:hover,
-  .bookmark-visit:focus-visible {
-    text-decoration: underline;
+    @apply text-green no-underline;
+    @apply hover:underline focus-visible:underline;
   }
 
   .categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    @apply flex flex-wrap gap-2 px-0;
   }
 
   .category {
-    background: color-mix(in oklab, var(--panel), black 8%);
-    color: var(--yellow);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    border: 1px dotted var(--line);
-    text-decoration: none;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  .category:hover,
-  .category:focus-visible {
-    background: var(--panel);
-    border-color: var(--yellow);
+    background: color-mix(in oklab, var(--color-panel), black 8%);
+    @apply text-yellow py-1 px-3 rounded-sm no-underline duration-300;
+    @apply hover:bg-panel focus-visible:bg-panel hover:border-yellow focus-visible:border-yellow;
   }
 
   .bookmark-content {
-    margin-bottom: 2.5rem;
+    @apply mb-10;
   }
 
   .bookmark-navigation {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-top: 2rem;
-    border-top: 1px dotted var(--line);
-    border-bottom: 0;
+    @apply flex flex-col gap-4 pt-8 border-t border-dotted border-line;
   }
 
   .back-link {
-    color: var(--cyan);
-    text-decoration: none;
-  }
-
-  .back-link:hover,
-  .back-link:focus-visible {
-    text-decoration: underline;
+    @apply text-cyan no-underline;
+    @apply hover:underline focus-visible:underline;
   }
 
   .nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
+    @apply flex flex-col items-start gap-4;
+    @apply sm:flex-row sm:flex-wrap sm:justify-between;
   }
 
   .nav-link {
-    color: var(--muted);
-    text-decoration: none;
-    max-width: 16rem;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .nav-link:hover,
-  .nav-link:focus-visible {
-    color: var(--cyan);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    @apply text-muted no-underline max-w-3xs inline-flex items-center;
+    @apply hover:text-cyan hover:underline hover:underline-offset-2;
+    @apply focus-visible:text-cyan focus-visible:underline focus-visible:underline-offset-2;
+    @apply max-w-full;
+    @apply sm:max-w-3xs;
   }
 
   .nav-link.prev {
-    justify-content: flex-start;
+    @apply justify-start;
   }
 
   .nav-link.next {
-    justify-content: flex-end;
-    text-align: right;
-  }
-
-  @media (max-width: 640px) {
-    .bookmark-meta {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .nav-links {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .nav-link {
-      max-width: 100%;
-    }
+    @apply justify-end text-right;
   }
 </style>
