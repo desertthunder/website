@@ -38,11 +38,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 
 <Base title="Bookmarks — Owais Jamil" ogImage="/og/page/bookmarks.png">
   <Terminal title="bookmarks">
-    <Command
-      ><Token color="cyan">ls</Token> bookmarks/ <Token color="magenta">|</Token> page {page.currentPage}/{
-        page.lastPage
-      }</Command
-    >
+    <Command><Token color="cyan">ls</Token> bookmarks/ </Command>
     <Output>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         {

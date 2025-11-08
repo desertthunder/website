@@ -51,10 +51,10 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 
     <title>{title}</title>
   </head>
-  <body class="min-h-full bg-bg text-fg text-lg p-0 m-0">
+  <body class="min-h-full bg-bg text-fg text-lg p-4 md:p-0 m-0">
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
-      <Header title="Owais Jamil" />
+      <Header title="Owais Jamil" subtitle="HIRE ME" />
       <Nav currentPath={Astro.url.pathname} />
       <div class="grow">
         <slot />

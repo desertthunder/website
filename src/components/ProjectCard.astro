@@ -54,7 +54,9 @@ const hiddenTags = tags.slice(2);
     )
   }
   <footer>
-    <a href={repo} target="_blank" rel="noopener noreferrer" class="repo-link"> View on GitHub → </a>
+    <a href={repo} target="_blank" rel="noopener noreferrer" class="repo-link">
+      {repo.includes("github") ? "View on GitHub" : "View Source Code"} →
+    </a>
   </footer>
 </article>
 
