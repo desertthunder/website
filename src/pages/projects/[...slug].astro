@@ -27,10 +27,9 @@ const allProjects = (await getCollection("projects")).toSorted((a, b) => {
 const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
 const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
 const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
-const ogImage = `/og/projects/${project.slug}.png`;
 ---
 
-<Base title={`${project.data.title} — Owais Jamil`} description={project.data.description} ogImage={ogImage}>
+<Base title={`${project.data.title} — Owais Jamil`} description={project.data.description} ogImage="/og/page/home.png">
   <Terminal title={`projects/${project.slug}`}>
     <Command>cat ~/projects/{project.slug}/README.md</Command>
     <Output>

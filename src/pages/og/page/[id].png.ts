@@ -4,28 +4,17 @@ import { resolve } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 
-type PageMeta = { title: string; description: string; subtitle?: string };
-
 /**
- * OG image configurations for static pages.
- */
-const PAGE_CONFIGS: Record<string, PageMeta> = {
-  home: { title: "Owais Jamil", description: "Software engineer, writer, and tinkerer", subtitle: "$ whoami" },
-  blog: { title: "Blog", description: "Thoughts on code, design, and everything in between", subtitle: "$ ls ~/blog/" },
-  bookmarks: {
-    title: "Bookmarks",
-    description: "Links and resources I find interesting",
-    subtitle: "$ cat ~/bookmarks.txt",
-  },
-  tags: { title: "Tags", description: "Browse posts by topic", subtitle: "$ ls ~/tags/" },
-  projects: { title: "Projects", description: "Things I've built and worked on", subtitle: "$ ls ~/projects/" },
-};
-
-/**
- * Generate static paths for all configured pages.
+ * Generate static path for home OG image.
+ * All non-blog pages use this default image.
  */
 export async function getStaticPaths() {
-  return Object.keys(PAGE_CONFIGS).map((id) => ({ params: { id }, props: PAGE_CONFIGS[id] }));
+  return [
+    {
+      params: { id: "home" },
+      props: { title: "Owais Jamil", description: "Software engineer, writer, and tinkerer", subtitle: "$ whoami" },
+    },
+  ];
 }
 
 /**

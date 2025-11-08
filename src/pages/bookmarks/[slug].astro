@@ -25,10 +25,7 @@ const prevBookmark = currentIndex < allBookmarks.length - 1 ? allBookmarks[curre
 const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
 ---
 
-<Base
-  title={`${bookmark.data.title} — Bookmarks — Owais Jamil`}
-  description={description}
-  ogImage="/og/page/bookmarks.png">
+<Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/home.png">
   <Terminal title={`bookmarks/${bookmark.slug}`}>
     <Command>cat ~/bookmarks/{bookmark.slug}.md</Command>
     <Output>
