@@ -2,9 +2,6 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import type { CollectionEntry } from "astro:content";
 
 type Props = { project: CollectionEntry<"projects"> };
@@ -30,64 +27,65 @@ const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
 ---
 
 <Base title={`${project.data.title} — Owais Jamil`} description={project.data.description} ogImage="/og/page/home.png">
-  <Terminal title={`projects/${project.slug}`}>
-    <Command>cat ~/projects/{project.slug}/README.md</Command>
-    <Output>
-      <article class="project-header">
-        <h2>{project.data.title}</h2>
-        <div class="project-meta">
-          <span class="status">{project.data.status}</span>
-          <a href={project.data.repo} target="_blank" rel="noopener noreferrer" class="repo-link"> GitHub → </a>
-        </div>
+  <article>
+    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
+      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{project.data.title}</h1>
+      <div class="flex items-center gap-4 mb-4">
+        <span class="text-yellow font-semibold">{project.data.status}</span>
+        <a href={project.data.repo} target="_blank" rel="noopener noreferrer" class="text-cyan hover:underline">
+          GitHub →
+        </a>
+      </div>
+      {
+        project.data.tech.length > 0 && (
+          <div class="flex items-center gap-2 flex-wrap mb-4">
+            <span class="text-muted font-semibold text-sm">Tech Stack:</span>
+            {project.data.tech.map((tech: string) => (
+              <span class="bg-panel text-cyan px-3 py-1 rounded text-xs border border-line font-mono">
+                {tech}
+              </span>
+            ))}
+          </div>
+        )
+      }
+      {
+        project.data.tags.length > 0 && (
+          <div class="flex gap-2 flex-wrap">
+            {project.data.tags.map((tag: string) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div data-prose>
+      <Content />
+    </div>
+
+    <nav aria-label="Project navigation" class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
         {
-          project.data.tech.length > 0 && (
-            <div class="tech-stack">
-              <span class="tech-label">Tech Stack:</span>
-              {project.data.tech.map((tech: string) => (
-                <span class="tech-badge">{tech}</span>
-              ))}
-            </div>
+          prevProject && (
+            <a href={`/projects/${prevProject.slug}/`} data-nav="prev" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+              <span class="block text-cyan">{prevProject.data.title}</span>
+            </a>
           )
         }
+      </div>
+      <div class="md:text-right">
         {
-          project.data.tags.length > 0 && (
-            <div class="tags">
-              {project.data.tags.map((tag: string) => (
-                <span class="tag">{tag}</span>
-              ))}
-            </div>
+          nextProject && (
+            <a href={`/projects/${nextProject.slug}/`} data-nav="next" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+              <span class="block text-cyan">{nextProject.data.title}</span>
+            </a>
           )
         }
-      </article>
-
-      <article class="markdown-prose">
-        <Content />
-      </article>
-
-      <nav class="project-navigation" aria-label="Project navigation">
-        <div class="nav-prev">
-          {
-            prevProject && (
-              <a href={`/projects/${prevProject.slug}/`} data-nav="prev">
-                <span class="nav-label">← Previous</span>
-                <span class="nav-title">{prevProject.data.title}</span>
-              </a>
-            )
-          }
-        </div>
-        <div class="nav-next">
-          {
-            nextProject && (
-              <a href={`/projects/${nextProject.slug}/`} data-nav="next">
-                <span class="nav-label">Next →</span>
-                <span class="nav-title">{nextProject.data.title}</span>
-              </a>
-            )
-          }
-        </div>
-      </nav>
-    </Output>
-  </Terminal>
+      </div>
+    </nav>
+  </article>
 </Base>
 
 <script>
@@ -124,144 +122,3 @@ const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
     }
   });
 </script>
-
-<style>
-  .project-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dotted var(--line);
-  }
-
-  .project-header h2 {
-    color: var(--cyan);
-    margin: 0 0 0.5rem 0;
-    font-size: 1.875rem;
-  }
-
-  .project-meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .status {
-    color: var(--yellow);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .repo-link {
-    color: var(--cyan);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.2s;
-  }
-
-  .repo-link:hover {
-    text-decoration: underline;
-  }
-
-  .tech-stack {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .tech-label {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .tech-badge {
-    background: color-mix(in oklab, var(--panel), black 12%);
-    color: var(--cyan);
-    padding: 0.25rem 0.75rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-    border: 1px solid var(--line);
-    font-family: monospace;
-  }
-
-  .tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .tag {
-    background: color-mix(in oklab, var(--panel), black 8%);
-    color: var(--green);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    border: 1px dotted var(--line);
-  }
-
-  .project-navigation {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px dotted var(--line);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .nav-prev,
-  .nav-next {
-    min-width: 0;
-  }
-
-  .nav-next {
-    text-align: right;
-  }
-
-  .project-navigation a {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    color: var(--cyan);
-    text-decoration: none;
-    padding: 1rem;
-    border: 1px dotted var(--line);
-    border-radius: 4px;
-    background: color-mix(in oklab, var(--panel), black 8%);
-    transition:
-      background 0.2s,
-      border-color 0.2s;
-  }
-
-  .project-navigation a:hover {
-    background: var(--panel);
-    border-color: var(--cyan);
-    text-decoration: none;
-  }
-
-  .nav-label {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
-  .nav-title {
-    font-size: 0.95rem;
-    color: var(--cyan);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 640px) {
-    .project-navigation {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .nav-next {
-      text-align: left;
-    }
-  }
-</style>

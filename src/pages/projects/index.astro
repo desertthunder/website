@@ -1,9 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import ProjectCard from "$components/ProjectCard.astro";
 
 const projects = (await getCollection("projects")).sort((a, b) => {
@@ -15,9 +12,9 @@ const projects = (await getCollection("projects")).sort((a, b) => {
 ---
 
 <Base title="Projects — Owais J" description="Open source projects by Stormlight Labs" ogImage="/og/page/home.png">
-  <Terminal title="projects">
-    <Command>ls ~/projects</Command>
-    <Output>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Projects</h2>
+    <div class="space-y-6">
       {
         projects.map((project) => (
           <ProjectCard
@@ -31,6 +28,6 @@ const projects = (await getCollection("projects")).sort((a, b) => {
           />
         ))
       }
-    </Output>
-  </Terminal>
+    </div>
+  </section>
 </Base>

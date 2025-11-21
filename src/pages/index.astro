@@ -1,77 +1,17 @@
 ---
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
-import Token from "$components/Token.astro";
-
-/**
- * Format like uptime: "up 3 years, 42 days, 5:07"
- */
-function calcUptime(dateStr: string): string {
-  const start = new Date(dateStr);
-  if (isNaN(start.getTime())) throw new Error("Invalid date format (expected YYYY-MM-DD)");
-
-  const now = new Date();
-  const diffMs = now.getTime() - start.getTime();
-
-  const minutes = Math.floor(diffMs / (1000 * 60));
-  const years = Math.floor(minutes / (60 * 24 * 365));
-  const days = Math.floor((minutes % (60 * 24 * 365)) / (60 * 24));
-  const hours = Math.floor((minutes % (60 * 24)) / 60);
-  const mins = minutes % 60;
-
-  const parts: string[] = [];
-
-  if (years > 0) parts.push(`${years} year${years > 1 ? "s" : ""}`);
-  if (days > 0) parts.push(`${days} day${days > 1 ? "s" : ""}`);
-
-  const timeStr = `${hours}:${mins.toString().padStart(2, "0")}`;
-  const prefix = "up";
-  return parts.length ? `${prefix} ${parts.join(", ")}, ${timeStr}` : `${prefix} ${timeStr}`;
-}
-
-const books = [
-  "Slaughterhouse-Five (Vonnegut)",
-  "The Crossing (McCarthy)",
-  "The End of Eternity (Asimov)",
-  "Dark Lord of Derkholm (Wynne Jones)",
-  "Guards! Guards! (Pratchett)",
-];
 ---
 
-<Base title="Owais Jamil — About" description="Who even is Owais?" ogImage="/og/page/home.png">
-  <Terminal>
-    <Command>
-      <Token color="cyan">whoami</Token>
-    </Command>
-    <Output>
-      <span>Owais J. https://github.com/desertthunder</span>
-      <p>
-        I'm a software engineer with a passion for learning. In late 2024 I started a company called Stormlight Labs
-        that focuses on enginnering projects that serve the community and help others. My greatest joy comes from
-        learning and sharing knowledge with others.
-      </p>
-    </Output>
-
-    <Command><Token color="cyan">hostname</Token></Command>
-    <Output> https://desertthunder.dev/ </Output>
-
-    <Command><Token color="cyan">ls</Token> <Token color="green">~/skills/</Token></Command>
-    <Output>Go Rust Flutter Python React TypeScript</Output>
-
-    <Command>
-      <Token color="cyan">ps</Token> aux |
-      <Token color="cyan">grep</Token> "currently_working_on"</Command
-    >
-    <Output>https://stormlightlabs.org</Output>
-
-    <Command><Token color="cyan">ls</Token> <Token color="green">~/books/</Token></Command>
-    <Output>{books.map((b) => <div>{b}</div>)}</Output>
-    <Command><Token color="cyan">ls</Token> <Token color="green">~/hobbies/ </Token></Command>
-    <Output>writing/ reading/ programming/ video_games/ rpgs/</Output>
-
-    <Command><Token color="cyan">uptime</Token></Command>
-    <Output>{calcUptime("1993-08-02")}</Output>
-  </Terminal>
+<Base title="Owais Jamil" description="Software engineer, learner, builder" ogImage="/og/page/home.png">
+  <section class="max-w-3xl text-xl">
+    <p class="mb-4 leading-relaxed">
+      I'm <strong class="text-fg">Owais J.</strong>, a software engineer with a passion for learning.
+    </p>
+    <p class="mb-6 leading-relaxed">
+      In late 2024 I started <a href="https://stormlightlabs.org" class="text-cyan hover:underline font-bold">
+        Stormlight Labs
+      </a>, a company focused on engineering projects that serve the community and help others.
+    </p>
+    <p>My greatest joy comes from learning and sharing knowledge with others.</p>
+  </section>
 </Base>

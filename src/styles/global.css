@@ -1,17 +1,28 @@
 @import "tailwindcss";
+@import "@fontsource-variable/crimson-pro/index.css";
+@import "@fontsource-variable/open-sans/index.css";
+@import "@fontsource-variable/google-sans-code/index.css";
 
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 800;
-  src: url(/fonts/jetbrains-mono_5.2.6_latin-wght-normal.woff2) format("woff2-variations");
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
-    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+/* Light mode (Nord Light) - Default */
+:root,
+:root[data-theme="light"] {
+  --color-bg: #e5e9f0;
+  --color-fg: #2e3440;
+  --color-muted: #60728c;
+  --color-panel: #c2d0e7;
+  --color-line: #aebacf;
+  --color-cursor: #3b4252;
+  --color-red: #99324b;
+  --color-green: #4f894c;
+  --color-yellow: #9a7500;
+  --color-blue: #3b6ea8;
+  --color-magenta: #97365b;
+  --color-cyan: #398eac;
+  --shadow-custom: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-@theme {
+/* Dark mode (Iceberg) - Only applied when explicitly set */
+:root[data-theme="dark"] {
   --color-bg: #161821;
   --color-fg: #c6c8d1;
   --color-muted: #6b7089;
@@ -24,28 +35,65 @@
   --color-blue: #84a0c6;
   --color-magenta: #a093c7;
   --color-cyan: #89b8c2;
-  --default-font-family: "JetBrains Mono";
   --shadow-custom: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+@theme {
+  --color-bg: var(--color-bg);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-panel: var(--color-panel);
+  --color-line: var(--color-line);
+  --color-cursor: var(--color-cursor);
+  --color-red: var(--color-red);
+  --color-green: var(--color-green);
+  --color-yellow: var(--color-yellow);
+  --color-blue: var(--color-blue);
+  --color-magenta: var(--color-magenta);
+  --color-cyan: var(--color-cyan);
+  --font-serif: "Crimson Pro Variable", serif;
+  --font-sans: "Open Sans Variable", sans-serif;
+  --font-mono: "Google Sans Code Variable", monospace;
+  --default-font-family: "Open Sans Variable", sans-serif;
+  --shadow-custom: var(--shadow-custom);
 }
 
 #application {
   @apply flex flex-col min-h-screen max-w-3xl mx-auto;
 }
 
+body {
+  font-family: var(--font-sans);
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}
+
 a {
   @apply text-cyan no-underline hover:underline hover:underline-offset-auto;
 }
 
+nav {
+  font-family: var(--font-serif);
+}
+
 nav a {
-  @apply mr-4 text-green;
+  @apply mr-6 text-fg text-2xl font-medium;
+  @apply hover:text-cyan transition-colors duration-200;
 }
 
 nav a[aria-current="page"] {
-  @apply text-yellow;
+  @apply text-cyan;
 }
 
 [data-card] {
-  @apply my-6 bg-panel border-dotted border-muted border-2 rounded-sm drop-shadow-sm shadow-lg;
+  @apply my-6 bg-panel border-dotted border-line border-2 rounded drop-shadow-sm shadow-lg;
   @apply hover:border-cyan hover:shadow-cyan/15 duration-300;
 }
 
@@ -89,9 +137,9 @@ nav a[aria-current="page"] {
 
 .category,
 .tag {
-  background: color-mix(in oklab, var(--color-panel), black 8%);
-  @apply text-green px-2 py-1 rounded-sm text-sm border border-dotted border-line inline-flex items-center;
-  @apply hover:bg-panel hover:border-green duration-300;
+  background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);
+  @apply text-fg px-3 py-1.5 rounded text-sm border border-line inline-flex items-center;
+  @apply hover:bg-cyan hover:text-bg hover:border-cyan duration-300;
 }
 
 .categories[data-expanded="true"] .category.is-hidden {
@@ -103,19 +151,18 @@ nav a[aria-current="page"] {
 }
 
 .pagination {
-  @apply pt-6 border-t border-t-line border-dotted;
+  @apply pt-4 border-t border-t-line border-dotted;
 }
 
 .pagination .links {
-  @apply flex justify-between items-center gap-4;
+  @apply flex justify-between items-center;
   @apply max-2xl:flex-col max-2xl:items-stretch;
 }
 
 .pagination .link {
-  background: color-mix(in oklab, var(--panel), black 8%);
-  @apply text-cyan px-4 py-2 border border-line border-dotted rounded-sm duration-300;
+  @apply text-cyan px-4 py-2 border border-line border-dotted rounded-sm duration-300 bg-panel;
   @apply hover:bg-panel hover:border-cyan;
-  @apply max-2xl:text-center;
+  @apply max-2xl:text-center m-0;
 }
 
 .pagination .info {
@@ -157,7 +204,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] p {
-  @apply my-5 mt-0;
+  @apply my-4 mt-0;
 }
 
 [data-prose] a {

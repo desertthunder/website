@@ -2,11 +2,7 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import { calculateReadingTime } from "$utils/reading-time";
-import Token from "$components/Token.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("blog");
@@ -30,54 +26,51 @@ const hasTags = post.data.tags.length > 0;
 ---
 
 <Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
-  <Terminal title={`blog/${post.slug}`}>
-    <Command><Token color="blue">cat</Token> ~/blog/{post.slug}.md</Command>
-    <Output>
-      <header>
-        <h2>{post.data.title}</h2>
-        <section>
-          <time datetime={post.data.date.toISOString()}>{dateStr}</time>
-          <span class="reading-time">{readingTime}</span>
-        </section>
+  <article>
+    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
+      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{post.data.title}</h1>
+      <div class="flex items-center gap-4 text-muted mb-4">
+        <time datetime={post.data.date.toISOString()}>{dateStr}</time>
+        <span>{readingTime}</span>
+      </div>
+      {
+        hasTags && (
+          <div class="flex gap-2 flex-wrap">
+            {post.data.tags.map((tag) => (
+              <a href={`/tags/${tag}`} class="tag">{tag}</a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div data-prose>
+      <Content />
+    </div>
+
+    <nav aria-label="Post navigation" class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
         {
-          hasTags && (
-            <section>
-              {post.data.tags.map((tag) => (
-                <a href={`/tags/${tag}`}>{tag}</a>
-              ))}
-            </section>
+          prevPost && (
+            <a href={`/blog/${prevPost.slug}/`} data-nav="prev" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+              <span class="block text-cyan">{prevPost.data.title}</span>
+            </a>
           )
         }
-      </header>
-
-      <article data-prose>
-        <Content />
-      </article>
-
-      <nav aria-label="Post navigation">
-        <div>
-          {
-            prevPost && (
-              <a href={`/blog/${prevPost.slug}/`} data-nav="prev">
-                <span>← Previous</span>
-                <span>{prevPost.data.title}</span>
-              </a>
-            )
-          }
-        </div>
-        <div>
-          {
-            nextPost && (
-              <a href={`/blog/${nextPost.slug}/`} data-nav="next">
-                <span>Next →</span>
-                <span>{nextPost.data.title}</span>
-              </a>
-            )
-          }
-        </div>
-      </nav>
-    </Output>
-  </Terminal>
+      </div>
+      <div class="md:text-right">
+        {
+          nextPost && (
+            <a href={`/blog/${nextPost.slug}/`} data-nav="next" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+              <span class="block text-cyan">{nextPost.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </article>
 </Base>
 
 <script>
@@ -120,56 +113,3 @@ const hasTags = post.data.tags.length > 0;
     }
   });
 </script>
-
-<style>
-  @reference "../../styles/global.css";
-
-  header {
-    @apply mb-8 pb-4 border-b border-line border-dotted;
-  }
-
-  header h2 {
-    @apply text-cyan mr-2 text-2xl font-medium;
-  }
-
-  header > *:nth-child(2) {
-    @apply flex items-center gap-4 text-muted;
-  }
-
-  header > *:nth-child(2) span::before {
-    content: "• ";
-  }
-
-  header > *:nth-child(3) {
-    @apply mt-4 flex gap-2 flex-wrap;
-  }
-
-  header > *:nth-child(3) a {
-    background: color-mix(in oklab, var(--panel), black 8%);
-    @apply text-green px-3 py-2 rounded-sm text-sm border border-line border-dotted no-underline duration-300;
-    @apply hover:bg-panel hover:border-green hover:no-underline;
-  }
-
-  nav {
-    @apply mt-12 pt-8 border-t border-line border-dotted grid grid-cols-2 gap-8;
-    @apply nth-[2]:text-right;
-  }
-
-  nav div {
-    @apply min-w-0;
-  }
-
-  nav a {
-    background: color-mix(in oklab, var(--panel), black 8%);
-    @apply grid grid-cols-1 md:flex md:flex-col gap-1 text-cyan no-underline p-4 border border-dotted border-line rounded-sm duration-300;
-    @apply hover:bg-panel hover:border-cyan hover:no-underline;
-  }
-
-  nav div a span:first-child {
-    @apply text-sm text-muted font-semibold;
-  }
-
-  nav div a span:last-child {
-    @apply max-md:text-left text-cyan overflow-hidden text-ellipsis whitespace-nowrap;
-  }
-</style>

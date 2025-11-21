@@ -1,10 +1,10 @@
 ---
 type Props = { title: string; subtitle?: string };
 
-const { title, subtitle = "SUBTITLE" } = Astro.props;
+const { title, subtitle } = Astro.props;
 ---
 
-<header class="py-4">
-  <h1 class="text-blue text-2xl">{title}</h1>
-  {subtitle && <p class="text-muted">{subtitle}</p>}
+<header class="py-4 md:py-8 border-b-2 border-dotted border-line mb-4">
+  <h1 class="text-fg text-7xl md:text-8xl mb-2 font-normal">{title}</h1>
+  {subtitle && <h2 class="text-muted text-2xl">{subtitle}</h2>}
 </header>

@@ -2,10 +2,7 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
-import Terminal from "../../components/Terminal.astro";
-import Command from "../../components/Command.astro";
-import Output from "../../components/Output.astro";
-import BlogPostCard from "../../components/BlogPostCard.astro";
+import CollapsibleBlogPost from "../../components/CollapsibleBlogPost.astro";
 import BookmarkCard from "../../components/BookmarkCard.astro";
 
 export const getStaticPaths = (async () => {
@@ -39,15 +36,16 @@ const { posts, bookmarks } = Astro.props;
 ---
 
 <Base title={`Tag: ${tag} — Owais Jamil`}>
-  <Terminal title={`tags/${tag}`}>
-    <Command>ls ~/tags/{tag}/</Command>
-    <Output>
-      {
-        posts.length > 0 && (
-          <div>
-            <h3 style="color: var(--cyan); margin: 1rem 0 0.5rem 0;">Posts</h3>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Tagged: {tag}</h2>
+
+    {
+      posts.length > 0 && (
+        <div class="mb-12">
+          <h3 class="text-2xl md:text-3xl text-blue mb-6">Posts</h3>
+          <div class="space-y-2">
             {posts.map((post) => (
-              <BlogPostCard
+              <CollapsibleBlogPost
                 slug={post.slug}
                 title={post.data.title}
                 description={post.data.description}
@@ -56,12 +54,15 @@ const { posts, bookmarks } = Astro.props;
               />
             ))}
           </div>
-        )
-      }
-      {
-        bookmarks.length > 0 && (
-          <div>
-            <h3 style="color: var(--yellow); margin: 1.5rem 0 0.5rem 0;">Bookmarks</h3>
+        </div>
+      )
+    }
+
+    {
+      bookmarks.length > 0 && (
+        <div>
+          <h3 class="text-2xl md:text-3xl text-yellow mb-6">Bookmarks</h3>
+          <div class="space-y-6">
             {bookmarks.map((bookmark) => (
               <BookmarkCard
                 slug={bookmark.slug}
@@ -73,8 +74,8 @@ const { posts, bookmarks } = Astro.props;
               />
             ))}
           </div>
-        )
-      }
-    </Output>
-  </Terminal>
+        </div>
+      )
+    }
+  </section>
 </Base>

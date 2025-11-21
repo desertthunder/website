@@ -2,9 +2,6 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import BookmarkCard from "$components/BookmarkCard.astro";
 
 export const getStaticPaths = (async () => {
@@ -22,15 +19,14 @@ const bookmarks = allBookmarks
 ---
 
 <Base title={`Bookmarks ${year} — Owais Jamil`}>
-  <Terminal title={`bookmarks/${year}`}>
-    <Command>ls bookmarks/{year}/</Command>
-    <Output>
-      <div class="year-header">
-        <h2>Bookmarks from {year}</h2>
-        <a href="/bookmarks" class="back-link">← All Bookmarks</a>
-      </div>
+  <section>
+    <div class="mb-8 pb-6 border-b-2 border-dotted border-line flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <h2 class="text-3xl md:text-4xl text-cyan m-0">Bookmarks from {year}</h2>
+      <a href="/bookmarks" class="text-cyan hover:underline">← All Bookmarks</a>
+    </div>
 
-      <div class="bookmarks-grid">
+    {bookmarks.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {
           bookmarks.map((bookmark) => (
             <BookmarkCard
@@ -44,62 +40,8 @@ const bookmarks = allBookmarks
           ))
         }
       </div>
-
-      {bookmarks.length === 0 && <p class="no-bookmarks">No bookmarks found for {year}.</p>}
-    </Output>
-  </Terminal>
+    ) : (
+      <p class="text-muted text-center py-8">No bookmarks found for {year}.</p>
+    )}
+  </section>
 </Base>
-
-<style>
-  .year-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dotted var(--line);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .year-header h2 {
-    color: var(--cyan);
-    margin: 0;
-    font-size: 1.5rem;
-  }
-
-  .back-link {
-    color: var(--green);
-    text-decoration: none;
-    font-size: 0.9rem;
-  }
-
-  .back-link:hover {
-    text-decoration: underline;
-  }
-
-  .bookmarks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    align-items: stretch;
-    justify-items: stretch;
-    gap: 1.5rem;
-    width: 100%;
-  }
-
-  .no-bookmarks {
-    color: var(--muted);
-    text-align: center;
-    padding: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    .year-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .bookmarks-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

@@ -1,10 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
-import Token from "$components/Token.astro";
 
 const posts = await getCollection("blog");
 const bookmarks = await getCollection("bookmarks");
@@ -26,33 +22,16 @@ const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
 <Base title="Tags — Owais Jamil" ogImage="/og/page/home.png">
-  <Terminal title="tags">
-    <Command>
-      <Token color="cyan">ls</Token>
-      <Token color="green">~/tags/</Token>
-    </Command>
-    <Output>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Tags</h2>
+    <div class="flex flex-wrap gap-3">
       {
         tags.map(([tag, count]) => (
-          <a href={`/tags/${tag}`} class="tag-link">
-            {tag}/ ({count})
+          <a href={`/tags/${tag}`} class="tag text-lg px-4 py-2">
+            {tag} ({count})
           </a>
         ))
       }
-    </Output>
-  </Terminal>
+    </div>
+  </section>
 </Base>
-
-<style>
-  .tag-link {
-    display: inline-block;
-    margin: 0.25rem 1rem 0.25rem 0;
-    color: var(--green);
-    text-decoration: none;
-  }
-
-  .tag-link:hover {
-    color: var(--cyan);
-    text-decoration: underline;
-  }
-</style>

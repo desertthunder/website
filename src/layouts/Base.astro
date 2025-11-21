@@ -13,11 +13,13 @@ const { title, description, ogImage } = Astro.props;
 const transition = createSlideTransition({ stiffness: 200, damping: 28, min: 220, max: 360 });
 const transitionFallback = transition.fallback;
 
-const SOCIALS = [
-  { label: "Github", name: "gh" as const, url: "https://github.com/desertthunder", alt: "GitHub" },
-  { label: "LinkedIn", name: "linkedin" as const, url: "https://linkedin.com/in/owais-jamil", alt: "LinkedIn" },
-  { label: "BlueSky", name: "bluesky" as const, url: "https://bsky.app/profile/desertthunder.dev", alt: "Bluesky" },
-];
+const SOCIALS = {
+  linkedin: "https://linkedin.com/in/owais-jamil",
+  bluesky: "https://bsky.app/profile/desertthunder.dev",
+  gh: "https://github.com/desertthunder",
+  tangled: "https://tangled.io/desertthunder.dev",
+  codeberg: "https://codeberg.org/desertthunder",
+};
 
 const siteUrl = Astro.site || "https://desertthunder.dev";
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
@@ -28,6 +30,15 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 <html lang="en" class="h-full">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      // Inline blocking script to prevent theme flash
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -51,14 +62,14 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 
     <title>{title}</title>
   </head>
-  <body class="min-h-full bg-bg text-fg text-lg p-4 md:p-0 m-0">
+  <body class="min-h-full bg-bg text-fg text-2xl px-4 md:px-8 m-0">
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
-      <Header title="Owais Jamil" subtitle="HIRE ME" />
       <Nav currentPath={Astro.url.pathname} />
-      <div class="grow">
+      <Header title="Owais Jamil" />
+      <main class="grow py-4">
         <slot />
-      </div>
+      </main>
       <Footer name="Owais Jamil" socialLinks={SOCIALS} />
     </div>
   </body>

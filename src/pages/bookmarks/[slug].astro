@@ -2,9 +2,6 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import { truncateWords } from "$utils/text";
 
 export const getStaticPaths = (async () => {
@@ -26,123 +23,54 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
 ---
 
 <Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/home.png">
-  <Terminal title={`bookmarks/${bookmark.slug}`}>
-    <Command>cat ~/bookmarks/{bookmark.slug}.md</Command>
-    <Output>
-      <article class="bookmark-header">
-        <h2>{bookmark.data.title}</h2>
-        <div class="bookmark-meta">
-          <time datetime={bookmark.data.date.toISOString()}>{dateStr}</time>
-          <a href={bookmark.data.url} target="_blank" rel="noopener noreferrer" class="bookmark-visit">
-            Visit Site ↗
-          </a>
-        </div>
-        {
-          bookmark.data.categories.length > 0 && (
-            <div class="categories">
-              {bookmark.data.categories.map((category) => (
-                <a href={`/tags/${category}`} class="category">
-                  {category}
-                </a>
-              ))}
-            </div>
-          )
-        }
-      </article>
-
+  <article>
+    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
+      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{bookmark.data.title}</h1>
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline text-muted mb-5 gap-2">
+        <time datetime={bookmark.data.date.toISOString()}>{dateStr}</time>
+        <a href={bookmark.data.url} target="_blank" rel="noopener noreferrer" class="text-cyan hover:underline">
+          Visit Site ↗
+        </a>
+      </div>
       {
-        bookmark.body && (
-          <article class="bookmark-content markdown-prose">
-            <Content />
-          </article>
+        bookmark.data.categories.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {bookmark.data.categories.map((category) => (
+              <a href={`/tags/${category}`} class="tag">
+                {category}
+              </a>
+            ))}
+          </div>
         )
       }
+    </header>
 
-      <nav class="bookmark-navigation" aria-label="Bookmark navigation">
-        <div class="nav-links">
-          {
-            prevBookmark && (
-              <a href={`/bookmarks/${prevBookmark.slug}/`} class="nav-link prev">
-                ← {prevBookmark.data.title}
-              </a>
-            )
-          }
-          {
-            nextBookmark && (
-              <a href={`/bookmarks/${nextBookmark.slug}/`} class="nav-link next">
-                {nextBookmark.data.title} →
-              </a>
-            )
-          }
+    {
+      bookmark.body && (
+        <div data-prose class="mb-10">
+          <Content />
         </div>
-        <a href="/bookmarks" class="back-link">← All Bookmarks</a>
-      </nav>
-    </Output>
-  </Terminal>
+      )
+    }
+
+    <nav aria-label="Bookmark navigation" class="pt-8 border-t-2 border-dotted border-line">
+      <div class="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
+        {
+          prevBookmark && (
+            <a href={`/bookmarks/${prevBookmark.slug}/`} class="text-muted hover:text-cyan hover:underline max-w-full sm:max-w-3xs">
+              ← {prevBookmark.data.title}
+            </a>
+          )
+        }
+        {
+          nextBookmark && (
+            <a href={`/bookmarks/${nextBookmark.slug}/`} class="text-muted hover:text-cyan hover:underline text-right max-w-full sm:max-w-3xs">
+              {nextBookmark.data.title} →
+            </a>
+          )
+        }
+      </div>
+      <a href="/bookmarks" class="text-cyan hover:underline">← All Bookmarks</a>
+    </nav>
+  </article>
 </Base>
-
-<style>
-  @reference "../../styles/global.css";
-
-  .bookmark-header {
-    @apply mb-8 pb-6 border-b border-dotted border-line;
-  }
-
-  .bookmark-header h2 {
-    @apply mb-3 text-cyan text-2xl;
-  }
-
-  .bookmark-meta {
-    @apply flex flex-col items-start flex-wrap text-muted text-base mb-5;
-    @apply sm:flex-row sm:justify-between sm:items-baseline;
-  }
-
-  .bookmark-visit {
-    @apply text-green no-underline;
-    @apply hover:underline focus-visible:underline;
-  }
-
-  .categories {
-    @apply flex flex-wrap gap-2 px-0;
-  }
-
-  .category {
-    background: color-mix(in oklab, var(--color-panel), black 8%);
-    @apply text-yellow py-1 px-3 rounded-sm no-underline duration-300;
-    @apply hover:bg-panel focus-visible:bg-panel hover:border-yellow focus-visible:border-yellow;
-  }
-
-  .bookmark-content {
-    @apply mb-10;
-  }
-
-  .bookmark-navigation {
-    @apply flex flex-col gap-4 pt-8 border-t border-dotted border-line;
-  }
-
-  .back-link {
-    @apply text-cyan no-underline;
-    @apply hover:underline focus-visible:underline;
-  }
-
-  .nav-links {
-    @apply flex flex-col items-start gap-4;
-    @apply sm:flex-row sm:flex-wrap sm:justify-between;
-  }
-
-  .nav-link {
-    @apply text-muted no-underline max-w-3xs inline-flex items-center;
-    @apply hover:text-cyan hover:underline hover:underline-offset-2;
-    @apply focus-visible:text-cyan focus-visible:underline focus-visible:underline-offset-2;
-    @apply max-w-full;
-    @apply sm:max-w-3xs;
-  }
-
-  .nav-link.prev {
-    @apply justify-start;
-  }
-
-  .nav-link.next {
-    @apply justify-end text-right;
-  }
-</style>

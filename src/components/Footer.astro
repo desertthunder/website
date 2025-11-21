@@ -1,24 +1,30 @@
 ---
-import Icon from "./Icon.astro";
-
 type SocialLink = { label: string; name: "gh" | "bluesky" | "linkedin"; url: string; alt?: string };
-type Props = { name: string; socialLinks: Array<SocialLink> };
+type Props = {
+  name: string;
+  socialLinks: { linkedin: string; bluesky: string; gh: string; tangled: string; codeberg: string };
+};
 
 const { name, socialLinks } = Astro.props;
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="grid grid-cols-2 mt-4 py-4 text-muted border-t border-t-line">
-  © {currentYear}
-  {name}
-  <section class="flex flex-col gap-2 text-sm">
-    {
-      socialLinks.map((link) => (
-        <a href={link.url} target="_blank" rel="noopener noreferrer" class="inline-flex gap-2 items-center group">
-          <Icon name={link.name} alt={link.alt || link.name} />
-          <span class="group-hover:text-sky-300">{link.label}</span>
-        </a>
-      ))
-    }
+<footer class="p-2 border-t font-serif border-dotted border-line text-base grid grid-cols-2">
+  <section>
+    <a href="https://curius.app/owais-jamil" target="_blank" rel="noopener noreferrer">Curius</a>
+  </section>
+  <section class="flex flex-col items-end justify-start">
+    <div>Desert Thunder</div>
+    <div>Made {currentYear} by {name}</div>
+    <div>
+      <span>Find me on:</span>
+      <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>, and
+      <a href={socialLinks.bluesky} target="_blank" rel="noopener noreferrer">Bluesky</a>
+    </div>
+    <div>
+      <span>View my work:</span>
+      <a href={socialLinks.gh} target="_blank" rel="noopener noreferrer">GitHub</a> and
+      <a href={socialLinks.tangled} target="_blank" rel="noopener noreferrer">Tangled</a>
+    </div>
   </section>
 </footer>

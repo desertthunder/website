@@ -3,11 +3,7 @@ import { getCollection } from "astro:content";
 import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
 import BookmarkCard from "$components/BookmarkCard.astro";
-import Token from "$components/Token.astro";
 
 type Props = { page: Page<CollectionEntry<"bookmarks">> };
 
@@ -37,79 +33,77 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 ---
 
 <Base title="Bookmarks — Owais Jamil" ogImage="/og/page/home.png">
-  <Terminal title="bookmarks">
-    <Command><Token color="cyan">ls</Token> bookmarks/ </Command>
-    <Output>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        {
-          page.data.map((bookmark) => (
-            <BookmarkCard
-              slug={bookmark.slug}
-              title={bookmark.data.title}
-              url={bookmark.data.url}
-              date={bookmark.data.date}
-              categories={bookmark.data.categories}
-              content={bookmark.body}
-            />
-          ))
-        }
-      </div>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Bookmarks</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      {
+        page.data.map((bookmark) => (
+          <BookmarkCard
+            slug={bookmark.slug}
+            title={bookmark.data.title}
+            url={bookmark.data.url}
+            date={bookmark.data.date}
+            categories={bookmark.data.categories}
+            content={bookmark.body}
+          />
+        ))
+      }
+    </div>
 
-      <div class="mb-6">
-        {
-          categories.length > 0 && (
-            <div class="category-filter">
-              <span class="filter-label">Categories:</span>
-              <div class="category-tags">
+    {
+      (categories.length > 0 || years.length > 0) && (
+        <div class="mb-8 pb-6">
+          {categories.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-semibold block mb-3">Categories</span>
+              <div class="flex flex-wrap gap-2">
                 {categories.map(([category, count]) => (
-                  <a href={`/tags/${category}`} class="category-tag">
+                  <a href={`/tags/${category}`} class="tag">
                     {category} ({count})
                   </a>
                 ))}
               </div>
             </div>
-          )
-        }
+          )}
 
-        {
-          years.length > 0 && (
-            <div class="year-filter">
-              <span class="filter-label">Years:</span>
-              <div class="year-tags">
+          {years.length > 0 && (
+            <div>
+              <span class="text-muted font-semibold block mb-3">Years</span>
+              <div class="flex flex-wrap gap-2">
                 {years.map(([year, count]) => (
-                  <a href={`/bookmarks/${year}`} class="year-tag">
+                  <a href={`/bookmarks/${year}`} class="tag">
                     {year} ({count})
                   </a>
                 ))}
               </div>
             </div>
+          )}
+        </div>
+      )
+    }
+
+    <nav class="pagination" aria-label="Bookmarks pagination">
+      <div class="links">
+        {
+          page.url.prev && (
+            <a href={page.url.prev} class="link" data-nav="prev">
+              ← Previous
+            </a>
+          )
+        }
+        <span class="info">
+          Page {page.currentPage} of {page.lastPage}
+        </span>
+        {
+          page.url.next && (
+            <a href={page.url.next} class="link" data-nav="next">
+              Next →
+            </a>
           )
         }
       </div>
-
-      <nav class="pagination" aria-label="Bookmarks pagination">
-        <div class="links">
-          {
-            page.url.prev && (
-              <a href={page.url.prev} class="link" data-nav="prev">
-                ← Previous
-              </a>
-            )
-          }
-          <span class="info">
-            Page {page.currentPage} of {page.lastPage}
-          </span>
-          {
-            page.url.next && (
-              <a href={page.url.next} class="link" data-nav="next">
-                Next →
-              </a>
-            )
-          }
-        </div>
-      </nav>
-    </Output>
-  </Terminal>
+    </nav>
+  </section>
 </Base>
 
 <script>
@@ -146,28 +140,3 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
     }
   });
 </script>
-
-<style>
-  @reference "../../../styles/global.css";
-
-  .category-filter,
-  .year-filter {
-    @apply mb-2 last:mb-0;
-  }
-
-  .filter-label {
-    @apply text-muted font-semibold block mb-3;
-  }
-
-  .category-tags,
-  .year-tags {
-    @apply flex flex-wrap gap-2;
-  }
-
-  .category-tag,
-  .year-tag {
-    background: color-mix(in oklab, var(--color-panel), black 8%);
-    @apply text-yellow px-3 py-1 rounded-sm text-sm border border-dotted border-line duration-300;
-    @apply hover:bg-panel hover:border-yellow hover:no-underline;
-  }
-</style>

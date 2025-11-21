@@ -1,13 +1,102 @@
 ---
+import Icon from "./Icon.astro";
+import sunIcon from "./icons/sun.svg?raw";
+import moonIcon from "./icons/moon.svg?raw";
+
 type Props = { currentPath: string };
 
 const { currentPath } = Astro.props;
 ---
 
-<nav class="pb-2 border-b border-b-line">
-  <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>λ about</a>
-  <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>λ projects</a>
-  <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>λ blog</a>
-  <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>λ tags</a>
-  <a href="/bookmarks" aria-current={currentPath === "/bookmarks" ? "page" : undefined}>λ bookmarks</a>
+<nav class="py-4 border-b-2 border-dotted border-line text-3xl flex items-center justify-between">
+  <div class="flex items-center gap-4">
+    <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>Home</a>
+    <a href="/about" aria-current={currentPath === "/about" ? "page" : undefined}>About</a>
+    <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
+    <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
+    <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
+    <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
+  </div>
+  <button
+    id="theme-toggle"
+    class="inline-flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+    aria-label="Toggle theme">
+    <span id="theme-icon" aria-hidden="true">
+      <Icon name="sun" alt="Light mode" />
+    </span>
+    <span id="theme-label" class="sr-only">Light</span>
+  </button>
 </nav>
+
+<script is:inline define:vars={{ sunIcon, moonIcon }}>
+  /**
+   * Singleton to manage theme toggling and persistence
+   */
+  class ThemeContext {
+    constructor() {
+      this.toggle = document.getElementById("theme-toggle");
+      this.icon = document.getElementById("theme-icon");
+      this.label = document.getElementById("theme-label");
+    }
+
+    static getInstance() {
+      if (!ThemeContext.instance) {
+        ThemeContext.instance = new ThemeContext();
+      }
+
+      return ThemeContext.instance;
+    }
+
+    /**
+     * Sync UI controls with current theme without changing the theme
+     */
+    syncUI() {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      if (currentTheme === "dark") {
+        if (this.icon) this.icon.innerHTML = moonIcon;
+        if (this.label) this.label.textContent = "Dark";
+      } else {
+        if (this.icon) this.icon.innerHTML = sunIcon;
+        if (this.label) this.label.textContent = "Light";
+      }
+    }
+
+    /**
+     * Apply theme to document and persist to localStorage
+     */
+    applyTheme(newTheme) {
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      this.syncUI();
+    }
+
+    clickListener() {
+      this.toggle?.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        this.applyTheme(newTheme);
+      });
+    }
+
+    mediaListener() {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        if (!localStorage.getItem("theme")) {
+          this.applyTheme(e.matches ? "dark" : "light");
+        }
+      });
+    }
+
+    static initTheme() {
+      const context = ThemeContext.getInstance();
+      context.syncUI();
+      context.clickListener();
+      context.mediaListener();
+    }
+  }
+
+  ThemeContext.initTheme();
+
+  document.addEventListener("astro:after-swap", () => {
+    ThemeContext.initTheme();
+  });
+</script>

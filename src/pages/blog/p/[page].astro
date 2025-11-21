@@ -3,11 +3,7 @@ import { getCollection } from "astro:content";
 import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import Base from "$layouts/Base.astro";
-import Terminal from "$components/Terminal.astro";
-import Command from "$components/Command.astro";
-import Output from "$components/Output.astro";
-import BlogPostCard from "$components/BlogPostCard.astro";
-import Token from "$components/Token.astro";
+import CollapsibleBlogPost from "$components/CollapsibleBlogPost.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = (await getCollection("blog"))
@@ -22,14 +18,12 @@ const { page } = Astro.props;
 ---
 
 <Base title="Blog — Owais Jamil" ogImage="/og/page/home.png">
-  <Terminal title="blog">
-    <Command>
-      <Token color="green">ls</Token> ~/blog/
-    </Command>
-    <Output>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Blog Posts</h2>
+    <div class="space-y-2">
       {
         page.data.map((post) => (
-          <BlogPostCard
+          <CollapsibleBlogPost
             slug={post.slug}
             title={post.data.title}
             description={post.data.description}
@@ -38,28 +32,28 @@ const { page } = Astro.props;
           />
         ))
       }
+    </div>
 
-      <nav class="pagination" aria-label="Blog pagination">
-        <div class="links">
-          {
-            page.url.prev && (
-              <a href={page.url.prev} class="link">
-                ← Previous
-              </a>
-            )
-          }
-          <span class="info">
-            Page {page.currentPage} of {page.lastPage}
-          </span>
-          {
-            page.url.next && (
-              <a href={page.url.next} class="link">
-                Next →
-              </a>
-            )
-          }
-        </div>
-      </nav>
-    </Output>
-  </Terminal>
+    <nav class="pagination" aria-label="Blog pagination">
+      <div class="links">
+        {
+          page.url.prev && (
+            <a href={page.url.prev} class="link">
+              ← Previous
+            </a>
+          )
+        }
+        <span class="info">
+          Page {page.currentPage} of {page.lastPage}
+        </span>
+        {
+          page.url.next && (
+            <a href={page.url.next} class="link">
+              Next →
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </section>
 </Base>

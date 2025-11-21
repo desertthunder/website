@@ -1,0 +1,71 @@
+---
+import Icon from "./Icon.astro";
+
+type Props = { slug: string; title: string; description: string; date: Date; tags: string[] };
+
+const { slug, title, description, date, tags } = Astro.props;
+const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+---
+
+<article class="collapsible-post border-b border-dotted border-line pb-2 mb-2">
+  <button
+    class="post-header w-full flex items-center justify-between gap-4 text-left hover:text-cyan transition-colors duration-200">
+    <div class="grid grid-cols-4 gap-4 flex-1">
+      <div class="col-span-1 text-end">
+        <time datetime={date.toISOString()} class="text-muted shrink-0">{formattedDate}</time>
+      </div>
+      <div class="col-span-3">
+        <a href={`/blog/${slug}`} class="post-title font-medium hover:text-cyan">{title}</a>
+      </div>
+    </div>
+    <span class="chevron transition-transform duration-200">
+      <Icon name="chevron-up" alt="Expand" />
+    </span>
+  </button>
+
+  <div class="post-details hidden mt-4 ml-8 space-y-2">
+    <p class="text-muted">{description}</p>
+    {
+      tags.length > 0 && (
+        <div class="flex gap-2 flex-wrap">
+          {tags.map((tag) => (
+            <a
+              class="tag px-2 py-1 text-sm border border-dotted border-line rounded hover:border-cyan hover:text-cyan transition-colors duration-200"
+              href={`/tags/${tag}`}>
+              {tag}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const posts = document.querySelectorAll(".collapsible-post");
+
+    posts.forEach((post) => {
+      const button = post.querySelector(".post-header");
+      const details = post.querySelector(".post-details");
+      const chevron = post.querySelector(".chevron");
+
+      button?.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest(".post-title")) {
+          return;
+        }
+
+        e.preventDefault();
+        details?.classList.toggle("hidden");
+        chevron?.classList.toggle("rotate-180");
+      });
+    });
+  });
+</script>
+
+<style>
+  .collapsible-post:last-child {
+    border-bottom: none;
+  }
+</style>
