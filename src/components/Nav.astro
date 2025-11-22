@@ -1,7 +1,5 @@
 ---
 import Icon from "./Icon.astro";
-import sunIcon from "./icons/sun.svg?raw";
-import moonIcon from "./icons/moon.svg?raw";
 
 type Props = { currentPath: string };
 
@@ -14,8 +12,8 @@ const { currentPath } = Astro.props;
     <a href="/about" aria-current={currentPath === "/about" ? "page" : undefined}>About</a>
     <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
     <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
-    <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
     <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
+    <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
   </div>
   <button
     id="theme-toggle"
@@ -28,18 +26,26 @@ const { currentPath } = Astro.props;
   </button>
 </nav>
 
-<script is:inline define:vars={{ sunIcon, moonIcon }}>
+<script>
+  import sunIcon from "./icons/sun.svg?raw";
+  import moonIcon from "./icons/moon.svg?raw";
+
   /**
    * Singleton to manage theme toggling and persistence
    */
   class ThemeContext {
+    toggle: HTMLElement | null;
+    icon: HTMLElement | null;
+    label: HTMLElement | null;
+    static instance?: ThemeContext;
+
     constructor() {
       this.toggle = document.getElementById("theme-toggle");
       this.icon = document.getElementById("theme-icon");
       this.label = document.getElementById("theme-label");
     }
 
-    static getInstance() {
+    static getInstance(): ThemeContext {
       if (!ThemeContext.instance) {
         ThemeContext.instance = new ThemeContext();
       }
@@ -50,13 +56,13 @@ const { currentPath } = Astro.props;
     /**
      * Sync UI controls with current theme without changing the theme
      */
-    syncUI() {
+    syncUI(): void {
       const currentTheme = document.documentElement.getAttribute("data-theme");
       if (currentTheme === "dark") {
-        if (this.icon) this.icon.innerHTML = moonIcon;
+        if (this.icon) this.icon.innerHTML = sunIcon;
         if (this.label) this.label.textContent = "Dark";
       } else {
-        if (this.icon) this.icon.innerHTML = sunIcon;
+        if (this.icon) this.icon.innerHTML = moonIcon;
         if (this.label) this.label.textContent = "Light";
       }
     }
@@ -64,13 +70,13 @@ const { currentPath } = Astro.props;
     /**
      * Apply theme to document and persist to localStorage
      */
-    applyTheme(newTheme) {
+    applyTheme(newTheme: string): void {
       document.documentElement.setAttribute("data-theme", newTheme);
       localStorage.setItem("theme", newTheme);
       this.syncUI();
     }
 
-    clickListener() {
+    clickListener(): void {
       this.toggle?.addEventListener("click", () => {
         const currentTheme = document.documentElement.getAttribute("data-theme");
         const newTheme = currentTheme === "dark" ? "light" : "dark";
@@ -78,7 +84,7 @@ const { currentPath } = Astro.props;
       });
     }
 
-    mediaListener() {
+    mediaListener(): void {
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
         if (!localStorage.getItem("theme")) {
           this.applyTheme(e.matches ? "dark" : "light");
@@ -86,17 +92,22 @@ const { currentPath } = Astro.props;
       });
     }
 
-    static initTheme() {
+    static initTheme(): void {
       const context = ThemeContext.getInstance();
+
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = stored || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+
       context.syncUI();
       context.clickListener();
       context.mediaListener();
     }
   }
 
-  ThemeContext.initTheme();
-
-  document.addEventListener("astro:after-swap", () => {
+  document.addEventListener("astro:page-load", () => {
+    ThemeContext.instance = undefined;
     ThemeContext.initTheme();
   });
 </script>

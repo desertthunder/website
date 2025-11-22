@@ -17,7 +17,7 @@ const SOCIALS = {
   linkedin: "https://linkedin.com/in/owais-jamil",
   bluesky: "https://bsky.app/profile/desertthunder.dev",
   gh: "https://github.com/desertthunder",
-  tangled: "https://tangled.io/desertthunder.dev",
+  tangled: "https://tangled.org/desertthunder.dev",
   codeberg: "https://codeberg.org/desertthunder",
 };
 
@@ -31,7 +31,6 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
   <head>
     <meta charset="utf-8" />
     <script is:inline>
-      // Inline blocking script to prevent theme flash
       (function () {
         const stored = localStorage.getItem("theme");
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -66,7 +65,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
       <Nav currentPath={Astro.url.pathname} />
-      <Header title="Owais Jamil" />
+      <Header title="Desert Thunder" />
       <main class="grow py-4">
         <slot />
       </main>

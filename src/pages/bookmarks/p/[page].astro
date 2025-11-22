@@ -35,7 +35,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 <Base title="Bookmarks — Owais Jamil" ogImage="/og/page/home.png">
   <section>
     <h2 class="text-3xl md:text-4xl text-cyan mb-8">Bookmarks</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="space-y-6 mb-8">
       {
         page.data.map((bookmark) => (
           <BookmarkCard
@@ -55,7 +55,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
         <div class="mb-8 pb-6">
           {categories.length > 0 && (
             <div class="mb-6">
-              <span class="text-muted font-semibold block mb-3">Categories</span>
+              <span class="text-muted font-medium font-serif block mb-3">Categories</span>
               <div class="flex flex-wrap gap-2">
                 {categories.map(([category, count]) => (
                   <a href={`/tags/${category}`} class="tag">
@@ -68,7 +68,7 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
 
           {years.length > 0 && (
             <div>
-              <span class="text-muted font-semibold block mb-3">Years</span>
+              <span class="text-muted font-medium font-serif block mb-3">Years</span>
               <div class="flex flex-wrap gap-2">
                 {years.map(([year, count]) => (
                   <a href={`/bookmarks/${year}`} class="tag">

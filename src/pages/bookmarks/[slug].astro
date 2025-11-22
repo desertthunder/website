@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
+import ArticleHeader from "$components/ArticleHeader.astro";
 import { truncateWords } from "$utils/text";
 
 export const getStaticPaths = (async () => {
@@ -23,54 +24,55 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
 ---
 
 <Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/home.png">
-  <article>
-    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
-      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{bookmark.data.title}</h1>
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline text-muted mb-5 gap-2">
-        <time datetime={bookmark.data.date.toISOString()}>{dateStr}</time>
-        <a href={bookmark.data.url} target="_blank" rel="noopener noreferrer" class="text-cyan hover:underline">
-          Visit Site ↗
-        </a>
-      </div>
-      {
-        bookmark.data.categories.length > 0 && (
-          <div class="flex flex-wrap gap-2">
-            {bookmark.data.categories.map((category) => (
-              <a href={`/tags/${category}`} class="tag">
-                {category}
+  <article class="flex flex-col">
+    <ArticleHeader
+      title={bookmark.data.title}
+      metadata={[
+        { value: dateStr },
+        { label: "Visit Site", value: "↗", href: bookmark.data.url, external: true }
+      ]}
+      tags={bookmark.data.categories.map((category) => ({ name: category, href: `/tags/${category}` }))}
+    />
+
+    <div data-prose class="mb-10 flex-1">
+      {bookmark.body && <Content />}
+    </div>
+
+    <nav aria-label="Bookmark navigation" class="mt-8 pt-8 border-t-2 border-dotted border-line">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          {
+            prevBookmark && (
+              <a
+                href={`/bookmarks/${prevBookmark.slug}/`}
+                data-nav="prev"
+                class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+                <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+                <span class="block text-cyan">{prevBookmark.data.title}</span>
               </a>
-            ))}
-          </div>
-        )
-      }
-    </header>
-
-    {
-      bookmark.body && (
-        <div data-prose class="mb-10">
-          <Content />
+            )
+          }
         </div>
-      )
-    }
-
-    <nav aria-label="Bookmark navigation" class="pt-8 border-t-2 border-dotted border-line">
-      <div class="flex flex-col sm:flex-row sm:justify-between gap-4 mb-4">
-        {
-          prevBookmark && (
-            <a href={`/bookmarks/${prevBookmark.slug}/`} class="text-muted hover:text-cyan hover:underline max-w-full sm:max-w-3xs">
-              ← {prevBookmark.data.title}
-            </a>
-          )
-        }
-        {
-          nextBookmark && (
-            <a href={`/bookmarks/${nextBookmark.slug}/`} class="text-muted hover:text-cyan hover:underline text-right max-w-full sm:max-w-3xs">
-              {nextBookmark.data.title} →
-            </a>
-          )
-        }
+        <div class="md:text-right">
+          {
+            nextBookmark && (
+              <a
+                href={`/bookmarks/${nextBookmark.slug}/`}
+                data-nav="next"
+                class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+                <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+                <span class="block text-cyan">{nextBookmark.data.title}</span>
+              </a>
+            )
+          }
+        </div>
       </div>
-      <a href="/bookmarks" class="text-cyan hover:underline">← All Bookmarks</a>
+      <a
+        href="/bookmarks"
+        data-nav="prev"
+        class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+        <span class="block text-cyan align-middle">← All Bookmarks</span>
+      </a>
     </nav>
   </article>
 </Base>

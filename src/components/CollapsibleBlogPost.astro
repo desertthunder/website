@@ -7,24 +7,24 @@ const { slug, title, description, date, tags } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 ---
 
-<article class="collapsible-post border-b border-dotted border-line pb-2 mb-2">
+<article class="collapsible-post border-b border-dotted border-line my-0 py-4">
   <button
     class="post-header w-full flex items-center justify-between gap-4 text-left hover:text-cyan transition-colors duration-200">
-    <div class="grid grid-cols-4 gap-4 flex-1">
-      <div class="col-span-1 text-end">
+    <div class="grid grid-cols-4 gap-4 flex-1 font-serif">
+      <div class="col-span-1 text-start">
         <time datetime={date.toISOString()} class="text-muted shrink-0">{formattedDate}</time>
       </div>
       <div class="col-span-3">
         <a href={`/blog/${slug}`} class="post-title font-medium hover:text-cyan">{title}</a>
       </div>
     </div>
-    <span class="chevron transition-transform duration-200">
+    <span class="chevron transition-transform duration-200 flex items-center">
       <Icon name="chevron-up" alt="Expand" />
     </span>
   </button>
 
-  <div class="post-details hidden mt-4 ml-8 space-y-2">
-    <p class="text-muted">{description}</p>
+  <div class="post-details hidden my-2 space-y-2">
+    <p class="text-muted font-serif">{description}</p>
     {
       tags.length > 0 && (
         <div class="flex gap-2 flex-wrap">

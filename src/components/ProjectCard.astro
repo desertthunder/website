@@ -1,4 +1,6 @@
 ---
+import BaseCard from "./BaseCard.astro";
+
 type Props = {
   slug: string;
   title: string;
@@ -14,14 +16,14 @@ const initialTags = tags.slice(0, 2);
 const hiddenTags = tags.slice(2);
 ---
 
-<article data-card>
-  <header>
-    <a href={`/projects/${slug}`}>
-      <h3>{title}</h3>
-    </a>
-    <span class="status">{status}</span>
-  </header>
+<BaseCard>
+  <a href={`/projects/${slug}`} slot="header">
+    <h2 class="text-xl">{title}</h2>
+  </a>
+  <span class="status" slot="header">{status}</span>
+
   <p>{description}</p>
+
   {
     tech.length > 0 && (
       <div class="tech-stack">
@@ -35,7 +37,7 @@ const hiddenTags = tags.slice(2);
 
   {
     tags.length > 0 && (
-      <div class="categories" data-expanded="false">
+      <div class="categories" data-expanded="false" slot="categories">
         {initialTags.map((tag) => (
           <span class="category">{tag}</span>
         ))}
@@ -53,12 +55,11 @@ const hiddenTags = tags.slice(2);
       </div>
     )
   }
-  <footer>
-    <a href={repo} target="_blank" rel="noopener noreferrer" class="repo-link">
-      {repo.includes("github") ? "View on GitHub" : "View Source Code"} →
-    </a>
-  </footer>
-</article>
+
+  <a href={repo} target="_blank" rel="noopener noreferrer" slot="footer" class="font-mono text-xs">
+    {repo.includes("github") ? "View on GitHub" : "View Source Code"} →
+  </a>
+</BaseCard>
 
 <script>
   import { setupTagToggles } from "$utils/tag-toggle";
@@ -67,6 +68,10 @@ const hiddenTags = tags.slice(2);
 
 <style>
   @reference "../styles/global.css";
+
+  .status {
+    @apply font-mono;
+  }
 
   .tech-stack {
     @apply flex items-center gap-2 flex-wrap mb-1 px-6 py-2;
@@ -79,14 +84,5 @@ const hiddenTags = tags.slice(2);
   .tech-stack .badge {
     background: color-mix(in oklab, var(--panel), black 12%);
     @apply text-cyan px-2.5 py-1 rounded-sm text-xs border border-line;
-  }
-
-  [data-card] footer {
-    @apply px-5 py-4 mt-2 border-t border-dotted border-line;
-  }
-
-  [data-card] footer a {
-    @apply text-muted text-sm;
-    @apply duration-200 hover:underline hover:text-cyan;
   }
 </style>

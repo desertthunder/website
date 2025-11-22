@@ -1,32 +1,28 @@
 ---
+import BaseCard from "./BaseCard.astro";
 import { truncate, truncateWords } from "$utils/text";
 
 type Props = { slug: string; title: string; url: string; date: Date; categories: string[]; content?: string };
 
 const { slug, title, url, date, categories, content } = Astro.props;
 const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-const displayTitle = truncate(title, 60);
-const displayContent = content ? truncateWords(content, 60) : undefined;
-const initialCategories = categories.slice(0, 2);
-const hiddenCategories = categories.slice(2);
+const displayTitle = truncate(title, 80);
+const displayContent = content ? truncateWords(content, 40) : undefined;
+const initialCategories = categories.slice(0, 3);
+const hiddenCategories = categories.slice(3);
 ---
 
-<article data-card>
-  <header>
-    <h3>
-      <a href={`/bookmarks/${slug}/`} class="title-link" title={`View ${displayTitle}`}>
-        {displayTitle}
-      </a>
-    </h3>
-    <time datetime={date.toISOString()}>{dateStr}</time>
-  </header>
-  {displayContent && <p>{displayContent}</p>}
-  <a href={url} target="_blank" rel="noopener noreferrer" title={url}>
-    {url}
+<BaseCard>
+  <a href={`/bookmarks/${slug}/`} slot="header">
+    <h2 class="text-xl">{displayTitle}</h2>
   </a>
+  <time datetime={date.toISOString()} slot="header">{dateStr}</time>
+
+  {displayContent && <p>{displayContent}</p>}
+
   {
     categories.length > 0 && (
-      <div class="categories" data-expanded="false">
+      <div class="categories" data-expanded="false" slot="categories">
         {initialCategories.map((category) => (
           <a href={`/tags/${encodeURIComponent(category)}/`} class="category" data-category={category}>
             {category}
@@ -44,13 +40,17 @@ const hiddenCategories = categories.slice(2);
         {hiddenCategories.length > 0 && (
           <button type="button" class="category toggle" data-toggle aria-expanded="false">
             <span aria-hidden="true">...</span>
-            <span class="sr-only">Show all tags</span>
+            <span class="sr-only">Show all categories</span>
           </button>
         )}
       </div>
     )
   }
-</article>
+
+  <a href={url} target="_blank" rel="noopener noreferrer" slot="footer" title={url} class="font-serif">
+    Visit Link →
+  </a>
+</BaseCard>
 
 <script>
   import { setupTagToggles } from "$utils/tag-toggle";
@@ -60,29 +60,12 @@ const hiddenCategories = categories.slice(2);
 <style>
   @reference "../styles/global.css";
 
-  header {
-    @apply m-0 flex-wrap;
-  }
-
-  header h3 {
-    @apply flex-1 min-w-0;
-  }
-
-  header h3 a {
-    @apply line-clamp-1 text-ellipsis;
-  }
-
   p {
-    @apply line-clamp-3 text-ellipsis px-0 py-1;
-  }
-
-  a[target="_blank"] {
-    @apply block text-muted text-sm whitespace-nowrap text-ellipsis px-4 py-0;
-    @apply hover:underline hover:underline-offset-1 overflow-clip;
+    @apply line-clamp-2 text-ellipsis;
   }
 
   .categories {
-    @apply mt-auto pt-3;
+    @apply mt-auto pt-2;
   }
 
   .category {

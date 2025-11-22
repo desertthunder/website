@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/crimson-pro/index.css";
-@import "@fontsource-variable/open-sans/index.css";
+@import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/google-sans-code/index.css";
 
 /* Light mode (Nord Light) - Default */
@@ -52,9 +52,9 @@
   --color-magenta: var(--color-magenta);
   --color-cyan: var(--color-cyan);
   --font-serif: "Crimson Pro Variable", serif;
-  --font-sans: "Open Sans Variable", sans-serif;
+  --font-sans: "DM Sans Variable", sans-serif;
   --font-mono: "Google Sans Code Variable", monospace;
-  --default-font-family: "Open Sans Variable", sans-serif;
+  --default-font-family: "DM Sans Variable", sans-serif;
   --shadow-custom: var(--shadow-custom);
 }
 
@@ -84,7 +84,7 @@ nav {
 }
 
 nav a {
-  @apply mr-6 text-fg text-2xl font-medium;
+  @apply text-fg text-2xl font-medium;
   @apply hover:text-cyan transition-colors duration-200;
 }
 
@@ -170,7 +170,8 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] {
-  @apply leading-7;
+  @apply leading-relaxed text-base;
+  font-family: var(--font-sans);
 }
 
 [data-prose] h1,
@@ -179,7 +180,8 @@ nav a[aria-current="page"] {
 [data-prose] h4,
 [data-prose] h5,
 [data-prose] h6 {
-  @apply mt-8 mb-4 font-bold leading-5 text-cyan;
+  @apply mt-8 mb-4 font-medium leading-tight text-cyan;
+  font-family: var(--font-serif);
 }
 
 [data-prose] h1 {
@@ -204,7 +206,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] p {
-  @apply my-4 mt-0;
+  @apply my-6 mt-0;
 }
 
 [data-prose] a {
@@ -218,35 +220,110 @@ nav a[aria-current="page"] {
 
 [data-prose] em {
   @apply text-magenta italic;
+  font-family: var(--font-serif);
 }
 
 [data-prose] code {
   @apply bg-panel text-green py-1 px-2 rounded-sm text-sm border border-line;
+  font-family: var(--font-mono);
 }
 
 [data-prose] pre {
-  @apply bg-panel border border-line rounded-lg p-5 overflow-x-auto mt-6;
+  @apply bg-panel border border-line rounded-lg p-6 overflow-x-auto my-8;
+  line-height: 1.6;
 }
 
 [data-prose] pre code {
-  @apply bg-none border-0 p-0 text-fg text-sm;
+  @apply bg-transparent border-0 p-0 text-base;
+  font-family: var(--font-mono);
+}
+
+[data-prose] pre code .token.comment,
+[data-prose] pre code .token.prolog,
+[data-prose] pre code .token.doctype,
+[data-prose] pre code .token.cdata {
+  @apply text-muted italic;
+}
+
+[data-prose] pre code .token.punctuation {
+  @apply text-fg;
+}
+
+[data-prose] pre code .token.property,
+[data-prose] pre code .token.tag,
+[data-prose] pre code .token.boolean,
+[data-prose] pre code .token.number,
+[data-prose] pre code .token.constant,
+[data-prose] pre code .token.symbol,
+[data-prose] pre code .token.deleted {
+  @apply text-red;
+}
+
+[data-prose] pre code .token.selector,
+[data-prose] pre code .token.attr-name,
+[data-prose] pre code .token.string,
+[data-prose] pre code .token.char,
+[data-prose] pre code .token.builtin,
+[data-prose] pre code .token.inserted {
+  @apply text-green;
+}
+
+[data-prose] pre code .token.operator,
+[data-prose] pre code .token.entity,
+[data-prose] pre code .token.url,
+[data-prose] pre code .token.variable {
+  @apply text-cyan;
+}
+
+[data-prose] pre code .token.atrule,
+[data-prose] pre code .token.attr-value,
+[data-prose] pre code .token.function,
+[data-prose] pre code .token.class-name {
+  @apply text-yellow;
+}
+
+[data-prose] pre code .token.keyword {
+  @apply text-magenta;
+}
+
+[data-prose] pre code .token.regex,
+[data-prose] pre code .token.important {
+  @apply text-blue;
+}
+
+[data-prose] pre code .token.important,
+[data-prose] pre code .token.bold {
+  @apply font-bold;
+}
+
+[data-prose] pre code .token.italic {
+  @apply italic;
 }
 
 [data-prose] blockquote {
-  @apply border-l-4 border-cyan pl-5 mt-6 text-muted italic;
+  @apply border-l-4 border-cyan pl-6 py-2 my-8 text-muted italic;
+  font-family: var(--font-serif);
+  font-size: 1.05em;
 }
 
 [data-prose] blockquote p {
-  @apply my-2 mx-0;
+  @apply my-3 mx-0;
 }
 
-[data-prose] ul,
+[data-prose] ul {
+  @apply my-6 mx-0 pl-8 list-disc;
+}
+
 [data-prose] ol {
-  @apply my-6 mx-0 pl-8;
+  @apply my-6 mx-0 pl-8 list-decimal;
 }
 
 [data-prose] li {
-  @apply my-2 mx-0;
+  @apply my-3 mx-0 leading-relaxed;
+}
+
+[data-prose] li > p {
+  @apply my-2;
 }
 
 [data-prose] li::marker {

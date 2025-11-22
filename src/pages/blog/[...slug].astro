@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
+import ArticleHeader from "$components/ArticleHeader.astro";
 import { calculateReadingTime } from "$utils/reading-time";
 
 export const getStaticPaths = (async () => {
@@ -22,37 +23,33 @@ const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
 const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
 const ogImage = `/og/${post.slug}.png`;
-const hasTags = post.data.tags.length > 0;
 ---
 
 <Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
   <article>
-    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
-      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{post.data.title}</h1>
-      <div class="flex items-center gap-4 text-muted mb-4">
-        <time datetime={post.data.date.toISOString()}>{dateStr}</time>
-        <span>{readingTime}</span>
-      </div>
-      {
-        hasTags && (
-          <div class="flex gap-2 flex-wrap">
-            {post.data.tags.map((tag) => (
-              <a href={`/tags/${tag}`} class="tag">{tag}</a>
-            ))}
-          </div>
-        )
-      }
-    </header>
+    <ArticleHeader
+      title={post.data.title}
+      metadata={[
+        { value: dateStr },
+        { value: readingTime }
+      ]}
+      tags={post.data.tags.map((tag) => ({ name: tag, href: `/tags/${tag}` }))}
+    />
 
     <div data-prose>
       <Content />
     </div>
 
-    <nav aria-label="Post navigation" class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
+    <nav
+      aria-label="Post navigation"
+      class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         {
           prevPost && (
-            <a href={`/blog/${prevPost.slug}/`} data-nav="prev" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+            <a
+              href={`/blog/${prevPost.slug}/`}
+              data-nav="prev"
+              class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
               <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
               <span class="block text-cyan">{prevPost.data.title}</span>
             </a>
@@ -62,7 +59,10 @@ const hasTags = post.data.tags.length > 0;
       <div class="md:text-right">
         {
           nextPost && (
-            <a href={`/blog/${nextPost.slug}/`} data-nav="next" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+            <a
+              href={`/blog/${nextPost.slug}/`}
+              data-nav="next"
+              class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
               <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
               <span class="block text-cyan">{nextPost.data.title}</span>
             </a>

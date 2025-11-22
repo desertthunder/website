@@ -20,40 +20,38 @@ const { page } = Astro.props;
 <Base title="Blog — Owais Jamil" ogImage="/og/page/home.png">
   <section>
     <h2 class="text-3xl md:text-4xl text-cyan mb-8">Blog Posts</h2>
-    <div class="space-y-2">
+    {
+      page.data.map((post) => (
+        <CollapsibleBlogPost
+          slug={post.slug}
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          tags={post.data.tags}
+        />
+      ))
+    }
+  </section>
+
+  <nav class="pagination" aria-label="Blog pagination">
+    <div class="links">
       {
-        page.data.map((post) => (
-          <CollapsibleBlogPost
-            slug={post.slug}
-            title={post.data.title}
-            description={post.data.description}
-            date={post.data.date}
-            tags={post.data.tags}
-          />
-        ))
+        page.url.prev && (
+          <a href={page.url.prev} class="link">
+            ← Previous
+          </a>
+        )
+      }
+      <span class="info">
+        Page {page.currentPage} of {page.lastPage}
+      </span>
+      {
+        page.url.next && (
+          <a href={page.url.next} class="link">
+            Next →
+          </a>
+        )
       }
     </div>
-
-    <nav class="pagination" aria-label="Blog pagination">
-      <div class="links">
-        {
-          page.url.prev && (
-            <a href={page.url.prev} class="link">
-              ← Previous
-            </a>
-          )
-        }
-        <span class="info">
-          Page {page.currentPage} of {page.lastPage}
-        </span>
-        {
-          page.url.next && (
-            <a href={page.url.next} class="link">
-              Next →
-            </a>
-          )
-        }
-      </div>
-    </nav>
-  </section>
+  </nav>
 </Base>

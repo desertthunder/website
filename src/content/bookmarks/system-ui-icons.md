@@ -6,4 +6,4 @@ categories:
   - design
 ---
 
-Beautiful, open-source icon set for system UI design.
+Beautiful, public-source icon set for system UI design.
