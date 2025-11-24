@@ -58,6 +58,8 @@
   --shadow-custom: var(--shadow-custom);
 }
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 #application {
   @apply flex flex-col min-h-screen max-w-3xl mx-auto;
 }
@@ -67,11 +69,19 @@ body {
   line-height: 1.7;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif);
 }
 
-code, pre, kbd, samp {
+code,
+pre,
+kbd,
+samp {
   font-family: var(--font-mono);
 }
 

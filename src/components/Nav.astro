@@ -1,15 +1,26 @@
 ---
+import { getCollection } from "astro:content";
 import Icon from "./Icon.astro";
 
 type Props = { currentPath: string };
 
 const { currentPath } = Astro.props;
+
+const allPages = await getCollection("pages");
+const navPages = allPages
+  .filter((page) => page.data.showInNav)
+  .sort((a, b) => (a.data.navOrder || 0) - (b.data.navOrder || 0));
 ---
 
 <nav class="py-4 border-b-2 border-dotted border-line text-3xl flex items-center justify-between">
   <div class="flex items-center gap-4">
-    <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>Home</a>
-    <a href="/about" aria-current={currentPath === "/about" ? "page" : undefined}>About</a>
+    {
+      navPages.map((page) => (
+        <a href={page.data.path} aria-current={currentPath === page.data.path ? "page" : undefined}>
+          {page.data.navLabel || page.data.title}
+        </a>
+      ))
+    }
     <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
     <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
     <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
@@ -17,7 +28,7 @@ const { currentPath } = Astro.props;
   </div>
   <button
     id="theme-toggle"
-    class="inline-flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+    class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
     aria-label="Toggle theme">
     <span id="theme-icon" aria-hidden="true">
       <Icon name="sun" alt="Light mode" />
@@ -92,7 +103,8 @@ const { currentPath } = Astro.props;
       });
     }
 
-    static initTheme(): void {
+    /* dark mode currently forced */
+    static _initTheme(): void {
       const context = ThemeContext.getInstance();
 
       const stored = localStorage.getItem("theme");
@@ -103,6 +115,11 @@ const { currentPath } = Astro.props;
       context.syncUI();
       context.clickListener();
       context.mediaListener();
+    }
+
+    static initTheme(): void {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
     }
   }
 

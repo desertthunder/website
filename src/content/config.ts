@@ -36,4 +36,17 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { blog, bookmarks, projects };
+const pages = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    path: z.string(),
+    showInNav: z.boolean().default(false),
+    navLabel: z.string().optional(),
+    navOrder: z.number().optional(),
+    ogImage: z.string().optional(),
+  }),
+});
+
+export const collections = { blog, bookmarks, projects, pages };

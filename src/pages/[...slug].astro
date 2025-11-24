@@ -1,0 +1,66 @@
+---
+import { getCollection } from "astro:content";
+import Base from "$layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages");
+
+  return pages.map((page) => ({
+    params: { slug: page.data.path === "/" ? undefined : page.data.path.slice(1) },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await page.render();
+---
+
+<Base title={page.data.title} description={page.data.description} ogImage={page.data.ogImage}>
+  <article data-page>
+    <Content />
+  </article>
+</Base>
+
+<style>
+  @reference "../styles/global.css";
+
+  article[data-page] {
+    @apply text-base leading-relaxed tracking-wide;
+  }
+
+  article[data-page] :global(h2) {
+    @apply text-violet-500 dark:text-magenta text-xl;
+  }
+
+  article[data-page] :global(h3) {
+    @apply text-blue text-lg;
+  }
+
+  article[data-page] :global(p) {
+    @apply my-4 leading-relaxed;
+  }
+
+  article[data-page] :global(strong) {
+    @apply text-fg font-bold;
+  }
+
+  article[data-page] :global(a) {
+    @apply text-cyan hover:underline font-medium;
+  }
+
+  article[data-page] :global(ul) {
+    @apply my-4 pl-6 list-disc;
+  }
+
+  article[data-page] :global(li::marker) {
+    @apply text-cyan;
+  }
+
+  article[data-page] :global(code) {
+    @apply bg-line p-1 rounded text-sm font-mono border border-muted dark:text-fg text-fg;
+  }
+
+  article[data-page] :global(dl) {
+    @apply my-4;
+  }
+</style>
