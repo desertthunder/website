@@ -61,13 +61,15 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 
     <title>{title}</title>
   </head>
-  <body class="min-h-full bg-bg text-fg text-2xl px-4 md:px-8 m-0">
+  <body class="min-h-full bg-bg text-fg text-3xl m-0">
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
       <Nav currentPath={Astro.url.pathname} />
       <Header title="Desert Thunder" />
       <main class="grow py-4">
-        <slot />
+        <div class="max-w-5xl mx-auto px-4 md:px-8">
+          <slot />
+        </div>
       </main>
       <Footer name="Owais Jamil" socialLinks={SOCIALS} />
     </div>

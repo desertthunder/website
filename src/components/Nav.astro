@@ -12,29 +12,54 @@ const navPages = allPages
   .sort((a, b) => (a.data.navOrder || 0) - (b.data.navOrder || 0));
 ---
 
-<nav class="py-4 border-b-2 border-dotted border-line text-3xl flex items-center justify-between">
-  <div class="flex items-center gap-4">
-    {
-      navPages.map((page) => (
-        <a href={page.data.path} aria-current={currentPath === page.data.path ? "page" : undefined}>
-          {page.data.navLabel || page.data.title}
-        </a>
-      ))
-    }
-    <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
-    <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
-    <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
-    <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
+<nav class="py-4 border-b-2 border-dotted border-line bg-panel">
+  <div class="px-4 md:px-6 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a
+        href="https://github.com/desertthunder"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-red transition-all duration-200"
+        aria-label="GitHub">
+      </a>
+      <a
+        href="https://tangled.org/desertthunder.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-yellow transition-all duration-200"
+        aria-label="Tangled">
+      </a>
+      <a
+        href="https://linkedin.com/in/owais-jamil"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-cyan transition-all duration-200"
+        aria-label="LinkedIn">
+      </a>
+    </div>
+    <div class="flex items-center gap-4">
+      {
+        navPages.map((page) => (
+          <a href={page.data.path} aria-current={currentPath === page.data.path ? "page" : undefined}>
+            {page.data.navLabel || page.data.title}
+          </a>
+        ))
+      }
+      <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
+      <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
+      <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
+      <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
+    </div>
+    <button
+      id="theme-toggle"
+      class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+      aria-label="Toggle theme">
+      <span id="theme-icon" aria-hidden="true">
+        <Icon name="sun" alt="Light mode" />
+      </span>
+      <span id="theme-label" class="sr-only">Light</span>
+    </button>
   </div>
-  <button
-    id="theme-toggle"
-    class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
-    aria-label="Toggle theme">
-    <span id="theme-icon" aria-hidden="true">
-      <Icon name="sun" alt="Light mode" />
-    </span>
-    <span id="theme-label" class="sr-only">Light</span>
-  </button>
 </nav>
 
 <script>

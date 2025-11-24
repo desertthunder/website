@@ -9,22 +9,27 @@ const { name, socialLinks } = Astro.props;
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="py-2 border-t font-serif border-dotted border-line text-base grid grid-cols-2">
-  <section>
-    <a href="https://curius.app/owais-jamil" target="_blank" rel="noopener noreferrer">Curius</a>
-  </section>
-  <section class="flex flex-col items-end justify-start">
-    <div>Desert Thunder</div>
-    <div>Made {currentYear} by {name}</div>
-    <div>
-      <span>Find me on:</span>
-      <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>, and
-      <a href={socialLinks.bluesky} target="_blank" rel="noopener noreferrer">Bluesky</a>
-    </div>
-    <div>
-      <span>View my work:</span>
-      <a href={socialLinks.gh} target="_blank" rel="noopener noreferrer">GitHub</a> and
-      <a href={socialLinks.tangled} target="_blank" rel="noopener noreferrer">Tangled</a>
-    </div>
-  </section>
+<footer
+  class="py-2 border-t font-serif border-dotted border-line text-lg"
+  style="background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);">
+  <div class="max-w-5xl mx-auto px-4 md:px-8 grid grid-cols-2">
+    <section class="flex flex-col items-start justify-between gap-2">
+      <a href="https://owais.omg.lol/now" target="_blank" rel="noopener noreferrer">Now</a>
+      <img src="/images/brainmade-dark.png" alt="Brain Made" class="w-32 py-2" />
+    </section>
+    <section class="flex flex-col items-end justify-start">
+      <div>Desert Thunder</div>
+      <div>Made {currentYear} by {name}</div>
+      <div>
+        <span>Find me on:</span>
+        <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>, and
+        <a href={socialLinks.bluesky} target="_blank" rel="noopener noreferrer">Bluesky</a>
+      </div>
+      <div>
+        <span>View my work:</span>
+        <a href={socialLinks.gh} target="_blank" rel="noopener noreferrer">GitHub</a> and
+        <a href={socialLinks.tangled} target="_blank" rel="noopener noreferrer">Tangled</a>
+      </div>
+    </section>
+  </div>
 </footer>

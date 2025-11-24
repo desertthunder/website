@@ -18,7 +18,7 @@ const hiddenTags = tags.slice(2);
 
 <BaseCard>
   <a href={`/projects/${slug}`} slot="header">
-    <h2 class="text-xl">{title}</h2>
+    <h2 class="text-4xl">{title}</h2>
   </a>
   <span class="status" slot="header">{status}</span>
 
@@ -56,7 +56,7 @@ const hiddenTags = tags.slice(2);
     )
   }
 
-  <a href={repo} target="_blank" rel="noopener noreferrer" slot="footer" class="font-mono text-xs">
+  <a href={repo} target="_blank" rel="noopener noreferrer" slot="footer" class="font-mono text-xl">
     {repo.includes("github") ? "View on GitHub" : "View Source Code"} →
   </a>
 </BaseCard>
@@ -78,11 +78,11 @@ const hiddenTags = tags.slice(2);
   }
 
   .tech-stack .label {
-    @apply text-muted text-sm font-semibold;
+    @apply text-muted text-xl font-semibold;
   }
 
   .tech-stack .badge {
     background: color-mix(in oklab, var(--panel), black 12%);
-    @apply text-cyan px-2.5 py-1 rounded-sm text-xs border border-line;
+    @apply text-cyan px-2.5 py-1 rounded-sm text-lg border border-line;
   }
 </style>

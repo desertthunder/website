@@ -9,7 +9,9 @@ const { class: className = "" } = Astro.props;
     <slot name="header" />
   </header>
 
-  <slot />
+  <div class="text-2xl">
+    <slot />
+  </div>
 
   <slot name="categories" />
 
@@ -22,7 +24,7 @@ const { class: className = "" } = Astro.props;
   @reference "../styles/global.css";
 
   .base-card {
-    @apply text-base;
+    @apply text-3xl;
   }
 
   .base-card header {
@@ -34,7 +36,7 @@ const { class: className = "" } = Astro.props;
   }
 
   .base-card footer a {
-    @apply text-muted text-sm duration-200;
+    @apply text-muted text-xl duration-200;
     @apply hover:underline hover:text-cyan;
   }
 </style>

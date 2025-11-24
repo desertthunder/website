@@ -61,12 +61,12 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 #application {
-  @apply flex flex-col min-h-screen max-w-3xl mx-auto;
+  @apply flex flex-col min-h-screen;
 }
 
 body {
   font-family: var(--font-sans);
-  line-height: 1.7;
+  line-height: 1.5;
 }
 
 h1,
@@ -94,7 +94,7 @@ nav {
 }
 
 nav a {
-  @apply text-fg text-2xl font-medium;
+  @apply text-fg text-3xl font-medium;
   @apply hover:text-cyan transition-colors duration-200;
 }
 
@@ -120,12 +120,12 @@ nav a[aria-current="page"] {
 }
 
 [data-card] header h3 {
-  @apply text-cyan font-bold text-lg;
+  @apply text-cyan font-bold text-4xl;
 }
 
 [data-card] time,
 [data-card] span {
-  @apply text-muted whitespace-nowrap text-sm;
+  @apply text-muted whitespace-nowrap text-2xl;
 }
 
 [data-card] p {
@@ -148,16 +148,19 @@ nav a[aria-current="page"] {
 .category,
 .tag {
   background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);
-  @apply text-fg px-3 py-1.5 rounded text-sm border border-line inline-flex items-center;
+  @apply text-fg px-3 py-1.5 rounded text-base border border-line inline-flex items-center;
   @apply hover:bg-cyan hover:text-bg hover:border-cyan duration-300;
 }
 
 .categories[data-expanded="true"] .category.is-hidden {
-  @apply max-h-8 max-w-3xs opacity-100 px-1 py-3 m-0 border;
+  @apply max-h-full max-w-full opacity-100 px-3 py-1.5 rounded text-base border border-line inline-flex items-center;
+  background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);
+  margin: 0;
+  overflow: visible;
 }
 
 .categories[data-expanded="true"] .category.toggle span[aria-hidden="true"] {
-  @apply text-base;
+  @apply text-xl;
 }
 
 .pagination {
@@ -180,7 +183,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] {
-  @apply leading-relaxed text-base;
+  @apply leading-relaxed text-3xl;
   font-family: var(--font-sans);
 }
 
@@ -195,24 +198,24 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] h1 {
-  @apply border-b border-line border-2 text-4xl pb-2;
+  @apply border-b border-line border-2 text-6xl pb-2;
 }
 
 [data-prose] h2 {
-  @apply text-3xl border-b border-line pb-1.5;
+  @apply text-5xl border-b border-line pb-1.5;
 }
 
 [data-prose] h3 {
-  @apply text-2xl text-blue;
+  @apply text-4xl text-blue;
 }
 
 [data-prose] h4 {
-  @apply text-xl text-blue;
+  @apply text-3xl text-blue;
 }
 
 [data-prose] h5,
 [data-prose] h6 {
-  @apply text-magenta text-base;
+  @apply text-magenta text-2xl;
 }
 
 [data-prose] p {
@@ -234,7 +237,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] code {
-  @apply bg-panel text-green py-1 px-2 rounded-sm text-sm border border-line;
+  @apply bg-panel text-green py-1 px-2 rounded-sm text-xl border border-line;
   font-family: var(--font-mono);
 }
 
@@ -244,7 +247,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] pre code {
-  @apply bg-transparent border-0 p-0 text-base;
+  @apply bg-transparent border-0 p-0 text-3xl;
   font-family: var(--font-mono);
 }
 
@@ -366,7 +369,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] figcaption {
-  @apply text-center text-muted text-sm mt-2;
+  @apply text-center text-muted text-base mt-2;
 }
 
 [data-prose] sup {
@@ -378,7 +381,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] .footnotes {
-  @apply mt-12 pt-4 border border-line text-sm;
+  @apply mt-12 pt-4 border border-line text-base;
 }
 
 [data-prose] .footnotes ol {

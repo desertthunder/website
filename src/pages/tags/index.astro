@@ -23,8 +23,8 @@ const tags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
 
 <Base title="Tags — Owais Jamil" ogImage="/og/page/home.png">
   <section>
-    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Tags</h2>
-    <div class="flex flex-wrap gap-3">
+    <h2 class="text-3xl md:text-4xl text-cyan">Tags</h2>
+    <div class="flex flex-wrap gap-2 py-8">
       {
         tags.map(([tag, count]) => (
           <a href={`/tags/${tag}`} class="tag text-lg px-4 py-2">

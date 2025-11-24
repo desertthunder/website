@@ -30,4 +30,6 @@ Reading • RPGs • Playing Piano • Creative Coding
 
 ## Contact
 
-The best way to reach me is via email at `[this domain]@gmail[dot]com`
+You're welcome to tag or DM me on BlueSky!
+
+Email me at `[this domain]@gmail[dot]com`

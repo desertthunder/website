@@ -12,17 +12,19 @@
     "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
     "@fontsource-variable/crimson-pro": "^5.2.8",
-    "@fontsource-variable/google-sans-code": "^5.2.3",
     "@fontsource-variable/dm-sans": "^5.2.7",
+    "@fontsource-variable/google-sans-code": "^5.2.3",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.16",
     "astro": "5.14.8",
+    "inquirer": "^13.0",
     "linkify-string": "^4.3.2",
     "linkifyjs": "^4.3.2",
     "satori": "^0.18.3",
     "tailwindcss": "^4.1.16"
   },
   "devDependencies": {
+    "cheerio": "^1.1.2",
     "prettier": "3.6.2",
     "prettier-plugin-astro": "0.14.1"
   }

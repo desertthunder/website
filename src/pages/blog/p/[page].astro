@@ -10,11 +10,30 @@ export const getStaticPaths = (async ({ paginate }) => {
     .filter((post) => !post.data.draft)
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-  return paginate(posts, { pageSize: 10 });
+  const allTagMap = new Map<string, number>();
+  for (const post of posts) {
+    post.data.tags.forEach((tag) => {
+      allTagMap.set(tag, (allTagMap.get(tag) || 0) + 1);
+    });
+  }
+  const allTags = Array.from(allTagMap.entries()).sort((a, b) => b[1] - a[1]);
+
+  return paginate(posts, { pageSize: 10, props: { allTags } });
 }) satisfies GetStaticPaths;
 
-type Props = { page: Page<CollectionEntry<"blog">> };
+type Props = { page: Page<CollectionEntry<"blog">>; allTags: [string, number][] };
+
 const { page } = Astro.props;
+const { allTags } = Astro.props;
+
+const currentTagMap = new Map<string, number>();
+
+for (const post of page.data) {
+  post.data.tags.forEach((tag) => {
+    currentTagMap.set(tag, (currentTagMap.get(tag) || 0) + 1);
+  });
+}
+const currentTags = Array.from(currentTagMap.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
 <Base title="Blog — Owais Jamil" ogImage="/og/page/home.png">
@@ -30,6 +49,38 @@ const { page } = Astro.props;
           tags={post.data.tags}
         />
       ))
+    }
+
+    {
+      (currentTags.length > 0 || allTags.length > 0) && (
+        <div class="py-8">
+          {currentTags.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-medium font-serif block mb-3">Current Tags</span>
+              <div class="flex flex-wrap gap-2">
+                {currentTags.map(([tag, count]) => (
+                  <a href={`/tags/${tag}`} class="tag">
+                    {tag} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {allTags.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-medium font-serif block mb-3">All Tags</span>
+              <div class="flex flex-wrap gap-2">
+                {allTags.map(([tag, count]) => (
+                  <a href={`/tags/${tag}`} class="tag">
+                    {tag} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )
     }
   </section>
 

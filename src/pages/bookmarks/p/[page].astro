@@ -9,10 +9,21 @@ type Props = { page: Page<CollectionEntry<"bookmarks">> };
 
 export const getStaticPaths = (async ({ paginate }) => {
   const bookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-  return paginate(bookmarks, { pageSize: 4 });
+
+  // Calculate all categories across all bookmarks
+  const allCategoryMap = new Map<string, number>();
+  for (const bookmark of bookmarks) {
+    bookmark.data.categories.forEach((category) => {
+      allCategoryMap.set(category, (allCategoryMap.get(category) || 0) + 1);
+    });
+  }
+  const allCategories = Array.from(allCategoryMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+
+  return paginate(bookmarks, { pageSize: 4, props: { allCategories } });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const { allCategories } = Astro.props;
 const categoryMap = new Map<string, number>();
 const yearMap = new Map<number, number>();
 
@@ -22,7 +33,7 @@ for (const bookmark of page.data) {
   });
 }
 
-const categories = Array.from(categoryMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+const currentCategories = Array.from(categoryMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
 
 for (const bookmark of page.data) {
   const year = bookmark.data.date.getFullYear();
@@ -51,13 +62,26 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
     </div>
 
     {
-      (categories.length > 0 || years.length > 0) && (
+      (currentCategories.length > 0 || allCategories.length > 0 || years.length > 0) && (
         <div class="mb-8 pb-6">
-          {categories.length > 0 && (
+          {currentCategories.length > 0 && (
             <div class="mb-6">
-              <span class="text-muted font-medium font-serif block mb-3">Categories</span>
+              <span class="text-muted font-medium font-serif block mb-3">Current Categories</span>
               <div class="flex flex-wrap gap-2">
-                {categories.map(([category, count]) => (
+                {currentCategories.map(([category, count]) => (
+                  <a href={`/tags/${category}`} class="tag">
+                    {category} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {allCategories.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-medium font-serif block mb-3">All Categories</span>
+              <div class="flex flex-wrap gap-2">
+                {allCategories.map(([category, count]) => (
                   <a href={`/tags/${category}`} class="tag">
                     {category} ({count})
                   </a>
