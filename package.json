@@ -20,6 +20,7 @@
     "inquirer": "^13.0",
     "linkify-string": "^4.3.2",
     "linkifyjs": "^4.3.2",
+    "minisearch": "^7.2.0",
     "satori": "^0.18.3",
     "tailwindcss": "^4.1.16"
   },

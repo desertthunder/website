@@ -15,9 +15,7 @@ const { Content } = await bookmark.render();
 
 const description = bookmark.body ? truncateWords(bookmark.body, 40) : `Bookmark: ${bookmark.data.title}`;
 const dateStr = bookmark.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-
 const allBookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
 const currentIndex = allBookmarks.findIndex((b) => b.slug === bookmark.slug);
 const prevBookmark = currentIndex < allBookmarks.length - 1 ? allBookmarks[currentIndex + 1] : null;
 const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
@@ -27,10 +25,7 @@ const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
   <article class="flex flex-col">
     <ArticleHeader
       title={bookmark.data.title}
-      metadata={[
-        { value: dateStr },
-        { label: "Visit Site", value: "↗", href: bookmark.data.url, external: true }
-      ]}
+      metadata={[{ value: dateStr }, { label: "Visit Site", value: "↗", href: bookmark.data.url, external: true }]}
       tags={bookmark.data.categories.map((category) => ({ name: category, href: `/tags/${category}` }))}
     />
 

@@ -4,6 +4,7 @@ import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import Base from "$layouts/Base.astro";
 import CollapsibleBlogPost from "$components/CollapsibleBlogPost.astro";
+import Paginator from "$components/Paginator.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = (await getCollection("blog"))
@@ -84,25 +85,11 @@ const currentTags = Array.from(currentTagMap.entries()).sort((a, b) => b[1] - a[
     }
   </section>
 
-  <nav class="pagination" aria-label="Blog pagination">
-    <div class="links">
-      {
-        page.url.prev && (
-          <a href={page.url.prev} class="link">
-            ← Previous
-          </a>
-        )
-      }
-      <span class="info">
-        Page {page.currentPage} of {page.lastPage}
-      </span>
-      {
-        page.url.next && (
-          <a href={page.url.next} class="link">
-            Next →
-          </a>
-        )
-      }
-    </div>
-  </nav>
+  <Paginator page={page} label="Blog Pagination" />
 </Base>
+
+<script>
+  import { setupPaginationNavigation } from "$utils/pagination";
+
+  setupPaginationNavigation();
+</script>

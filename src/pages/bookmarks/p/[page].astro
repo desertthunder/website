@@ -4,13 +4,13 @@ import type { GetStaticPaths, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import Base from "$layouts/Base.astro";
 import BookmarkCard from "$components/BookmarkCard.astro";
+import Paginator from "$components/Paginator.astro";
 
-type Props = { page: Page<CollectionEntry<"bookmarks">> };
+type Props = { page: Page<CollectionEntry<"bookmarks">>; allCategories: [string, number][] };
 
 export const getStaticPaths = (async ({ paginate }) => {
   const bookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-  // Calculate all categories across all bookmarks
   const allCategoryMap = new Map<string, number>();
   for (const bookmark of bookmarks) {
     bookmark.data.categories.forEach((category) => {
@@ -106,61 +106,12 @@ const years = Array.from(yearMap.entries()).sort((a, b) => b[0] - a[0]);
       )
     }
 
-    <nav class="pagination" aria-label="Bookmarks pagination">
-      <div class="links">
-        {
-          page.url.prev && (
-            <a href={page.url.prev} class="link" data-nav="prev">
-              ← Previous
-            </a>
-          )
-        }
-        <span class="info">
-          Page {page.currentPage} of {page.lastPage}
-        </span>
-        {
-          page.url.next && (
-            <a href={page.url.next} class="link" data-nav="next">
-              Next →
-            </a>
-          )
-        }
-      </div>
-    </nav>
+    <Paginator page={page} label="Bookmark Pagination" />
   </section>
 </Base>
 
 <script>
-  document.addEventListener("keydown", (e) => {
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-      return;
-    }
+  import { setupPaginationNavigation } from "$utils/pagination";
 
-    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
-    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
-
-    if (e.key === "ArrowLeft") {
-      prevLink?.click();
-    } else if (e.key === "ArrowRight") {
-      nextLink?.click();
-    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
-      const handleSecondBracket = (e2: KeyboardEvent) => {
-        if (e2.key === "[") {
-          prevLink?.click();
-        }
-        document.removeEventListener("keydown", handleSecondBracket);
-      };
-      document.addEventListener("keydown", handleSecondBracket);
-      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
-    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
-      const handleSecondBracket = (e2: KeyboardEvent) => {
-        if (e2.key === "]") {
-          nextLink?.click();
-        }
-        document.removeEventListener("keydown", handleSecondBracket);
-      };
-      document.addEventListener("keydown", handleSecondBracket);
-      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
-    }
-  });
+  setupPaginationNavigation();
 </script>

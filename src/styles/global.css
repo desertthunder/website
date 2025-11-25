@@ -3,7 +3,7 @@
 @import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/google-sans-code/index.css";
 
-/* Light mode (Nord Light) - Default */
+/* Light mode (Nord Light) */
 :root,
 :root[data-theme="light"] {
   --color-bg: #e5e9f0;
@@ -21,7 +21,7 @@
   --shadow-custom: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark mode (Iceberg) - Only applied when explicitly set */
+/* Dark mode (Iceberg) */
 :root[data-theme="dark"] {
   --color-bg: #161821;
   --color-fg: #c6c8d1;
@@ -164,12 +164,11 @@ nav a[aria-current="page"] {
 }
 
 .pagination {
-  @apply pt-4 border-t border-t-line border-dotted;
+  @apply pb-4 pt-8 border-t border-t-line border-dotted;
 }
 
 .pagination .links {
-  @apply flex justify-between items-center;
-  @apply max-2xl:flex-col max-2xl:items-stretch;
+  @apply grid grid-cols-3;
 }
 
 .pagination .link {
@@ -390,4 +389,8 @@ nav a[aria-current="page"] {
 
 [data-prose] .footnotes li {
   @apply text-muted;
+}
+
+button {
+  @apply hover:cursor-pointer;
 }

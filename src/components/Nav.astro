@@ -12,8 +12,8 @@ const navPages = allPages
   .sort((a, b) => (a.data.navOrder || 0) - (b.data.navOrder || 0));
 ---
 
-<nav class="py-4 border-b-2 border-dotted border-line bg-panel">
-  <div class="px-4 md:px-6 flex items-center justify-between">
+<nav class="p-4 border-b-2 border-dotted border-line bg-panel">
+  <div class="px-4 md:px-12 flex items-center justify-between">
     <div class="flex items-center gap-2">
       <a
         href="https://github.com/desertthunder"
@@ -49,16 +49,29 @@ const navPages = allPages
       <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
       <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
       <a href="/tags" aria-current={currentPath.startsWith("/tags") ? "page" : undefined}>Tags</a>
+      <div class="flex items-center gap-2">
+        {
+          !currentPath.startsWith("/search") && (
+            <button
+              id="search-toggle"
+              class="flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+              aria-label="Toggle search"
+              aria-expanded="false">
+              <Icon name="search" alt="Search" />
+            </button>
+          )
+        }
+        <button
+          id="theme-toggle"
+          class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+          aria-label="Toggle theme">
+          <span id="theme-icon" aria-hidden="true">
+            <Icon name="sun" alt="Light mode" />
+          </span>
+          <span id="theme-label" class="sr-only">Light</span>
+        </button>
+      </div>
     </div>
-    <button
-      id="theme-toggle"
-      class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
-      aria-label="Toggle theme">
-      <span id="theme-icon" aria-hidden="true">
-        <Icon name="sun" alt="Light mode" />
-      </span>
-      <span id="theme-label" class="sr-only">Light</span>
-    </button>
   </div>
 </nav>
 
@@ -151,5 +164,15 @@ const navPages = allPages
   document.addEventListener("astro:page-load", () => {
     ThemeContext.instance = undefined;
     ThemeContext.initTheme();
+
+    const searchToggle = document.getElementById("search-toggle");
+    searchToggle?.addEventListener("click", () => {
+      const searchBar = (window as any).SearchBar?.getInstance();
+      if (searchBar) {
+        searchBar.toggle();
+        const isExpanded = searchToggle.getAttribute("aria-expanded") === "true";
+        searchToggle.setAttribute("aria-expanded", (!isExpanded).toString());
+      }
+    });
   });
 </script>

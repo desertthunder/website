@@ -1,0 +1,35 @@
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+type Props = { page: Page<CollectionEntry<"blog" | "bookmarks">>; label?: string };
+
+const { page, label = "" } = Astro.props;
+---
+
+<nav class="pagination" aria-label={label}>
+  <div class="links">
+    {
+      page.url.prev && (
+        <div>
+          <a href={page.url.prev} class="link" data-nav="prev">
+            ← Previous
+          </a>
+        </div>
+      )
+    }
+    <div class="flex justify-center">
+      <span class="info">
+        Page {page.currentPage} of {page.lastPage}
+      </span>
+    </div>
+    {
+      page.url.next && (
+        <div class="flex justify-end">
+          <a href={page.url.next} class="link" data-nav="next">
+            Next →
+          </a>
+        </div>
+      )
+    }
+  </div>
+</nav>

@@ -1,0 +1,340 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<div id="search-container" class="hidden border-b-2 border-dotted border-line bg-panel overflow-hidden slide-in-down">
+  <div class="px-4 md:px-12 py-4">
+    <div class="relative">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search posts, bookmarks, projects..."
+        class="w-full border-2 border-dotted border-line bg-panel text-fg text-sm px-3 py-2 rounded transition-colors focus:border-cyan focus:outline-none placeholder:text-muted"
+        autocomplete="off"
+      />
+    </div>
+
+    <div id="search-results" class="mt-4 max-h-[400px] overflow-y-auto"></div>
+
+    <a
+      id="view-all-link"
+      href="/search"
+      class="items-center gap-1 text-sm text-cyan hover:text-yellow transition-colors duration-200 mt-3 hidden">
+      View all results <Icon name="external-link" class="w-4 h-4" alt="" />
+    </a>
+  </div>
+</div>
+
+<script>
+  import MiniSearch from "minisearch";
+
+  /**
+   * SearchBar manages the search interface using MiniSearch
+   */
+  class SearchBar {
+    private container: HTMLElement | null;
+    private input: HTMLInputElement | null;
+    private resultsContainer: HTMLElement | null;
+    private viewAllLink: HTMLAnchorElement | null;
+    private miniSearch: MiniSearch | null;
+    private documents: any[];
+    private currentQuery: string;
+    static instance?: SearchBar;
+
+    constructor() {
+      this.container = document.getElementById("search-container");
+      this.input = document.getElementById("search-input") as HTMLInputElement;
+      this.resultsContainer = document.getElementById("search-results");
+      this.viewAllLink = document.getElementById("view-all-link") as HTMLAnchorElement;
+      this.miniSearch = null;
+      this.documents = [];
+      this.currentQuery = "";
+    }
+
+    static getInstance(): SearchBar {
+      if (!SearchBar.instance) {
+        SearchBar.instance = new SearchBar();
+      }
+      return SearchBar.instance;
+    }
+
+    /**
+     * Load search index and initialize MiniSearch
+     */
+    async initSearch(): Promise<void> {
+      if (this.miniSearch) return;
+
+      try {
+        const response = await fetch("/search-index.json");
+        this.documents = await response.json();
+
+        this.miniSearch = new MiniSearch({
+          fields: ["title", "description", "text", "tags", "categories"],
+          storeFields: ["title", "description", "url", "type"],
+          searchOptions: { boost: { title: 2, description: 1.5 }, fuzzy: 0.2, prefix: true },
+        });
+
+        this.miniSearch.addAll(this.documents);
+      } catch {}
+    }
+
+    /**
+     * Perform search and display results
+     */
+    search(query: string): void {
+      if (!this.miniSearch || !this.resultsContainer || !this.viewAllLink) return;
+
+      this.currentQuery = query;
+
+      if (!query.trim()) {
+        this.resultsContainer.innerHTML = "";
+        this.viewAllLink.classList.add("hidden");
+        this.viewAllLink.classList.remove("inline-flex");
+        return;
+      }
+
+      const results = this.miniSearch.search(query).slice(0, 10);
+
+      this.viewAllLink.href = `/search?q=${encodeURIComponent(query)}`;
+      this.viewAllLink.classList.remove("hidden");
+      this.viewAllLink.classList.add("inline-flex");
+
+      if (results.length === 0) {
+        this.resultsContainer.innerHTML = '<p class="text-muted text-sm">No results found</p>';
+        return;
+      }
+
+      const html = results
+        .map((result) => {
+          const doc = this.documents.find((d) => d.id === result.id) || {};
+          const tags = doc.tags || [];
+          const categories = doc.categories || [];
+          const allTags = [...tags, ...categories];
+          const text = doc.text || "";
+
+          const matchedField = this.findMatchedField(doc, query);
+          let snippet = "";
+
+          if (matchedField === "content" && text) {
+            snippet = this.extractMatchSnippet(text, query, 60);
+          } else if (matchedField === "description" && doc.description) {
+            snippet = doc.description;
+          } else if (text) {
+            snippet = this.truncate(text, 100);
+          }
+
+          return `
+          <a href="${result.url}" class="block border-2 border-dotted border-line bg-panel p-3 mb-2 rounded transition-colors hover:border-cyan no-underline group">
+            <div class="text-sm font-bold text-fg mb-1 group-hover:text-cyan">${this.highlightMatch(result.title, query)}</div>
+            ${result.description && matchedField !== "title" ? `<div class="text-muted text-xs mb-1">${this.highlightMatch(result.description, query)}</div>` : ""}
+            ${snippet ? `<div class="text-muted text-[0.7rem] mb-2 leading-snug">${this.highlightMatch(snippet, query)}</div>` : ""}
+            <div class="flex justify-between items-center gap-2 flex-wrap">
+              <span class="text-muted text-[0.625rem] uppercase tracking-wide">${result.type}</span>
+              ${
+                allTags.length > 0
+                  ? `<div class="flex gap-1 flex-wrap">${allTags
+                      .slice(0, 3)
+                      .map((tag) => `<span class="bg-line text-fg text-[0.625rem] px-1.5 py-0.5 rounded">${tag}</span>`)
+                      .join("")}</div>`
+                  : ""
+              }
+            </div>
+          </a>
+        `;
+        })
+        .join("");
+
+      this.resultsContainer.innerHTML = html;
+    }
+
+    /**
+     * Truncate text to specified length
+     */
+    truncate(text: string, maxLength: number): string {
+      if (text.length <= maxLength) return text;
+      return text.slice(0, maxLength).trim() + "...";
+    }
+
+    /**
+     * Extract snippet around matched term
+     */
+    extractMatchSnippet(text: string, query: string, contextLength: number = 60): string {
+      const terms = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 0);
+      const textLower = text.toLowerCase();
+
+      let matchPos = -1;
+      let matchedTerm = "";
+
+      for (const term of terms) {
+        const pos = textLower.indexOf(term);
+        if (pos !== -1 && (matchPos === -1 || pos < matchPos)) {
+          matchPos = pos;
+          matchedTerm = term;
+        }
+      }
+
+      if (matchPos === -1) {
+        return this.truncate(text, contextLength * 2);
+      }
+
+      const start = Math.max(0, matchPos - contextLength);
+      const end = Math.min(text.length, matchPos + matchedTerm.length + contextLength);
+
+      let snippet = text.slice(start, end);
+
+      if (start > 0) snippet = "..." + snippet;
+      if (end < text.length) snippet = snippet + "...";
+
+      return snippet;
+    }
+
+    /**
+     * Find which field matched
+     */
+    findMatchedField(doc: any, query: string): string {
+      const terms = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 0);
+
+      if (doc.title && terms.some((t) => doc.title.toLowerCase().includes(t))) {
+        return "title";
+      }
+
+      const allTags = [...(doc.tags || []), ...(doc.categories || [])];
+      if (allTags.some((tag) => terms.some((t) => tag.toLowerCase().includes(t)))) {
+        return "tags";
+      }
+
+      if (doc.description && terms.some((t) => doc.description.toLowerCase().includes(t))) {
+        return "description";
+      }
+
+      if (doc.text && terms.some((t) => doc.text.toLowerCase().includes(t))) {
+        return "content";
+      }
+
+      return "unknown";
+    }
+
+    /**
+     * Highlight matching terms in text
+     */
+    highlightMatch(text: string, query: string): string {
+      const terms = query.toLowerCase().split(/\s+/);
+      let highlighted = text;
+
+      for (const term of terms) {
+        if (term.length === 0) continue;
+        const regex = new RegExp(`(${this.escapeRegex(term)})`, "gi");
+        highlighted = highlighted.replace(regex, "<mark>$1</mark>");
+      }
+
+      return highlighted;
+    }
+
+    escapeRegex(str: string): string {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    /**
+     * Show the search bar with animation
+     */
+    show(): void {
+      if (!this.container) return;
+      this.container.classList.remove("hidden");
+      this.container.classList.add("slide-in-down");
+
+      setTimeout(() => {
+        this.input?.focus();
+      }, 100);
+    }
+
+    /**
+     * Hide the search bar
+     */
+    hide(): void {
+      if (!this.container || !this.input || !this.resultsContainer || !this.viewAllLink) return;
+      this.container.classList.add("hidden");
+      this.container.classList.remove("slide-in-down");
+      this.input.value = "";
+      this.resultsContainer.innerHTML = "";
+      this.viewAllLink.classList.add("hidden");
+      this.viewAllLink.classList.remove("inline-flex");
+      this.currentQuery = "";
+    }
+
+    /**
+     * Toggle search bar visibility
+     */
+    toggle(): void {
+      if (!this.container) return;
+      if (this.container.classList.contains("hidden")) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    }
+
+    /**
+     * Set up event listeners
+     */
+    setupListeners(): void {
+      if (!this.input) return;
+
+      this.input.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value;
+        this.search(query);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !this.container?.classList.contains("hidden")) {
+          this.hide();
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          this.container &&
+          !this.container.contains(e.target as Node) &&
+          !(e.target as Element).closest("#search-toggle")
+        ) {
+          this.hide();
+        }
+      });
+    }
+
+    /**
+     * Initialize the search bar
+     */
+    static async init(): Promise<void> {
+      const searchBar = SearchBar.getInstance();
+      await searchBar.initSearch();
+      searchBar.setupListeners();
+    }
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    SearchBar.instance = undefined;
+    SearchBar.init();
+  });
+
+  (window as any).SearchBar = SearchBar;
+</script>
+
+<style>
+  @reference "../styles/global.css";
+  @reference "../styles/animations.css";
+
+  #search-container.slide-in-down {
+    animation-duration: var(--duration-fast);
+    animation-timing-function: var(--ease-out);
+  }
+
+  #search-results :global(mark) {
+    @apply bg-yellow text-bg px-1 py-0.5 rounded;
+  }
+</style>

@@ -1,13 +1,10 @@
 ---
-type MetadataItem = { label?: string; value: string; href?: string; external?: boolean };
+import type { MetadataItem } from "$utils/types";
+import Icon from "./Icon.astro";
 
-type Props = {
-  title: string;
-  metadata: MetadataItem[];
-  tags?: { name: string; href: string }[];
-};
+type Props = { title: string; metadata: MetadataItem[]; tags?: { name: string; href: string }[] };
 
-const { title, metadata, tags } = Astro.props;
+const { title, metadata, tags = [] } = Astro.props;
 ---
 
 <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
@@ -19,15 +16,15 @@ const { title, metadata, tags } = Astro.props;
         item.href ? (
           <a
             href={item.href}
-            class="text-cyan hover:underline"
+            class="text-cyan hover:underline inline-flex items-center gap-1"
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}>
-            {item.label && <span class="text-muted">{item.label}: </span>}
-            {item.value}
+            {item.label && <span class="text-muted">{item.label}</span>}
+            {item.external ? <Icon name="external-link" class="inline-flex items-center" /> : item.value}
           </a>
         ) : (
           <span>
-            {item.label && <span class="font-semibold">{item.label}: </span>}
+            {item.label && <span class="font-semibold">{item.label}</span>}
             {item.value}
           </span>
         ),
@@ -36,7 +33,7 @@ const { title, metadata, tags } = Astro.props;
   </div>
 
   {
-    tags && tags.length > 0 && (
+    tags.length > 0 && (
       <div class="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <a href={tag.href} class="tag">

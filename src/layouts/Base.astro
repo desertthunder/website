@@ -1,6 +1,7 @@
 ---
 import Header from "$components/Header.astro";
 import Nav from "$components/Nav.astro";
+import SearchBar from "$components/SearchBar.astro";
 import Footer from "$components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 import { createSlideTransition } from "$utils/animations";
@@ -65,6 +66,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
       <Nav currentPath={Astro.url.pathname} />
+      <SearchBar />
       <Header title="Desert Thunder" />
       <main class="grow py-4">
         <div class="max-w-5xl mx-auto px-4 md:px-8">
