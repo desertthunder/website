@@ -1,5 +1,7 @@
 ---
-type SocialLink = { label: string; name: "gh" | "bluesky" | "linkedin"; url: string; alt?: string };
+import { Image } from "astro:assets";
+import brainmade from "./images/brainmade-dark.png";
+
 type Props = {
   name: string;
   socialLinks: { linkedin: string; bluesky: string; gh: string; tangled: string; codeberg: string };
@@ -15,7 +17,7 @@ const currentYear = new Date().getFullYear();
   <div class="max-w-5xl mx-auto px-4 md:px-8 grid grid-cols-2">
     <section class="flex flex-col items-start justify-between gap-2">
       <a href="https://owais.omg.lol/now" target="_blank" rel="noopener noreferrer">Now</a>
-      <img src="/images/brainmade-dark.png" alt="Brain Made" class="w-32 py-2" />
+      <Image src={brainmade} alt="Brain Made" class="w-32 py-2" />
     </section>
     <section class="flex flex-col items-end justify-start">
       <div>Desert Thunder</div>
