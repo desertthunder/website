@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import ArticleHeader from "$components/ArticleHeader.astro";
+import { truncateWords } from "$utils/text";
+
+export const getStaticPaths = (async () => {
+  const bookmarks = await getCollection("bookmarks");
+  return bookmarks.map((bookmark) => ({ params: { slug: bookmark.slug }, props: { bookmark } }));
+}) satisfies GetStaticPaths;
+
+const { bookmark } = Astro.props;
+const { Content } = await bookmark.render();
+
+const description = bookmark.body ? truncateWords(bookmark.body, 40) : `Bookmark: ${bookmark.data.title}`;
+const dateStr = bookmark.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+const allBookmarks = (await getCollection("bookmarks")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = allBookmarks.findIndex((b) => b.slug === bookmark.slug);
+const prevBookmark = currentIndex < allBookmarks.length - 1 ? allBookmarks[currentIndex + 1] : null;
+const nextBookmark = currentIndex > 0 ? allBookmarks[currentIndex - 1] : null;
+---
+
+<Base title={`${bookmark.data.title} — Bookmarks — Owais Jamil`} description={description} ogImage="/og/page/home.png">
+  <article class="flex flex-col">
+    <ArticleHeader
+      title={bookmark.data.title}
+      metadata={[{ value: dateStr }, { label: "Visit Site", value: "↗", href: bookmark.data.url, external: true }]}
+      tags={bookmark.data.categories.map((category) => ({ name: category, href: `/tags/${category}` }))}
+    />
+
+    <div data-prose class="mb-10 flex-1">
+      {bookmark.body && <Content />}
+    </div>
+
+    <nav aria-label="Bookmark navigation" class="mt-8 pt-8 border-t-2 border-dotted border-line">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          {
+            prevBookmark && (
+              <a
+                href={`/bookmarks/${prevBookmark.slug}/`}
+                data-nav="prev"
+                class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+                <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+                <span class="block text-cyan">{prevBookmark.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+        <div class="md:text-right">
+          {
+            nextBookmark && (
+              <a
+                href={`/bookmarks/${nextBookmark.slug}/`}
+                data-nav="next"
+                class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+                <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+                <span class="block text-cyan">{nextBookmark.data.title}</span>
+              </a>
+            )
+          }
+        </div>
+      </div>
+      <a
+        href="/bookmarks"
+        data-nav="prev"
+        class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+        <span class="block text-cyan align-middle">← All Bookmarks</span>
+      </a>
+    </nav>
+  </article>
+</Base>

@@ -1,0 +1,124 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Props = { project: CollectionEntry<"projects"> };
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+
+const allProjects = (await getCollection("projects")).toSorted((a, b) => {
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+
+const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
+const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+---
+
+<Base title={`${project.data.title} — Owais Jamil`} description={project.data.description} ogImage="/og/page/home.png">
+  <article>
+    <header class="mb-8 pb-6 border-b-2 border-dotted border-line">
+      <h1 class="text-3xl md:text-4xl text-cyan mb-4">{project.data.title}</h1>
+      <div class="flex items-center gap-4 mb-4">
+        <span class="text-yellow font-semibold">{project.data.status}</span>
+        <a href={project.data.repo} target="_blank" rel="noopener noreferrer" class="text-cyan hover:underline">
+          GitHub →
+        </a>
+      </div>
+      {
+        project.data.tech.length > 0 && (
+          <div class="flex items-center gap-2 flex-wrap mb-4">
+            <span class="text-muted font-semibold text-sm">Tech Stack:</span>
+            {project.data.tech.map((tech: string) => (
+              <span class="bg-panel text-cyan px-3 py-1 rounded text-xs border border-line font-mono">
+                {tech}
+              </span>
+            ))}
+          </div>
+        )
+      }
+      {
+        project.data.tags.length > 0 && (
+          <div class="flex gap-2 flex-wrap">
+            {project.data.tags.map((tag: string) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div data-prose>
+      <Content />
+    </div>
+
+    <nav aria-label="Project navigation" class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        {
+          prevProject && (
+            <a href={`/projects/${prevProject.slug}/`} data-nav="prev" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+              <span class="block text-cyan">{prevProject.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+      <div class="md:text-right">
+        {
+          nextProject && (
+            <a href={`/projects/${nextProject.slug}/`} data-nav="next" class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+              <span class="block text-cyan">{nextProject.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </article>
+</Base>
+
+<script>
+  document.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
+    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
+
+    if (e.key === "ArrowLeft") {
+      prevLink?.click();
+    } else if (e.key === "ArrowRight") {
+      nextLink?.click();
+    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "[") {
+          prevLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "]") {
+          nextLink?.click();
+        }
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+      document.addEventListener("keydown", handleSecondBracket);
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    }
+  });
+</script>

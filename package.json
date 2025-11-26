@@ -1,74 +1,32 @@
 {
-	"name": "desertthunder-website",
-	"version": "0.1.0",
-	"description": "Owais Jamil's personal website",
-	"author": "Owais Jamil",
-	"license": "ISC",
-	"type": "module",
-	"engines": {
-		"node": ">=20.x.x"
-	},
-	"scripts": {
-		"clean": "rimraf dist",
-		"clean:dev": "rimraf dist src/_includes/css src/_includes/scripts",
-		"favicons": "node ./src/_config/setup/generate-favicons.js",
-		"colors": "node ./src/_config/setup/create-colors.js",
-		"screenshots": "node ./src/_config/setup/generate-screenshots.js",
-		"dev:clean": "rimraf src/assets/og-images",
-		"dev:11ty": "cross-env ELEVENTY_ENV=development eleventy --serve --watch",
-		"build:11ty": "cross-env ELEVENTY_ENV=production eleventy",
-		"start": "npm run clean:dev && npm run dev:clean & npm run dev:11ty",
-		"build": "npm run clean && npm run build:11ty",
-		"dev": "npm start"
-	},
-	"keywords": [],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/desertthunder/website.git"
-	},
-	"dependencies": {
-		"@11ty/eleventy": "^3.1.2",
-		"@11ty/eleventy-fetch": "^5.1.0",
-		"@11ty/eleventy-img": "^6.0.4",
-		"@11ty/eleventy-plugin-rss": "^2.0.4",
-		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.2",
-		"@11ty/eleventy-plugin-webc": "^0.11.2",
-		"@11ty/is-land": "^4.0.1",
-		"lite-youtube-embed": "^0.3.3",
-		"tailwindcss": "^3.4.17"
-	},
-	"devDependencies": {
-		"@toycode/markdown-it-class": "^1.2.4",
-		"autoprefixer": "^10.4.21",
-		"colorjs.io": "^0.5.2",
-		"cross-env": "^7.0.3",
-		"cssnano": "^7.1.1",
-		"dayjs": "^1.11.18",
-		"dotenv": "^16.6.1",
-		"esbuild": "^0.24.2",
-		"html-minifier-terser": "^7.2.0",
-		"js-yaml": "^4.1.0",
-		"markdown-it": "^14.1.0",
-		"markdown-it-abbr": "^2.0.0",
-		"markdown-it-anchor": "^9.2.0",
-		"markdown-it-attrs": "^4.3.1",
-		"markdown-it-emoji": "^3.0.0",
-		"markdown-it-footnote": "^4.0.0",
-		"markdown-it-link-attributes": "^4.0.1",
-		"markdown-it-mark": "^4.0.0",
-		"markdown-it-prism": "^2.3.1",
-		"netlify-plugin-cache": "^1.0.3",
-		"postcss": "^8.5.6",
-		"postcss-cli": "^11.0.1",
-		"postcss-import": "^16.1.1",
-		"postcss-import-ext-glob": "^2.1.1",
-		"postcss-js": "^4.0.1",
-		"prettier-plugin-jinja-template": "^2.1.0",
-		"rimraf": "^6.0.1",
-		"sanitize-html": "^2.17.0",
-		"sharp": "^0.33.5",
-		"sharp-ico": "^0.1.5",
-		"slugify": "^1.6.6",
-		"svgo": "^3.3.2"
-	}
+  "name": "site",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.13",
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/crimson-pro": "^5.2.8",
+    "@fontsource-variable/dm-sans": "^5.2.7",
+    "@fontsource-variable/google-sans-code": "^5.2.3",
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/vite": "^4.1.16",
+    "astro": "5.14.8",
+    "inquirer": "^13.0",
+    "linkify-string": "^4.3.2",
+    "linkifyjs": "^4.3.2",
+    "minisearch": "^7.2.0",
+    "satori": "^0.18.3",
+    "tailwindcss": "^4.1.16"
+  },
+  "devDependencies": {
+    "cheerio": "^1.1.2",
+    "prettier": "3.6.2",
+    "prettier-plugin-astro": "0.14.1"
+  }
 }

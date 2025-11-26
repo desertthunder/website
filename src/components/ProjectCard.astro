@@ -1,0 +1,88 @@
+---
+import BaseCard from "./BaseCard.astro";
+
+type Props = {
+  slug: string;
+  title: string;
+  description: string;
+  status: string;
+  tech: string[];
+  tags: string[];
+  repo: string;
+};
+
+const { slug, title, description, status, tech, tags, repo } = Astro.props;
+const initialTags = tags.slice(0, 2);
+const hiddenTags = tags.slice(2);
+---
+
+<BaseCard>
+  <a href={`/projects/${slug}`} slot="header">
+    <h2 class="text-4xl">{title}</h2>
+  </a>
+  <span class="status" slot="header">{status}</span>
+
+  <p>{description}</p>
+
+  {
+    tech.length > 0 && (
+      <div class="tech-stack">
+        <span class="label">Tech:</span>
+        {tech.map((t) => (
+          <span class="badge">{t}</span>
+        ))}
+      </div>
+    )
+  }
+
+  {
+    tags.length > 0 && (
+      <div class="categories" data-expanded="false" slot="categories">
+        {initialTags.map((tag) => (
+          <span class="category">{tag}</span>
+        ))}
+        {hiddenTags.map((tag) => (
+          <span class="category is-hidden" data-hidden>
+            {tag}
+          </span>
+        ))}
+        {hiddenTags.length > 0 && (
+          <button type="button" class="category toggle" data-toggle aria-expanded="false">
+            <span aria-hidden="true">...</span>
+            <span class="sr-only">Show all tags</span>
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  <a href={repo} target="_blank" rel="noopener noreferrer" slot="footer" class="font-mono text-xl">
+    {repo.includes("github") ? "View on GitHub" : "View Source Code"} →
+  </a>
+</BaseCard>
+
+<script>
+  import { setupTagToggles } from "$utils/tag-toggle";
+  setupTagToggles();
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  .status {
+    @apply font-mono;
+  }
+
+  .tech-stack {
+    @apply flex items-center gap-2 flex-wrap mb-1 px-6 py-2;
+  }
+
+  .tech-stack .label {
+    @apply text-muted text-xl font-semibold;
+  }
+
+  .tech-stack .badge {
+    background: color-mix(in oklab, var(--panel), black 12%);
+    @apply text-cyan px-2.5 py-1 rounded-sm text-lg border border-line;
+  }
+</style>

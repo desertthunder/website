@@ -1,0 +1,178 @@
+---
+import { getCollection } from "astro:content";
+import Icon from "./Icon.astro";
+
+type Props = { currentPath: string };
+
+const { currentPath } = Astro.props;
+
+const allPages = await getCollection("pages");
+const navPages = allPages
+  .filter((page) => page.data.showInNav)
+  .sort((a, b) => (a.data.navOrder || 0) - (b.data.navOrder || 0));
+---
+
+<nav class="p-4 border-b-2 border-dotted border-line bg-panel">
+  <div class="px-4 md:px-12 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <a
+        href="https://github.com/desertthunder"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-red transition-all duration-200"
+        aria-label="GitHub">
+      </a>
+      <a
+        href="https://tangled.org/desertthunder.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-yellow transition-all duration-200"
+        aria-label="Tangled">
+      </a>
+      <a
+        href="https://linkedin.com/in/owais-jamil"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-4 h-4 rounded-full bg-muted hover:bg-cyan transition-all duration-200"
+        aria-label="LinkedIn">
+      </a>
+    </div>
+    <div class="flex items-center gap-4">
+      {
+        navPages.map((page) => (
+          <a href={page.data.path} aria-current={currentPath === page.data.path ? "page" : undefined}>
+            {page.data.navLabel || page.data.title}
+          </a>
+        ))
+      }
+      <a href="/projects" aria-current={currentPath === "/projects" ? "page" : undefined}>Projects</a>
+      <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
+      <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
+      <a href="/feeds" aria-current={currentPath.startsWith("/feeds") ? "page" : undefined}>Feeds</a>
+      <div class="flex items-center gap-2">
+        {
+          !currentPath.startsWith("/search") && (
+            <button
+              id="search-toggle"
+              class="flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+              aria-label="Toggle search"
+              aria-expanded="false">
+              <Icon name="search" alt="Search" />
+            </button>
+          )
+        }
+        <button
+          id="theme-toggle"
+          class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+          aria-label="Toggle theme">
+          <span id="theme-icon" aria-hidden="true">
+            <Icon name="sun" alt="Light mode" />
+          </span>
+          <span id="theme-label" class="sr-only">Light</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  import sunIcon from "./icons/sun.svg?raw";
+  import moonIcon from "./icons/moon.svg?raw";
+
+  /**
+   * Singleton to manage theme toggling and persistence
+   */
+  class ThemeContext {
+    toggle: HTMLElement | null;
+    icon: HTMLElement | null;
+    label: HTMLElement | null;
+    static instance?: ThemeContext;
+
+    constructor() {
+      this.toggle = document.getElementById("theme-toggle");
+      this.icon = document.getElementById("theme-icon");
+      this.label = document.getElementById("theme-label");
+    }
+
+    static getInstance(): ThemeContext {
+      if (!ThemeContext.instance) {
+        ThemeContext.instance = new ThemeContext();
+      }
+
+      return ThemeContext.instance;
+    }
+
+    /**
+     * Sync UI controls with current theme without changing the theme
+     */
+    syncUI(): void {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      if (currentTheme === "dark") {
+        if (this.icon) this.icon.innerHTML = sunIcon;
+        if (this.label) this.label.textContent = "Dark";
+      } else {
+        if (this.icon) this.icon.innerHTML = moonIcon;
+        if (this.label) this.label.textContent = "Light";
+      }
+    }
+
+    /**
+     * Apply theme to document and persist to localStorage
+     */
+    applyTheme(newTheme: string): void {
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      this.syncUI();
+    }
+
+    clickListener(): void {
+      this.toggle?.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        this.applyTheme(newTheme);
+      });
+    }
+
+    mediaListener(): void {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        if (!localStorage.getItem("theme")) {
+          this.applyTheme(e.matches ? "dark" : "light");
+        }
+      });
+    }
+
+    /* dark mode currently forced */
+    static _initTheme(): void {
+      const context = ThemeContext.getInstance();
+
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = stored || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+
+      context.syncUI();
+      context.clickListener();
+      context.mediaListener();
+    }
+
+    static initTheme(): void {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+    }
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    ThemeContext.instance = undefined;
+    ThemeContext.initTheme();
+
+    const searchToggle = document.getElementById("search-toggle");
+    searchToggle?.addEventListener("click", () => {
+      const searchBar = (window as any).SearchBar?.getInstance();
+      if (searchBar) {
+        searchBar.toggle();
+        const isExpanded = searchToggle.getAttribute("aria-expanded") === "true";
+        searchToggle.setAttribute("aria-expanded", (!isExpanded).toString());
+      }
+    });
+  });
+</script>

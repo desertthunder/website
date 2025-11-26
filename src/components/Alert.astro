@@ -1,0 +1,68 @@
+---
+type Props = { id?: string; type?: "error" | "success" | "info" };
+
+const { id = "alert", type = "error" } = Astro.props;
+---
+
+<div id={id} class="alert hidden" data-type={type} role="alert" aria-live="assertive">
+  <div class="alert-content">
+    <span class="alert-icon" aria-hidden="true">!</span>
+    <p class="alert-message"></p>
+    <button type="button" class="alert-close" aria-label="Close alert">×</button>
+  </div>
+</div>
+
+<style>
+  @reference "../styles/global.css";
+
+  .alert {
+    @apply fixed top-4 right-4 z-50 max-w-md;
+    @apply bg-panel border-2 border-dotted rounded px-6 py-4;
+    @apply shadow-lg;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .alert.hidden {
+    @apply hidden;
+  }
+
+  .alert[data-type="error"] {
+    @apply border-red text-red;
+  }
+
+  .alert[data-type="success"] {
+    @apply border-green text-green;
+  }
+
+  .alert[data-type="info"] {
+    @apply border-cyan text-cyan;
+  }
+
+  .alert-content {
+    @apply flex items-start gap-3;
+  }
+
+  .alert-icon {
+    @apply text-3xl font-bold shrink-0;
+  }
+
+  .alert-message {
+    @apply flex-1 text-xl text-fg;
+  }
+
+  .alert-close {
+    @apply text-3xl leading-none shrink-0 text-muted;
+    @apply hover:text-fg cursor-pointer;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+</style>

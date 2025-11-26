@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import CollapsibleBlogPost from "../../components/CollapsibleBlogPost.astro";
+import BookmarkCard from "../../components/BookmarkCard.astro";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("blog");
+  const bookmarks = await getCollection("bookmarks");
+  const tags = new Set<string>();
+
+  posts.forEach((post) => {
+    post.data.tags.forEach((tag) => tags.add(tag));
+  });
+
+  bookmarks.forEach((bookmark) => {
+    bookmark.data.categories.forEach((category) => tags.add(category));
+  });
+
+  return Array.from(tags).map((tag) => ({
+    params: { tag },
+    props: {
+      posts: posts
+        .filter((post) => post.data.tags.includes(tag) && !post.data.draft)
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+      bookmarks: bookmarks
+        .filter((bookmark) => bookmark.data.categories.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { posts, bookmarks } = Astro.props;
+---
+
+<Base title={`Tag: ${tag} — Owais Jamil`}>
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Tagged: {tag}</h2>
+
+    {
+      posts.length > 0 && (
+        <div class="mb-12">
+          <h3 class="text-2xl md:text-3xl text-blue mb-6">Posts</h3>
+          <div class="space-y-2">
+            {posts.map((post) => (
+              <CollapsibleBlogPost
+                slug={post.slug}
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      bookmarks.length > 0 && (
+        <div>
+          <h3 class="text-2xl md:text-3xl text-yellow mb-6">Bookmarks</h3>
+          <div class="space-y-6">
+            {bookmarks.map((bookmark) => (
+              <BookmarkCard
+                slug={bookmark.slug}
+                title={bookmark.data.title}
+                url={bookmark.data.url}
+                date={bookmark.data.date}
+                categories={bookmark.data.categories}
+                content={bookmark.body}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </section>
+</Base>

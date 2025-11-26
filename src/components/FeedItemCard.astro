@@ -1,0 +1,64 @@
+---
+import BaseCard from "./BaseCard.astro";
+import type { FeedItem } from "$utils/types";
+
+type Props = FeedItem;
+
+const { title, summary, author, url, published_at, source_kind } = Astro.props;
+const publishedDate = new Date(published_at);
+const dateStr = publishedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+function extractFirstParagraph(html: string | null): string | null {
+  if (!html) return null;
+
+  const startMatch = html.match(/<p[^>]*>/i);
+  if (!startMatch) return null;
+
+  const startIndex = startMatch.index!;
+  const afterStart = html.substring(startIndex);
+
+  const endMatch = afterStart.match(/<\/p>/i);
+  if (!endMatch) return null;
+
+  const endIndex = endMatch.index! + endMatch[0].length;
+  return afterStart.substring(0, endIndex).trim();
+}
+
+const isBearBlog = source_kind === "bearblog";
+const bearBlogContent = isBearBlog && summary ? extractFirstParagraph(summary) : null;
+const displaySummary = !isBearBlog ? summary : null;
+---
+
+<BaseCard>
+  <a href={url} target="_blank" rel="noopener noreferrer" slot="header">
+    <h2 class="text-4xl">{title || summary || "Untitled"}</h2>
+  </a>
+  <time datetime={published_at} slot="header">{dateStr}</time>
+
+  {
+    bearBlogContent ? (
+      <section set:html={bearBlogContent} class="text-lg" />
+    ) : displaySummary && displaySummary !== title ? (
+      <p>{displaySummary}</p>
+    ) : (
+      <p class="text-muted text-lg">
+        <em>No summary available.</em>
+      </p>
+    )
+  }
+
+  <footer slot="footer" class="flex items-center justify-between">
+    {author && !author.includes("hidden") ? <div class="text-muted text-xl">by {author}</div> : <div />}
+    <a href={url} target="_blank" rel="noopener noreferrer" title={url} class="font-serif text-xl">
+      View on {source_kind} →
+    </a>
+  </footer>
+</BaseCard>
+
+<style>
+  @reference "../styles/global.css";
+
+  article p {
+    word-break: break-word;
+  }
+</style>

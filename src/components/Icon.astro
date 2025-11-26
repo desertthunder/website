@@ -1,0 +1,49 @@
+---
+/**
+ * NOTE that for proper alignment of icons, "inline-flex items-center" must be prepended to the css class list.
+ */
+
+import gh from "./icons/gh.svg?raw";
+import bluesky from "./icons/bluesky.svg?raw";
+import linkedin from "./icons/linkedin.svg?raw";
+import rss from "./icons/rss.svg?raw";
+import sun from "./icons/sun.svg?raw";
+import moon from "./icons/moon.svg?raw";
+import chevronUp from "./icons/chevron-up.svg?raw";
+import externalLink from "./icons/external-link.svg?raw";
+import bolt from "./icons/bolt.svg?raw";
+import search from "./icons/search.svg?raw";
+import type { IconName } from "$utils/types";
+
+type Props = { name: IconName; class?: string; alt?: string };
+
+const { name, class: className = "", alt = "" } = Astro.props;
+const icons: Record<IconName, string> = {
+  gh,
+  bluesky,
+  linkedin,
+  rss,
+  sun,
+  moon,
+  "chevron-up": chevronUp,
+  "external-link": externalLink,
+  bolt,
+  search,
+};
+
+const svgContent = icons[name];
+---
+
+<span class={`inline-flex items-center ${className}`} set:html={svgContent} aria-label={alt} />
+
+<style>
+  @reference "../styles/global.css";
+
+  span {
+    @apply group-hover:text-sky-400 text-sm;
+  }
+
+  span svg {
+    @apply inline-flex align-middle duration-300;
+  }
+</style>

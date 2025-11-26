@@ -1,0 +1,396 @@
+@import "tailwindcss";
+@import "@fontsource-variable/crimson-pro/index.css";
+@import "@fontsource-variable/dm-sans/index.css";
+@import "@fontsource-variable/google-sans-code/index.css";
+
+/* Light mode (Nord Light) */
+:root,
+:root[data-theme="light"] {
+  --color-bg: #e5e9f0;
+  --color-fg: #2e3440;
+  --color-muted: #60728c;
+  --color-panel: #c2d0e7;
+  --color-line: #aebacf;
+  --color-cursor: #3b4252;
+  --color-red: #99324b;
+  --color-green: #4f894c;
+  --color-yellow: #9a7500;
+  --color-blue: #3b6ea8;
+  --color-magenta: #97365b;
+  --color-cyan: #398eac;
+  --shadow-custom: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode (Iceberg) */
+:root[data-theme="dark"] {
+  --color-bg: #161821;
+  --color-fg: #c6c8d1;
+  --color-muted: #6b7089;
+  --color-panel: #1e2132;
+  --color-line: #353a50;
+  --color-cursor: #d2d4de;
+  --color-red: #e27878;
+  --color-green: #b4be82;
+  --color-yellow: #e2a478;
+  --color-blue: #84a0c6;
+  --color-magenta: #a093c7;
+  --color-cyan: #89b8c2;
+  --shadow-custom: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+@theme {
+  --color-bg: var(--color-bg);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-panel: var(--color-panel);
+  --color-line: var(--color-line);
+  --color-cursor: var(--color-cursor);
+  --color-red: var(--color-red);
+  --color-green: var(--color-green);
+  --color-yellow: var(--color-yellow);
+  --color-blue: var(--color-blue);
+  --color-magenta: var(--color-magenta);
+  --color-cyan: var(--color-cyan);
+  --font-serif: "Crimson Pro Variable", serif;
+  --font-sans: "DM Sans Variable", sans-serif;
+  --font-mono: "Google Sans Code Variable", monospace;
+  --default-font-family: "DM Sans Variable", sans-serif;
+  --shadow-custom: var(--shadow-custom);
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+#application {
+  @apply flex flex-col min-h-screen;
+}
+
+body {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+a {
+  @apply text-cyan no-underline hover:underline hover:underline-offset-auto;
+}
+
+nav {
+  font-family: var(--font-serif);
+}
+
+nav a {
+  @apply text-fg text-3xl font-medium;
+  @apply hover:text-cyan transition-colors duration-200;
+}
+
+nav a[aria-current="page"] {
+  @apply text-cyan;
+}
+
+[data-card] {
+  @apply my-6 bg-panel border-dotted border-line border-2 rounded drop-shadow-sm shadow-lg;
+  @apply hover:border-cyan hover:shadow-cyan/15 duration-300;
+}
+
+[data-card] span {
+  @apply text-yellow;
+}
+
+[data-card] header {
+  @apply flex justify-between gap-4 flex-wrap items-baseline p-4 mb-4 border-b border-dotted border-b-line;
+}
+
+[data-card] header a {
+  @apply hover:underline hover:underline-offset-2 mb-2;
+}
+
+[data-card] header h3 {
+  @apply text-cyan font-bold text-4xl;
+}
+
+[data-card] time,
+[data-card] span {
+  @apply text-muted whitespace-nowrap text-2xl;
+}
+
+[data-card] p {
+  @apply m-4 mb-2 text-fg px-2 py-2.5;
+}
+
+.categories,
+.tags {
+  @apply mt-0 mb-2 p-2 pl-5 pr-0 flex gap-2 flex-wrap;
+}
+
+.category.toggle {
+  @apply bg-transparent cursor-pointer text-muted border border-dotted border-line inline-flex items-center justify-center min-w-8;
+}
+
+.category.is-hidden {
+  @apply border-0 m-0 p-0 overflow-hidden opacity-0 max-h-0 max-w-0;
+}
+
+.category,
+.tag {
+  background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);
+  @apply text-fg px-3 py-1.5 rounded text-base border border-line inline-flex items-center;
+  @apply hover:bg-cyan hover:text-bg hover:border-cyan duration-300;
+}
+
+.categories[data-expanded="true"] .category.is-hidden {
+  @apply max-h-full max-w-full opacity-100 px-3 py-1.5 rounded text-base border border-line inline-flex items-center;
+  background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);
+  margin: 0;
+  overflow: visible;
+}
+
+.categories[data-expanded="true"] .category.toggle span[aria-hidden="true"] {
+  @apply text-xl;
+}
+
+.pagination {
+  @apply pb-4 pt-8 border-t border-t-line border-dotted;
+}
+
+.pagination .links {
+  @apply grid grid-cols-3;
+}
+
+.pagination .link {
+  @apply text-cyan px-4 py-2 border border-line border-dotted rounded-sm duration-300 bg-panel;
+  @apply hover:bg-panel hover:border-cyan;
+  @apply max-2xl:text-center m-0;
+}
+
+.pagination .info {
+  @apply text-muted;
+}
+
+[data-prose] {
+  @apply leading-relaxed text-3xl;
+  font-family: var(--font-sans);
+}
+
+[data-prose] h1,
+[data-prose] h2,
+[data-prose] h3,
+[data-prose] h4,
+[data-prose] h5,
+[data-prose] h6 {
+  @apply mt-8 mb-4 font-medium leading-tight text-cyan;
+  font-family: var(--font-serif);
+}
+
+[data-prose] h1 {
+  @apply border-b border-line border-2 text-6xl pb-2;
+}
+
+[data-prose] h2 {
+  @apply text-5xl border-b border-line pb-1.5;
+}
+
+[data-prose] h3 {
+  @apply text-4xl text-blue;
+}
+
+[data-prose] h4 {
+  @apply text-3xl text-blue;
+}
+
+[data-prose] h5,
+[data-prose] h6 {
+  @apply text-magenta text-2xl;
+}
+
+[data-prose] p {
+  @apply my-6 mt-0;
+}
+
+[data-prose] a {
+  @apply text-cyan underline decoration-line underline-offset-[0.2em] duration-300;
+  @apply hover:decoration-cyan;
+}
+
+[data-prose] strong {
+  @apply text-yellow font-bold;
+}
+
+[data-prose] em {
+  @apply text-magenta italic;
+  font-family: var(--font-serif);
+}
+
+[data-prose] code {
+  @apply bg-panel text-green py-1 px-2 rounded-sm text-xl border border-line;
+  font-family: var(--font-mono);
+}
+
+[data-prose] pre {
+  @apply bg-panel border border-line rounded-lg p-6 overflow-x-auto my-8;
+  line-height: 1.6;
+}
+
+[data-prose] pre code {
+  @apply bg-transparent border-0 p-0 text-3xl;
+  font-family: var(--font-mono);
+}
+
+[data-prose] pre code .token.comment,
+[data-prose] pre code .token.prolog,
+[data-prose] pre code .token.doctype,
+[data-prose] pre code .token.cdata {
+  @apply text-muted italic;
+}
+
+[data-prose] pre code .token.punctuation {
+  @apply text-fg;
+}
+
+[data-prose] pre code .token.property,
+[data-prose] pre code .token.tag,
+[data-prose] pre code .token.boolean,
+[data-prose] pre code .token.number,
+[data-prose] pre code .token.constant,
+[data-prose] pre code .token.symbol,
+[data-prose] pre code .token.deleted {
+  @apply text-red;
+}
+
+[data-prose] pre code .token.selector,
+[data-prose] pre code .token.attr-name,
+[data-prose] pre code .token.string,
+[data-prose] pre code .token.char,
+[data-prose] pre code .token.builtin,
+[data-prose] pre code .token.inserted {
+  @apply text-green;
+}
+
+[data-prose] pre code .token.operator,
+[data-prose] pre code .token.entity,
+[data-prose] pre code .token.url,
+[data-prose] pre code .token.variable {
+  @apply text-cyan;
+}
+
+[data-prose] pre code .token.atrule,
+[data-prose] pre code .token.attr-value,
+[data-prose] pre code .token.function,
+[data-prose] pre code .token.class-name {
+  @apply text-yellow;
+}
+
+[data-prose] pre code .token.keyword {
+  @apply text-magenta;
+}
+
+[data-prose] pre code .token.regex,
+[data-prose] pre code .token.important {
+  @apply text-blue;
+}
+
+[data-prose] pre code .token.important,
+[data-prose] pre code .token.bold {
+  @apply font-bold;
+}
+
+[data-prose] pre code .token.italic {
+  @apply italic;
+}
+
+[data-prose] blockquote {
+  @apply border-l-4 border-cyan pl-6 py-2 my-8 text-muted italic;
+  font-family: var(--font-serif);
+  font-size: 1.05em;
+}
+
+[data-prose] blockquote p {
+  @apply my-3 mx-0;
+}
+
+[data-prose] ul {
+  @apply my-6 mx-0 pl-8 list-disc;
+}
+
+[data-prose] ol {
+  @apply my-6 mx-0 pl-8 list-decimal;
+}
+
+[data-prose] li {
+  @apply my-3 mx-0 leading-relaxed;
+}
+
+[data-prose] li > p {
+  @apply my-2;
+}
+
+[data-prose] li::marker {
+  @apply text-cyan;
+}
+
+[data-prose] hr {
+  @apply border-0 border-t border-line my-8 mx-0;
+}
+
+[data-prose] table {
+  @apply w-full border-collapse my-6 mx-0;
+}
+
+[data-prose] th,
+[data-prose] td {
+  @apply text-left border border-line p-3;
+}
+
+[data-prose] th {
+  @apply bg-panel text-cyan font-bold;
+}
+
+[data-prose] tr:nth-child(even) {
+  background: color-mix(in oklab, var(--color-panel), transparent 50%);
+}
+
+[data-prose] img {
+  @apply max-w-full h-auto rounded-lg border border-line my-6 mx-0;
+}
+
+[data-prose] figcaption {
+  @apply text-center text-muted text-base mt-2;
+}
+
+[data-prose] sup {
+  @apply text-magenta;
+}
+
+[data-prose] sup a {
+  @apply no-underline hover:underline;
+}
+
+[data-prose] .footnotes {
+  @apply mt-12 pt-4 border border-line text-base;
+}
+
+[data-prose] .footnotes ol {
+  @apply pl-6;
+}
+
+[data-prose] .footnotes li {
+  @apply text-muted;
+}
+
+button {
+  @apply hover:cursor-pointer;
+}

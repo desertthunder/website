@@ -1,0 +1,115 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import ArticleHeader from "$components/ArticleHeader.astro";
+import { calculateReadingTime } from "$utils/reading-time";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const dateStr = post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+const readingTime = calculateReadingTime(post.body);
+const allPosts = (await getCollection("blog"))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
+const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const ogImage = `/og/${post.slug}.png`;
+---
+
+<Base title={`${post.data.title} — Owais Jamil`} description={post.data.description} ogImage={ogImage}>
+  <article>
+    <ArticleHeader
+      title={post.data.title}
+      metadata={[
+        { value: dateStr },
+        { value: readingTime }
+      ]}
+      tags={post.data.tags.map((tag) => ({ name: tag, href: `/tags/${tag}` }))}
+    />
+
+    <div data-prose>
+      <Content />
+    </div>
+
+    <nav
+      aria-label="Post navigation"
+      class="mt-12 pt-8 border-t-2 border-dotted border-line grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        {
+          prevPost && (
+            <a
+              href={`/blog/${prevPost.slug}/`}
+              data-nav="prev"
+              class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
+              <span class="block text-cyan">{prevPost.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+      <div class="md:text-right">
+        {
+          nextPost && (
+            <a
+              href={`/blog/${nextPost.slug}/`}
+              data-nav="next"
+              class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
+              <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
+              <span class="block text-cyan">{nextPost.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </article>
+</Base>
+
+<script>
+  document.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const prevLink = document.querySelector<HTMLAnchorElement>('a[data-nav="prev"]');
+    const nextLink = document.querySelector<HTMLAnchorElement>('a[data-nav="next"]');
+
+    if (e.key === "ArrowLeft") {
+      prevLink?.click();
+    } else if (e.key === "ArrowRight") {
+      nextLink?.click();
+    } else if (e.key === "[" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "[") {
+          prevLink?.click();
+        }
+
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+
+      document.addEventListener("keydown", handleSecondBracket);
+
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    } else if (e.key === "]" && document.activeElement?.tagName !== "INPUT") {
+      const handleSecondBracket = (e2: KeyboardEvent) => {
+        if (e2.key === "]") {
+          nextLink?.click();
+        }
+
+        document.removeEventListener("keydown", handleSecondBracket);
+      };
+
+      document.addEventListener("keydown", handleSecondBracket);
+
+      setTimeout(() => document.removeEventListener("keydown", handleSecondBracket), 500);
+    }
+  });
+</script>

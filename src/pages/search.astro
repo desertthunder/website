@@ -1,0 +1,370 @@
+---
+import Base from "$layouts/Base.astro";
+import Icon from "$components/Icon.astro";
+
+const query = Astro.url.searchParams.get("q") || "";
+---
+
+<Base title={query ? `Search: ${query}` : "Search"} description="Search the site">
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">Search</h1>
+    </div>
+
+    <div class="relative mb-6">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <Icon name="search" class="text-cyan w-5 h-5" alt="" />
+      </div>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search posts, bookmarks, projects..."
+        class="w-full border-2 border-dotted border-line bg-panel text-fg pl-12 pr-4 py-3 rounded transition-colors focus:border-cyan focus:outline-none placeholder:text-muted"
+        value={query}
+        autocomplete="off"
+      />
+    </div>
+
+    <div id="search-page-results" class="flex flex-col gap-4"></div>
+    <div id="search-page-status" class="text-muted text-sm mt-4 text-center py-4"></div>
+    <nav id="search-pagination" class="pagination hidden" aria-label="Search pagination">
+      <div class="links">
+        <div>
+          <button id="prev-page" class="link" data-nav="prev" disabled>← Previous</button>
+        </div>
+        <div class="flex justify-center items-center">
+          <span class="info" id="page-info">Page 1 of 1</span>
+        </div>
+        <div class="flex justify-end">
+          <button id="next-page" class="link" data-nav="next" disabled>Next →</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</Base>
+
+<script>
+  import MiniSearch from "minisearch";
+  import { paginate, type PaginatedResult, setupPaginationNavigation } from "$utils/pagination";
+
+  /**
+   * Full page search implementation
+   */
+  class SearchPage {
+    private input: HTMLInputElement | null;
+    private resultsContainer: HTMLElement | null;
+    private statusContainer: HTMLElement | null;
+    private paginationNav: HTMLElement | null;
+    private prevButton: HTMLButtonElement | null;
+    private nextButton: HTMLButtonElement | null;
+    private pageInfo: HTMLElement | null;
+    private miniSearch: MiniSearch | null;
+    private documents: any[];
+    private currentResults: any[];
+    private currentQuery: string;
+    private currentPage: number;
+    private pageSize: number;
+
+    constructor() {
+      this.input = document.getElementById("search-input") as HTMLInputElement;
+      this.resultsContainer = document.getElementById("search-page-results");
+      this.statusContainer = document.getElementById("search-page-status");
+      this.paginationNav = document.getElementById("search-pagination");
+      this.prevButton = document.getElementById("prev-page") as HTMLButtonElement;
+      this.nextButton = document.getElementById("next-page") as HTMLButtonElement;
+      this.pageInfo = document.getElementById("page-info");
+      this.miniSearch = null;
+      this.documents = [];
+      this.currentResults = [];
+      this.currentQuery = "";
+      this.currentPage = 1;
+      this.pageSize = 12;
+    }
+
+    async init(): Promise<void> {
+      await this.loadSearchIndex();
+      this.setupListeners();
+      setupPaginationNavigation();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get("q") || this.input?.value || "";
+      if (query) {
+        if (this.input) this.input.value = query;
+        this.search(query);
+      }
+    }
+
+    async loadSearchIndex(): Promise<void> {
+      try {
+        const response = await fetch("/search-index.json");
+        this.documents = await response.json();
+
+        this.miniSearch = new MiniSearch({
+          fields: ["title", "description", "text", "tags", "categories"],
+          storeFields: ["title", "description", "url", "type"],
+          searchOptions: { boost: { title: 2, description: 1.5 }, fuzzy: 0.2, prefix: true },
+        });
+
+        this.miniSearch.addAll(this.documents);
+
+        if (this.statusContainer) {
+          this.statusContainer.textContent = `Index loaded: ${this.documents.length} documents`;
+        }
+      } catch (error) {
+        if (this.statusContainer) {
+          this.statusContainer.textContent = "Failed to load search index";
+        }
+      }
+    }
+
+    search(query: string): void {
+      if (!this.miniSearch || !this.resultsContainer || !this.statusContainer) {
+        return;
+      }
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("q", query);
+      window.history.replaceState({}, "", url);
+
+      if (!query.trim()) {
+        this.resultsContainer.innerHTML = "";
+        this.statusContainer.textContent = "Enter a search query";
+        this.hidePagination();
+        return;
+      }
+
+      this.currentQuery = query;
+      this.currentResults = this.miniSearch.search(query);
+      this.statusContainer.textContent = `Found ${this.currentResults.length} result${this.currentResults.length === 1 ? "" : "s"}`;
+
+      if (this.currentResults.length === 0) {
+        this.resultsContainer.innerHTML = '<p class="text-muted">No results found. Try different keywords.</p>';
+        this.hidePagination();
+        return;
+      }
+
+      this.currentPage = 1;
+      this.renderPage();
+    }
+
+    renderPage(): void {
+      if (!this.resultsContainer) return;
+
+      const paginatedResults = paginate(this.currentResults, this.currentPage, this.pageSize);
+      const results = paginatedResults.data;
+
+      const html = results
+        .map((result) => {
+          try {
+            const doc = this.documents.find((d) => d.id === result.id) || {};
+            const tags = doc.tags || [];
+            const categories = doc.categories || [];
+            const allTags = [...tags, ...categories];
+            const text = doc.text || "";
+            const matchedField = this.findMatchedField(doc, this.currentQuery);
+
+            let snippet = "";
+
+            if (matchedField === "content" && text) {
+              snippet = this.extractMatchSnippet(text, this.currentQuery, 100);
+            } else if (matchedField === "description" && doc.description) {
+              snippet = doc.description;
+            } else if (text) {
+              snippet = this.truncate(text, 200);
+            }
+
+            return `
+            <a href="${result.url}" class="block border-2 border-dotted border-line bg-panel p-4 rounded transition-colors hover:border-cyan no-underline group">
+              <div class="text-xl font-bold text-fg mb-2 group-hover:text-cyan">${this.highlightMatch(result.title, this.currentQuery)}</div>
+              ${result.description && matchedField !== "title" ? `<div class="text-muted text-sm mb-2">${this.highlightMatch(result.description, this.currentQuery)}</div>` : ""}
+              ${snippet ? `<div class="text-muted text-[0.8rem] mb-3 leading-relaxed">${this.highlightMatch(snippet, this.currentQuery)}</div>` : ""}
+              <div class="flex justify-between items-center gap-3 flex-wrap">
+                <span class="text-muted text-xs uppercase tracking-wide">${result.type}</span>
+                ${
+                  allTags.length > 0
+                    ? `<div class="flex gap-1.5 flex-wrap">${allTags
+                        .slice(0, 5)
+                        .map((tag) => `<span class="bg-line text-fg text-xs px-2 py-1 rounded">${tag}</span>`)
+                        .join("")}</div>`
+                    : ""
+                }
+              </div>
+            </a>
+          `;
+          } catch {
+            return "";
+          }
+        })
+        .filter((html) => html.length > 0)
+        .join("");
+
+      if (html) {
+        this.resultsContainer.innerHTML = html;
+      } else {
+        this.resultsContainer.innerHTML = '<p class="text-red text-sm">Error generating results HTML</p>';
+      }
+
+      this.updatePagination(paginatedResults);
+    }
+
+    updatePagination(paginatedResults: PaginatedResult<any>): void {
+      if (!this.paginationNav || !this.prevButton || !this.nextButton || !this.pageInfo) return;
+
+      if (paginatedResults.lastPage > 1) {
+        this.paginationNav.classList.remove("hidden");
+        this.pageInfo.textContent = `Page ${paginatedResults.currentPage} of ${paginatedResults.lastPage}`;
+
+        this.prevButton.disabled = !paginatedResults.hasPrev;
+        this.nextButton.disabled = !paginatedResults.hasNext;
+      } else {
+        this.hidePagination();
+      }
+    }
+
+    hidePagination(): void {
+      if (this.paginationNav) {
+        this.paginationNav.classList.add("hidden");
+      }
+    }
+
+    goToPage(page: number): void {
+      this.currentPage = page;
+      this.renderPage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    truncate(text: string, maxLength: number): string {
+      if (text.length <= maxLength) return text;
+      return text.slice(0, maxLength).trim() + "...";
+    }
+
+    /**
+     * Extract snippet around matched term
+     */
+    extractMatchSnippet(text: string, query: string, contextLength: number = 80): string {
+      const terms = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 0);
+      const textLower = text.toLowerCase();
+
+      let matchPos = -1;
+      let matchedTerm = "";
+
+      for (const term of terms) {
+        const pos = textLower.indexOf(term);
+        if (pos !== -1 && (matchPos === -1 || pos < matchPos)) {
+          matchPos = pos;
+          matchedTerm = term;
+        }
+      }
+
+      if (matchPos === -1) {
+        return this.truncate(text, contextLength * 2);
+      }
+
+      const start = Math.max(0, matchPos - contextLength);
+      const end = Math.min(text.length, matchPos + matchedTerm.length + contextLength);
+
+      let snippet = text.slice(start, end);
+
+      if (start > 0) snippet = "..." + snippet;
+      if (end < text.length) snippet = snippet + "...";
+
+      return snippet;
+    }
+
+    /**
+     * Find which field matched
+     */
+    findMatchedField(
+      doc: {
+        id: string;
+        title: string;
+        description: string;
+        url: string;
+        type: string;
+        text: string;
+        tags: string[];
+        categories: string[];
+      },
+      query: string,
+    ): string {
+      const terms = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 0);
+
+      if (doc.title && terms.some((t) => doc.title.toLowerCase().includes(t))) {
+        return "title";
+      }
+
+      const allTags = [...(doc.tags || []), ...(doc.categories || [])];
+      if (allTags.some((tag) => terms.some((t) => tag.toLowerCase().includes(t)))) {
+        return "tags";
+      }
+
+      if (doc.description && terms.some((t) => doc.description.toLowerCase().includes(t))) {
+        return "description";
+      }
+
+      if (doc.text && terms.some((t) => doc.text.toLowerCase().includes(t))) {
+        return "content";
+      }
+
+      return "unknown";
+    }
+
+    highlightMatch(text: string, query: string): string {
+      const terms = query.toLowerCase().split(/\s+/);
+      let highlighted = text;
+
+      for (const term of terms) {
+        if (term.length === 0) continue;
+        const regex = new RegExp(`(${this.escapeRegex(term)})`, "gi");
+        highlighted = highlighted.replace(regex, "<mark>$1</mark>");
+      }
+
+      return highlighted;
+    }
+
+    escapeRegex(str: string): string {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    setupListeners(): void {
+      if (!this.input) return;
+
+      this.input.addEventListener("input", (e) => {
+        const query = (e.target as HTMLInputElement).value;
+        this.search(query);
+      });
+
+      this.prevButton?.addEventListener("click", () => {
+        if (this.currentPage > 1) {
+          this.goToPage(this.currentPage - 1);
+        }
+      });
+
+      this.nextButton?.addEventListener("click", () => {
+        const paginatedResults = paginate(this.currentResults, this.currentPage, this.pageSize);
+        if (this.currentPage < paginatedResults.lastPage) {
+          this.goToPage(this.currentPage + 1);
+        }
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    const searchPage = new SearchPage();
+    searchPage.init();
+  });
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  #search-page-results :global(mark) {
+    @apply bg-yellow text-bg px-1 py-0.5 rounded;
+  }
+</style>

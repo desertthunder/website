@@ -1,0 +1,46 @@
+---
+import type { MetadataItem } from "$utils/types";
+import Icon from "./Icon.astro";
+
+type Props = { title: string; metadata: MetadataItem[]; tags?: { name: string; href: string }[] };
+
+const { title, metadata, tags = [] } = Astro.props;
+---
+
+<header class="mb-8 pb-6 border-b-2 border-dotted border-line">
+  <h1 class="text-3xl md:text-4xl text-cyan mb-4">{title}</h1>
+
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline text-muted mb-5 gap-2 font-serif">
+    {
+      metadata.map((item) =>
+        item.href ? (
+          <a
+            href={item.href}
+            class="text-cyan hover:underline inline-flex items-center gap-1"
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}>
+            {item.label && <span class="text-muted">{item.label}</span>}
+            {item.external ? <Icon name="external-link" class="inline-flex items-center" /> : item.value}
+          </a>
+        ) : (
+          <span>
+            {item.label && <span class="font-semibold">{item.label}</span>}
+            {item.value}
+          </span>
+        ),
+      )
+    }
+  </div>
+
+  {
+    tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <a href={tag.href} class="tag">
+            {tag.name}
+          </a>
+        ))}
+      </div>
+    )
+  }
+</header>

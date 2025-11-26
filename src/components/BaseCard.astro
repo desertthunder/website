@@ -1,0 +1,42 @@
+---
+type Props = { class?: string };
+
+const { class: className = "" } = Astro.props;
+---
+
+<article data-card class:list={["base-card", className]}>
+  <header>
+    <slot name="header" />
+  </header>
+
+  <div class="text-2xl">
+    <slot />
+  </div>
+
+  <slot name="categories" />
+
+  <footer>
+    <slot name="footer" />
+  </footer>
+</article>
+
+<style>
+  @reference "../styles/global.css";
+
+  .base-card {
+    @apply text-3xl;
+  }
+
+  .base-card header {
+    @apply m-0;
+  }
+
+  .base-card footer {
+    @apply px-5 py-3 mt-2 border-t border-dotted border-line;
+  }
+
+  .base-card footer a {
+    @apply text-muted text-xl duration-200;
+    @apply hover:underline hover:text-cyan;
+  }
+</style>

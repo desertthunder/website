@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import Base from "$layouts/Base.astro";
+import BookmarkCard from "$components/BookmarkCard.astro";
+
+export const getStaticPaths = (async () => {
+  const bookmarks = await getCollection("bookmarks");
+  const years = new Set(bookmarks.map((b) => b.data.date.getFullYear()));
+
+  return Array.from(years).map((year) => ({ params: { year: year.toString() }, props: { year } }));
+}) satisfies GetStaticPaths;
+
+const { year } = Astro.props;
+const allBookmarks = await getCollection("bookmarks");
+const bookmarks = allBookmarks
+  .filter((b) => b.data.date.getFullYear() === year)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title={`Bookmarks ${year} — Owais Jamil`}>
+  <section>
+    <div class="mb-8 pb-6 border-b-2 border-dotted border-line flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <h2 class="text-3xl md:text-4xl text-cyan m-0">Bookmarks from {year}</h2>
+      <a href="/bookmarks" class="text-cyan hover:underline">← All Bookmarks</a>
+    </div>
+
+    {bookmarks.length > 0 ? (
+      <div class="space-y-6">
+        {
+          bookmarks.map((bookmark) => (
+            <BookmarkCard
+              slug={bookmark.slug}
+              title={bookmark.data.title}
+              url={bookmark.data.url}
+              date={bookmark.data.date}
+              categories={bookmark.data.categories}
+              content={bookmark.body}
+            />
+          ))
+        }
+      </div>
+    ) : (
+      <p class="text-muted text-center py-8">No bookmarks found for {year}.</p>
+    )}
+  </section>
+</Base>

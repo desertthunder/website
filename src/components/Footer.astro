@@ -1,0 +1,44 @@
+---
+import { Image } from "astro:assets";
+import brainmade from "./images/brainmade-dark.png";
+import coffee from "./images/coffee.png";
+
+type Props = {
+  name: string;
+  socialLinks: { linkedin: string; bluesky: string; gh: string; tangled: string; codeberg: string };
+};
+
+const { name, socialLinks } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<footer
+  class="py-2 border-t font-serif border-dotted border-line text-lg"
+  style="background: color-mix(in oklab, var(--color-panel), var(--color-bg) 50%);">
+  <div class="max-w-5xl mx-auto px-4 md:px-8 grid grid-cols-2">
+    <section class="flex flex-col items-start justify-between gap-2">
+      <a href="https://owais.omg.lol/now" target="_blank" rel="noopener noreferrer">Now</a>
+      <Image src={brainmade} alt="Brain Made" class="w-32 py-2" />
+    </section>
+    <section class="flex flex-col items-end justify-start">
+      <div>Desert Thunder</div>
+      <div>Made {currentYear} by {name}</div>
+      <div>
+        <span>Find me on:</span>
+        <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>, and
+        <a href={socialLinks.bluesky} target="_blank" rel="noopener noreferrer">Bluesky</a>
+      </div>
+      <div>
+        <span>View my work:</span>
+        <a href={socialLinks.gh} target="_blank" rel="noopener noreferrer">GitHub</a> and
+        <a href={socialLinks.tangled} target="_blank" rel="noopener noreferrer">Tangled</a>
+      </div>
+      <div>
+        <a href="https://buymeacoffee.com/desertthunder" target="_blank" rel="noopener noreferrer">
+          <span class="sr-only">Buy me a coffee</span>
+          <Image src={coffee} alt="buy me a coffee" class="w-32 py-2" />
+        </a>
+      </div>
+    </section>
+  </div>
+</footer>
