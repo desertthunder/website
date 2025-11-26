@@ -15,7 +15,7 @@
     "@fontsource-variable/crimson-pro": "^5.2.8",
     "@fontsource-variable/dm-sans": "^5.2.7",
     "@fontsource-variable/google-sans-code": "^5.2.3",
-    "@resvg/resvg-js": "^2.6.2",
+    "@resvg/resvg-wasm": "^2.6.2",
     "@tailwindcss/vite": "^4.1.16",
     "astro": "5.14.8",
     "inquirer": "^13.0",
@@ -29,6 +29,7 @@
     "cheerio": "^1.1.2",
     "prettier": "3.6.2",
     "prettier-plugin-astro": "0.14.1",
+    "sharp": "^0.34.5",
     "wrangler": "^4.51.0"
   }
 }

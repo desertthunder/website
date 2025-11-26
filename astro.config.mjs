@@ -20,10 +20,11 @@ export default defineConfig({
         $layouts: "/src/layouts",
         $styles: "/src/styles",
         $utils: "/src/utils",
+        $lib: "/src/lib",
       },
     },
     plugins: [tailwindcss()],
   },
 
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: "compile" }),
 });

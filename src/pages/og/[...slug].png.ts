@@ -3,7 +3,8 @@ import { getCollection } from "astro:content";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
+import { Resvg } from "@resvg/resvg-wasm";
+import { ensureWasmInitialized } from "$lib/resvg-init";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -20,6 +21,8 @@ export async function getStaticPaths() {
  */
 export const GET: APIRoute = async ({ props }) => {
   const { title, description, date, slug } = props as { title: string; description: string; date: Date; slug: string };
+
+  await ensureWasmInitialized();
 
   const fontDataRegular = await readFile(resolve("./fonts/JetBrainsMono-Regular.ttf"));
   const fontDataBold = await readFile(resolve("./fonts/JetBrainsMono-Bold.ttf"));
@@ -215,7 +218,7 @@ export const GET: APIRoute = async ({ props }) => {
     },
   );
 
-  const resvg = new Resvg(svg);
+  const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 

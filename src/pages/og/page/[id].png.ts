@@ -2,7 +2,8 @@ import type { APIRoute } from "astro";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
+import { Resvg } from "@resvg/resvg-wasm";
+import { ensureWasmInitialized } from "$lib/resvg-init";
 
 /**
  * Generate static path for home OG image.
@@ -29,6 +30,8 @@ export const GET: APIRoute = async ({ props }) => {
     subtitle?: string;
     pageUrl: string;
   };
+
+  await ensureWasmInitialized();
 
   const fontDataRegular = await readFile(resolve("./fonts/JetBrainsMono-Regular.ttf"));
   const fontDataBold = await readFile(resolve("./fonts/JetBrainsMono-Bold.ttf"));
@@ -203,7 +206,7 @@ export const GET: APIRoute = async ({ props }) => {
     },
   );
 
-  const resvg = new Resvg(svg);
+  const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
