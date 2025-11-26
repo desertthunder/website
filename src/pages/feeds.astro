@@ -1,0 +1,452 @@
+---
+import Base from "$layouts/Base.astro";
+import FeedItemCard from "$components/FeedItemCard.astro";
+import BlueskyFeedCard from "$components/BlueskyFeedCard.astro";
+import Icon from "$components/Icon.astro";
+import Alert from "$components/Alert.astro";
+import type { FeedItem, SourceKind } from "$utils/types";
+
+const API_BASE = "https://pai.desertthunder.dev";
+const sourceKinds: SourceKind[] = ["bluesky", "substack", "leaflet", "bearblog"];
+
+async function fetchFeed(sourceKind?: SourceKind): Promise<FeedItem[]> {
+  try {
+    const url = sourceKind
+      ? `${API_BASE}/api/feed?source_kind=${sourceKind}&limit=50`
+      : `${API_BASE}/api/feed?limit=50`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return data.items || [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchBlueskyFeed(): Promise<FeedItem[]> {
+  try {
+    const url = `${API_BASE}/api/feed?source_kind=bluesky&limit=3`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      return [];
+    }
+    const data = await response.json();
+    return data.items || [];
+  } catch {
+    return [];
+  }
+}
+
+const feedsBySource: Record<SourceKind, FeedItem[]> = {
+  bluesky: await fetchBlueskyFeed(),
+  substack: await fetchFeed("substack"),
+  leaflet: await fetchFeed("leaflet"),
+  bearblog: await fetchFeed("bearblog"),
+};
+
+const writingFeeds = [...feedsBySource.leaflet, ...feedsBySource.bearblog].sort(
+  (a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+);
+---
+
+<Base title="Activity Feeds">
+  <section>
+    <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+      <h1 class="text-4xl md:text-5xl text-cyan font-serif">Activity Feeds</h1>
+      <button
+        id="refresh-button"
+        type="button"
+        class="refresh-btn text-fg bg-panel border border-line px-4 py-2 rounded hover:border-cyan hover:text-cyan transition-colors duration-300"
+        aria-label="Refresh feeds">
+        <span class="inline-flex items-center gap-2">
+          <Icon name="bolt" class="text-2xl" />
+          Refresh
+        </span>
+      </button>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-writing" data-tab="writing">
+          Writing
+        </button>
+        {
+          sourceKinds.map((kind) => (
+            <button class="tab" role="tab" aria-selected="false" aria-controls={`panel-${kind}`} data-tab={kind}>
+              {kind.charAt(0).toUpperCase() + kind.slice(1)}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="panels">
+        <div
+          id="panel-writing"
+          class="panel active"
+          role="tabpanel"
+          aria-labelledby="tab-writing"
+          data-source="writing">
+          {
+            writingFeeds.length > 0 ? (
+              writingFeeds.map((item) => <FeedItemCard {...item} />)
+            ) : (
+              <p class="text-muted text-2xl">No items found</p>
+            )
+          }
+        </div>
+
+        {
+          sourceKinds.map((kind) => (
+            <div id={`panel-${kind}`} class="panel" role="tabpanel" aria-labelledby={`tab-${kind}`} data-source={kind}>
+              {feedsBySource[kind].length > 0 ? (
+                feedsBySource[kind].map((item) =>
+                  kind === "bluesky" ? <BlueskyFeedCard {...item} /> : <FeedItemCard {...item} />,
+                )
+              ) : (
+                <p class="text-muted text-2xl">No {kind} items found</p>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-spinner">Refreshing...</div>
+    </div>
+
+    <Alert id="feed-alert" type="error" />
+  </section>
+</Base>
+
+<style>
+  @reference "../styles/global.css";
+
+  .tabs-container {
+    @apply mb-8;
+  }
+
+  .tabs {
+    @apply flex gap-2 mb-6 pb-4 border-b border-line border-dotted flex-wrap;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-2xl font-serif rounded transition-all duration-300;
+    @apply bg-panel text-muted border border-line;
+    @apply hover:border-cyan hover:text-cyan cursor-pointer;
+  }
+
+  .tab.active {
+    @apply bg-cyan text-bg border-cyan font-medium;
+  }
+
+  .panels {
+    @apply relative;
+  }
+
+  .panel {
+    @apply hidden;
+  }
+
+  .panel.active {
+    @apply block;
+  }
+
+  .refresh-btn {
+    @apply font-serif text-2xl;
+  }
+
+  .refresh-btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .loading-overlay {
+    @apply fixed inset-0 bg-bg/80 backdrop-blur-sm flex items-center justify-center z-50;
+  }
+
+  .loading-overlay.hidden {
+    @apply hidden;
+  }
+
+  .loading-spinner {
+    @apply text-3xl text-cyan font-serif bg-panel px-8 py-4 rounded border border-cyan;
+  }
+
+  .bsky-card {
+    @apply py-3 px-4 my-3 text-xl;
+  }
+
+  .bsky-content {
+    @apply mb-2;
+  }
+
+  .bsky-content p {
+    @apply mb-2 text-fg;
+  }
+
+  .author {
+    @apply text-cyan text-base;
+  }
+
+  .bsky-footer {
+    @apply flex justify-between items-center gap-4 pt-2 border-t border-dotted border-line;
+  }
+</style>
+
+<script>
+  const API_BASE = "https://pai.desertthunder.dev";
+  const CACHE_DURATION = 60 * 60 * 1000;
+
+  interface CachedData {
+    data: any;
+    timestamp: number;
+  }
+
+  const cache = new Map<string, CachedData>();
+
+  async function fetchWithCache(url: string, force = false): Promise<any> {
+    const cacheKey = url;
+    const now = Date.now();
+
+    if (!force) {
+      const cached = cache.get(cacheKey);
+      if (cached && now - cached.timestamp < CACHE_DURATION) {
+        return cached.data;
+      }
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    cache.set(cacheKey, { data, timestamp: now });
+    return data;
+  }
+
+  function setupTabs() {
+    const tabs = document.querySelectorAll<HTMLButtonElement>(".tab");
+    const panels = document.querySelectorAll<HTMLDivElement>(".panel");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const targetTab = tab.dataset.tab;
+
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+
+        panels.forEach((p) => {
+          p.classList.remove("active");
+        });
+
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+
+        const targetPanel = document.querySelector<HTMLDivElement>(`#panel-${targetTab}`);
+        if (targetPanel) {
+          targetPanel.classList.add("active");
+        }
+      });
+    });
+  }
+
+  function extractFirstParagraph(html: string | null): string | null {
+    if (!html) return null;
+
+    const startMatch = html.match(/<p[^>]*>/i);
+    if (!startMatch || startMatch.index === undefined) return null;
+
+    const startIndex = startMatch.index;
+    const afterStart = html.substring(startIndex);
+
+    const endMatch = afterStart.match(/<\/p>/i);
+    if (!endMatch || endMatch.index === undefined) return null;
+
+    const endIndex = endMatch.index + endMatch[0].length;
+    return afterStart.substring(0, endIndex).trim();
+  }
+
+  function showAlert(message: string, type: "error" | "success" | "info" = "error") {
+    const alert = document.getElementById("feed-alert");
+    if (!alert) return;
+
+    const messageEl = alert.querySelector(".alert-message");
+    if (messageEl) {
+      messageEl.textContent = message;
+    }
+
+    alert.setAttribute("data-type", type);
+    alert.classList.remove("hidden");
+
+    const closeBtn = alert.querySelector(".alert-close");
+    if (closeBtn) {
+      closeBtn.addEventListener(
+        "click",
+        () => {
+          alert.classList.add("hidden");
+        },
+        { once: true },
+      );
+    }
+
+    setTimeout(() => {
+      alert.classList.add("hidden");
+    }, 5000);
+  }
+
+  function renderFeedItem(item: any): string {
+    const publishedDate = new Date(item.published_at);
+    const dateStr = publishedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    const title = item.title || item.summary || "Untitled";
+
+    const isBearBlog = item.source_kind === "bearblog";
+    const bearBlogContent = isBearBlog && item.summary ? extractFirstParagraph(item.summary) : null;
+    const displaySummary = !isBearBlog ? item.summary : null;
+    const showSummary = displaySummary && displaySummary !== item.title;
+
+    return `
+      <article data-card class="base-card">
+        <header>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer">
+            <h2 class="text-4xl">${title}</h2>
+          </a>
+          <time datetime="${item.published_at}">${dateStr}</time>
+        </header>
+        <div class="text-2xl">
+          ${bearBlogContent ? `<section>${bearBlogContent}</section>` : ""}
+          ${showSummary ? `<p>${displaySummary}</p>` : ""}
+          ${item.author ? `<div class="text-muted text-xl mb-2">by ${item.author}</div>` : ""}
+        </div>
+        <footer>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" title="${item.url}" class="font-serif text-xl">
+            View on ${item.source_kind} →
+          </a>
+        </footer>
+      </article>
+    `;
+  }
+
+  function renderFeedItems(panel: HTMLDivElement, items: any[]) {
+    if (items.length === 0) {
+      const sourceKind = panel.dataset.source || "writing";
+      panel.innerHTML = `<p class="text-muted text-2xl">No ${sourceKind === "writing" ? "" : sourceKind + " "}items found</p>`;
+      return;
+    }
+
+    const isBluesky = items.length > 0 && items[0].source_kind === "bluesky";
+
+    if (isBluesky) {
+      panel.innerHTML = items
+        .map((item) => {
+          const publishedDate = new Date(item.published_at);
+          const dateStr = publishedDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+          const content = item.title || item.summary || "Untitled";
+
+          return `
+            <article class="bsky-card" data-card>
+              <div class="bsky-content">
+                <p class="text-xl">${content}</p>
+                ${item.author ? `<a href="https://bsky.app/profile/${item.author}" target="_blank" rel="noopener noreferrer" class="author">@${item.author}</a>` : ""}
+              </div>
+              <footer class="bsky-footer">
+                <time datetime="${item.published_at}" class="bsky-time text-muted text-base">${dateStr}</time>
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-cyan text-base hover:underline">View post →</a>
+              </footer>
+            </article>
+          `;
+        })
+        .join("");
+    } else {
+      panel.innerHTML = items.map(renderFeedItem).join("");
+    }
+  }
+
+  async function refreshFeeds(force = false) {
+    const refreshButton = document.getElementById("refresh-button") as HTMLButtonElement;
+    const loadingOverlay = document.getElementById("loading-overlay");
+
+    if (!refreshButton || !loadingOverlay) return;
+
+    refreshButton.disabled = true;
+    loadingOverlay.classList.remove("hidden");
+
+    try {
+      const sourceKinds = ["bluesky", "substack", "leaflet", "bearblog"];
+
+      const [blueskyData, substackData, leafletData, bearblogData] = await Promise.all([
+        fetchWithCache(`${API_BASE}/api/feed?source_kind=bluesky&limit=5`, force),
+        fetchWithCache(`${API_BASE}/api/feed?source_kind=substack&limit=50`, force),
+        fetchWithCache(`${API_BASE}/api/feed?source_kind=leaflet&limit=50`, force),
+        fetchWithCache(`${API_BASE}/api/feed?source_kind=bearblog&limit=50`, force),
+      ]);
+
+      const writingFeeds = [...(leafletData.items || []), ...(bearblogData.items || [])].sort(
+        (a: any, b: any) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+      );
+
+      const writingPanel = document.querySelector<HTMLDivElement>("#panel-writing");
+      if (writingPanel) {
+        renderFeedItems(writingPanel, writingFeeds);
+      }
+
+      const sourceFeedData = [blueskyData, substackData, leafletData, bearblogData];
+
+      sourceKinds.forEach((kind, index) => {
+        const panel = document.querySelector<HTMLDivElement>(`#panel-${kind}`);
+        if (panel) {
+          renderFeedItems(panel, sourceFeedData[index].items || []);
+        }
+      });
+
+      showAlert("Feeds refreshed successfully!", "success");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      showAlert(`Failed to refresh feeds: ${errorMessage}`, "error");
+    } finally {
+      refreshButton.disabled = false;
+      loadingOverlay.classList.add("hidden");
+    }
+  }
+
+  function shouldRefreshAtQuarter() {
+    const now = new Date();
+    const minutes = now.getMinutes();
+    return minutes === 15;
+  }
+
+  function setupAutoRefresh() {
+    let lastRefresh = Date.now();
+
+    setInterval(() => {
+      const now = Date.now();
+      const hourPassed = now - lastRefresh >= CACHE_DURATION;
+      const isQuarterPast = shouldRefreshAtQuarter();
+
+      if (hourPassed || isQuarterPast) {
+        refreshFeeds(true);
+        lastRefresh = now;
+      }
+    }, 60 * 1000);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setupTabs();
+    setupAutoRefresh();
+
+    const refreshButton = document.getElementById("refresh-button");
+    if (refreshButton) {
+      refreshButton.addEventListener("click", () => refreshFeeds(true));
+    }
+  });
+</script>
