@@ -25,6 +25,11 @@ export const getStaticPaths = (async ({ paginate }) => {
 type Props = { page: Page<CollectionEntry<"blog">>; allTags: [string, number][] };
 
 const { page } = Astro.props;
+
+page.url.first = "/blog";
+if (page.currentPage === 2) {
+  page.url.prev = "/blog";
+}
 const { allTags } = Astro.props;
 
 const currentTagMap = new Map<string, number>();

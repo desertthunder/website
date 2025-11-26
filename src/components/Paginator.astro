@@ -9,11 +9,13 @@ const { page, label = "" } = Astro.props;
 <nav class="pagination" aria-label={label}>
   <div class="links">
     {
-      page.url.prev && (
+      (
         <div>
-          <a href={page.url.prev} class="link" data-nav="prev">
-            ← Previous
-          </a>
+          {page.url.prev && (
+            <a href={page.url.prev} class="link" data-nav="prev">
+              ← Previous
+            </a>
+          )}
         </div>
       )
     }
@@ -23,11 +25,13 @@ const { page, label = "" } = Astro.props;
       </span>
     </div>
     {
-      page.url.next && (
+      (
         <div class="flex justify-end">
-          <a href={page.url.next} class="link" data-nav="next">
-            Next →
-          </a>
+          {page.url.next && (
+            <a href={page.url.next} class="link" data-nav="next">
+              Next →
+            </a>
+          )}
         </div>
       )
     }

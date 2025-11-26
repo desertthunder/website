@@ -23,6 +23,11 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+
+page.url.first = "/bookmarks";
+if (page.currentPage === 2) {
+  page.url.prev = "/bookmarks";
+}
 const { allCategories } = Astro.props;
 const categoryMap = new Map<string, number>();
 const yearMap = new Map<number, number>();

@@ -1,3 +1,107 @@
 ---
-return Astro.redirect("/blog/p/1", 301);
+import { getCollection } from "astro:content";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Base from "$layouts/Base.astro";
+import CollapsibleBlogPost from "$components/CollapsibleBlogPost.astro";
+import Paginator from "$components/Paginator.astro";
+
+const pageSize = 10;
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allTagMap = new Map<string, number>();
+for (const post of posts) {
+  post.data.tags.forEach((tag) => {
+    allTagMap.set(tag, (allTagMap.get(tag) || 0) + 1);
+  });
+}
+const allTags = Array.from(allTagMap.entries()).sort((a, b) => b[1] - a[1]);
+
+const totalPages = Math.ceil(posts.length / pageSize);
+const firstPageData = posts.slice(0, pageSize);
+
+const page: Page<CollectionEntry<"blog">> = {
+  data: firstPageData,
+  start: 0,
+  end: Math.min(pageSize - 1, posts.length - 1),
+  size: pageSize,
+  total: posts.length,
+  currentPage: 1,
+  lastPage: totalPages,
+  url: {
+    current: "/blog",
+    prev: undefined,
+    next: totalPages > 1 ? "/blog/p/2" : undefined,
+    first: "/blog",
+    last: totalPages > 1 ? `/blog/p/${totalPages}` : "/blog",
+  },
+};
+
+const currentTagMap = new Map<string, number>();
+
+for (const post of page.data) {
+  post.data.tags.forEach((tag) => {
+    currentTagMap.set(tag, (currentTagMap.get(tag) || 0) + 1);
+  });
+}
+const currentTags = Array.from(currentTagMap.entries()).sort((a, b) => b[1] - a[1]);
 ---
+
+<Base title="Blog — Owais Jamil" ogImage="/og/page/home.png">
+  <section>
+    <h2 class="text-3xl md:text-4xl text-cyan mb-8">Blog Posts</h2>
+    {
+      page.data.map((post) => (
+        <CollapsibleBlogPost
+          slug={post.slug}
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          tags={post.data.tags}
+        />
+      ))
+    }
+
+    {
+      (currentTags.length > 0 || allTags.length > 0) && (
+        <div class="py-8">
+          {currentTags.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-medium font-serif block mb-3">Current Tags</span>
+              <div class="flex flex-wrap gap-2">
+                {currentTags.map(([tag, count]) => (
+                  <a href={`/tags/${tag}`} class="tag">
+                    {tag} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {allTags.length > 0 && (
+            <div class="mb-6">
+              <span class="text-muted font-medium font-serif block mb-3">All Tags</span>
+              <div class="flex flex-wrap gap-2">
+                {allTags.map(([tag, count]) => (
+                  <a href={`/tags/${tag}`} class="tag">
+                    {tag} ({count})
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )
+    }
+  </section>
+
+  <Paginator page={page} label="Blog Pagination" />
+</Base>
+
+<script>
+  import { setupPaginationNavigation } from "$utils/pagination";
+
+  setupPaginationNavigation();
+</script>
