@@ -425,10 +425,17 @@ const writingFeeds = [...feedsBySource.leaflet, ...feedsBySource.bearblog].sort(
     return minutes === 15;
   }
 
+  let autoRefreshInterval: number | undefined;
+
   function setupAutoRefresh() {
+    if (autoRefreshInterval !== undefined) {
+      clearInterval(autoRefreshInterval);
+    }
+
     let lastRefresh = Date.now();
 
-    setInterval(() => {
+    // @ts-expect-error
+    autoRefreshInterval = setInterval(() => {
       const now = Date.now();
       const hourPassed = now - lastRefresh >= CACHE_DURATION;
       const isQuarterPast = shouldRefreshAtQuarter();
@@ -440,7 +447,7 @@ const writingFeeds = [...feedsBySource.leaflet, ...feedsBySource.bearblog].sort(
     }, 60 * 1000);
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initializePage() {
     setupTabs();
     setupAutoRefresh();
 
@@ -448,5 +455,15 @@ const writingFeeds = [...feedsBySource.leaflet, ...feedsBySource.bearblog].sort(
     if (refreshButton) {
       refreshButton.addEventListener("click", () => refreshFeeds(true));
     }
-  });
+  }
+
+  function cleanupPage() {
+    if (autoRefreshInterval !== undefined) {
+      clearInterval(autoRefreshInterval);
+      autoRefreshInterval = undefined;
+    }
+  }
+
+  document.addEventListener("astro:page-load", initializePage);
+  document.addEventListener("astro:before-preparation", cleanupPage);
 </script>
