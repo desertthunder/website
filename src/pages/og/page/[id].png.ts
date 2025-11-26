@@ -12,11 +12,7 @@ export async function getStaticPaths() {
   return [
     {
       params: { id: "home" },
-      props: {
-        title: "Owais Jamil",
-        description: "Software engineer, writer, and tinkerer",
-        pageUrl: "desertthunder.dev",
-      },
+      props: { title: "Owais Jamil", description: "Software engineer and writer.", pageUrl: "desertthunder.dev" },
     },
   ];
 }
