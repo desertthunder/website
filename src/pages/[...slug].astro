@@ -25,15 +25,15 @@ const { Content } = await page.render();
   @reference "../styles/global.css";
 
   article[data-page] {
-    @apply text-2xl leading-relaxed tracking-wide;
+    @apply text-base lg:text-xl leading-relaxed tracking-wide;
   }
 
   article[data-page] :global(h2) {
-    @apply text-violet-500 dark:text-magenta text-5xl;
+    @apply text-violet-500 dark:text-magenta text-xl lg:text-5xl;
   }
 
   article[data-page] :global(h3) {
-    @apply text-blue text-4xl;
+    @apply text-blue text-lg lg:text-4xl;
   }
 
   article[data-page] :global(p) {
@@ -57,7 +57,7 @@ const { Content } = await page.render();
   }
 
   article[data-page] :global(code) {
-    @apply bg-line p-1 rounded text-2xl font-mono border border-muted dark:text-fg text-fg;
+    @apply bg-line p-1 rounded text-base lg:text-2xl font-mono border border-muted dark:text-fg text-fg;
   }
 
   article[data-page] :global(dl) {

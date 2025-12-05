@@ -24,7 +24,7 @@ const { class: className = "" } = Astro.props;
   @reference "../styles/global.css";
 
   .base-card {
-    @apply text-3xl;
+    @apply text-lg md:text-xl lg:text-3xl;
   }
 
   .base-card header {
@@ -36,7 +36,7 @@ const { class: className = "" } = Astro.props;
   }
 
   .base-card footer a {
-    @apply text-muted text-xl duration-200;
+    @apply text-muted text-lg md:text-xl duration-200;
     @apply hover:underline hover:text-cyan;
   }
 </style>

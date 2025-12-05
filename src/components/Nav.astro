@@ -12,9 +12,9 @@ const navPages = allPages
   .sort((a, b) => (a.data.navOrder || 0) - (b.data.navOrder || 0));
 ---
 
-<nav class="p-4 border-b-2 border-dotted border-line bg-panel">
-  <div class="px-4 md:px-12 flex items-center justify-between">
-    <div class="flex items-center gap-2">
+<nav class="p-4 px-2 lg:px-4 border-b-2 border-dotted border-line bg-panel">
+  <div class="px-4 md:px-12 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex-1 md:shrink-0 flex items-center gap-2 text">
       <a
         href="https://github.com/desertthunder"
         target="_blank"
@@ -37,7 +37,29 @@ const navPages = allPages
         aria-label="LinkedIn">
       </a>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 order-2 md:order-3">
+      {
+        !currentPath.startsWith("/search") && (
+          <button
+            id="search-toggle"
+            class="flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+            aria-label="Toggle search"
+            aria-expanded="false">
+            <Icon name="search" alt="Search" />
+          </button>
+        )
+      }
+      <button
+        id="theme-toggle"
+        class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
+        aria-label="Toggle theme">
+        <span id="theme-icon" aria-hidden="true">
+          <Icon name="sun" alt="Light mode" />
+        </span>
+        <span id="theme-label" class="sr-only">Light</span>
+      </button>
+    </div>
+    <div class="order-3 w-full md:order-2 md:w-auto flex items-center justify-center gap-4">
       {
         navPages.map((page) => (
           <a href={page.data.path} aria-current={currentPath === page.data.path ? "page" : undefined}>
@@ -49,28 +71,6 @@ const navPages = allPages
       <a href="/blog" aria-current={currentPath.startsWith("/blog") ? "page" : undefined}>Blog</a>
       <a href="/bookmarks" aria-current={currentPath.startsWith("/bookmarks") ? "page" : undefined}>Bookmarks</a>
       <a href="/feeds" aria-current={currentPath.startsWith("/feeds") ? "page" : undefined}>Feeds</a>
-      <div class="flex items-center gap-2">
-        {
-          !currentPath.startsWith("/search") && (
-            <button
-              id="search-toggle"
-              class="flex items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
-              aria-label="Toggle search"
-              aria-expanded="false">
-              <Icon name="search" alt="Search" />
-            </button>
-          )
-        }
-        <button
-          id="theme-toggle"
-          class="hidden items-center gap-2 px-2 py-1 rounded border border-dotted border-line text-sm hover:border-cyan hover:text-cyan transition-colors duration-200"
-          aria-label="Toggle theme">
-          <span id="theme-icon" aria-hidden="true">
-            <Icon name="sun" alt="Light mode" />
-          </span>
-          <span id="theme-label" class="sr-only">Light</span>
-        </button>
-      </div>
     </div>
   </div>
 </nav>

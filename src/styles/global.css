@@ -94,7 +94,7 @@ nav {
 }
 
 nav a {
-  @apply text-fg text-3xl font-medium;
+  @apply text-fg text-lg md:text-3xl font-medium;
   @apply hover:text-cyan transition-colors duration-200;
 }
 
@@ -120,12 +120,12 @@ nav a[aria-current="page"] {
 }
 
 [data-card] header h3 {
-  @apply text-cyan font-bold text-4xl;
+  @apply text-cyan font-bold text-2xl lg:text-4xl;
 }
 
 [data-card] time,
 [data-card] span {
-  @apply text-muted whitespace-nowrap text-2xl;
+  @apply text-muted whitespace-nowrap text-xl lg:text-2xl;
 }
 
 [data-card] p {
@@ -182,7 +182,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] {
-  @apply leading-relaxed text-3xl;
+  @apply leading-relaxed text-base lg:text-3xl;
   font-family: var(--font-sans);
 }
 
@@ -197,24 +197,24 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] h1 {
-  @apply border-b border-line border-2 text-6xl pb-2;
+  @apply border-b border-line border-2 text-3xl lg:text-6xl pb-2;
 }
 
 [data-prose] h2 {
-  @apply text-5xl border-b border-line pb-1.5;
+  @apply text-2xl lg:text-5xl border-b border-line pb-1.5;
 }
 
 [data-prose] h3 {
-  @apply text-4xl text-blue;
+  @apply text-xl lg:text-4xl text-blue;
 }
 
 [data-prose] h4 {
-  @apply text-3xl text-blue;
+  @apply text-lg lg:text-3xl text-blue;
 }
 
 [data-prose] h5,
 [data-prose] h6 {
-  @apply text-magenta text-2xl;
+  @apply text-base text-magenta lg:text-2xl;
 }
 
 [data-prose] p {
@@ -246,7 +246,7 @@ nav a[aria-current="page"] {
 }
 
 [data-prose] pre code {
-  @apply bg-transparent border-0 p-0 text-3xl;
+  @apply bg-transparent border-0 p-0 text-base lg:text-3xl;
   font-family: var(--font-mono);
 }
 

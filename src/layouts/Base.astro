@@ -62,7 +62,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
 
     <title>{title}</title>
   </head>
-  <body class="min-h-full bg-bg text-fg text-3xl m-0">
+  <body class="min-h-full bg-bg text-fg m-0">
     <div id="application">
       <ClientRouter fallback={transitionFallback} />
       <Nav currentPath={Astro.url.pathname} />
