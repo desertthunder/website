@@ -24,8 +24,8 @@ export const GET: APIRoute = async ({ props }) => {
 
   await ensureWasmInitialized();
 
-  const fontDataRegular = await readFile(resolve("./fonts/JetBrainsMono-Regular.ttf"));
-  const fontDataBold = await readFile(resolve("./fonts/JetBrainsMono-Bold.ttf"));
+  const fontDataRegular = await readFile(resolve("./fonts/GeistMono-Regular.ttf"));
+  const fontDataBold = await readFile(resolve("./fonts/GeistMono-Bold.ttf"));
 
   const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
   const pageUrl = `desertthunder.dev/blog/${slug}`;
@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ props }) => {
           width: "100%",
           height: "100%",
           background: "#161821",
-          fontFamily: "JetBrains Mono",
+          fontFamily: "Geist Mono",
           position: "relative",
         },
         children: [
@@ -212,8 +212,8 @@ export const GET: APIRoute = async ({ props }) => {
       width: 1200,
       height: 630,
       fonts: [
-        { name: "JetBrains Mono", data: fontDataRegular, weight: 400, style: "normal" },
-        { name: "JetBrains Mono", data: fontDataBold, weight: 700, style: "normal" },
+        { name: "Geist Mono", data: fontDataRegular, weight: 400, style: "normal" },
+        { name: "Geist Mono", data: fontDataBold, weight: 700, style: "normal" },
       ],
     },
   );

@@ -1,7 +1,30 @@
 @import "tailwindcss";
-@import "@fontsource-variable/crimson-pro/index.css";
 @import "@fontsource-variable/dm-sans/index.css";
-@import "@fontsource-variable/google-sans-code/index.css";
+@import "@fontsource-variable/geist-mono/index.css";
+
+@font-face {
+  font-family: "Redaction";
+  src: url("/fonts/redaction/Redaction-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Redaction";
+  src: url("/fonts/redaction/Redaction-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Redaction";
+  src: url("/fonts/redaction/Redaction-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 
 /* Light mode (Nord Light) */
 :root,
@@ -51,10 +74,10 @@
   --color-blue: var(--color-blue);
   --color-magenta: var(--color-magenta);
   --color-cyan: var(--color-cyan);
-  --font-serif: "Crimson Pro Variable", serif;
+  --font-serif: "Redaction", serif;
   --font-sans: "DM Sans Variable", sans-serif;
-  --font-mono: "Google Sans Code Variable", monospace;
-  --default-font-family: "DM Sans Variable", sans-serif;
+  --font-mono: "Geist Mono Variable", monospace;
+  --default-font-family: "Geist Variable", sans-serif;
   --shadow-custom: var(--shadow-custom);
 }
 
@@ -90,11 +113,11 @@ a {
 }
 
 nav {
-  font-family: var(--font-serif);
+  font-family: var(--font-mono);
 }
 
 nav a {
-  @apply text-fg text-lg md:text-3xl font-medium;
+  @apply text-fg text-lg md:text-xl capitalize;
   @apply hover:text-cyan transition-colors duration-200;
 }
 

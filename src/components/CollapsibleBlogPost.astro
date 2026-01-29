@@ -14,17 +14,18 @@ type Props = {
 const { slug, title, description, date, tags, source = "local", atUri } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 const isLeaflet = source === "leaflet";
+const leafletURL = slug.replace("leaflet/", "https://desertthunder.leaflet.pub/");
 ---
 
 <article class="collapsible-post border-b border-dotted border-line my-0 py-4">
   <button
     class="post-header w-full flex items-center justify-between gap-4 text-left hover:text-cyan transition-colors duration-200">
-    <div class="grid grid-cols-4 gap-4 flex-1 font-serif">
+    <div class="grid grid-cols-4 gap-4 flex-1 font-sans">
       <div class="col-span-1 text-start">
         <time datetime={date.toISOString()} class="text-muted shrink-0">{formattedDate}</time>
       </div>
       <div class="col-span-3">
-        <a href={`/blog/${slug}`} class="post-title font-medium hover:text-cyan">{title}</a>
+        <a href={`/blog/${slug}`} class="post-title hover:text-cyan">{title}</a>
       </div>
     </div>
     <span class="chevron transition-transform duration-200 flex items-center">
@@ -48,15 +49,26 @@ const isLeaflet = source === "leaflet";
       )
     }
     {
-      isLeaflet && atUri && (
+      isLeaflet && (
         <div class="flex items-center gap-2 text-sm text-muted">
-          <span class="inline-block px-2 py-1 border border-dotted border-line rounded">Leaflet</span>
+          {atUri && (
+            <div class="flex items-center gap-2 text-sm text-muted">
+              <span class="inline-block px-2 py-1 border border-dotted border-line rounded">Leaflet</span>
+              <a
+                href={`https://pdsls.dev/${atUri}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-cyan transition-colors">
+                View on PDSls
+              </a>
+            </div>
+          )}
           <a
-            href={`https://pdsls.dev/${atUri}`}
+            href={leafletURL}
             target="_blank"
             rel="noopener noreferrer"
-            class="hover:text-cyan transition-colors">
-            View on PDSls
+            class="text-sm hover:text-cyan transition-colors">
+            Read on Leaflet &rarr;
           </a>
         </div>
       )

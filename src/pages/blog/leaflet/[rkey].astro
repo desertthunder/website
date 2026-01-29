@@ -47,17 +47,17 @@ const readingTime = Math.ceil(wordCount / 200);
       tags={tags.map((tag: string) => ({ name: tag, href: `/tags/${tag}` }))}
     />
 
-    <div class="flex items-center gap-2 mb-4 text-sm text-muted px-4 md:px-12">
+    <div class="flex items-center gap-2 mb-4 text-sm text-muted">
       <span class="inline-block px-2 py-1 border border-dotted border-line rounded">Leaflet</span>
       <a
         href={`https://desertthunder.leaflet.pub/${rkey}`}
         target="_blank"
         rel="noopener noreferrer"
         class="hover:text-cyan transition-colors">
-        Originally posted on Leaflet
+        Original Post &rarr;
       </a>
     </div>
 
-    <div data-prose class="px-4 md:px-12" set:html={post.content || ""} />
+    <div data-prose set:html={post.content || ""} />
   </article>
 </Base>

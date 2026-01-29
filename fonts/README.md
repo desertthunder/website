@@ -1,11 +1,23 @@
 # Fonts
 
-This directory should contain JetBrains Mono font files for OG image generation.
+This directory contains fonts for OG image generation via satori.
 
-Download from: https://www.jetbrains.com/lp/mono/
+## Geist Mono
 
-Required files:
-- JetBrainsMono-Regular.ttf
-- JetBrainsMono-Bold.ttf
+Used for OG images. Source: Vercel (via `geist` npm package).
 
-The OG image generator will fall back to system monospace if fonts are missing.
+Files:
+
+- GeistMono-Regular.ttf
+- GeistMono-Bold.ttf
+
+## Redaction
+
+Used for OG images (headings). Source: <https://www.redaction.us/>
+
+Files:
+
+- Redaction-Regular.otf
+- Redaction-Bold.otf
+
+License: OFL (see public/fonts/redaction/OFL.txt)
