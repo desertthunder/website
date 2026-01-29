@@ -1,19 +1,17 @@
 ---
-import { getCollection } from "astro:content";
 import type { Page } from "astro";
-import type { CollectionEntry } from "astro:content";
 import Base from "$layouts/Base.astro";
 import CollapsibleBlogPost from "$components/CollapsibleBlogPost.astro";
 import Paginator from "$components/Paginator.astro";
+import { loadHybridBlog } from "$lib/content-loader";
+import type { HybridPost } from "$lib/content-loader";
 
 const pageSize = 10;
-const posts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = await loadHybridBlog("desertthunder.dev");
 
 const allTagMap = new Map<string, number>();
 for (const post of posts) {
-  post.data.tags.forEach((tag) => {
+  post.tags.forEach((tag: string) => {
     allTagMap.set(tag, (allTagMap.get(tag) || 0) + 1);
   });
 }
@@ -22,7 +20,7 @@ const allTags = Array.from(allTagMap.entries()).sort((a, b) => b[1] - a[1]);
 const totalPages = Math.ceil(posts.length / pageSize);
 const firstPageData = posts.slice(0, pageSize);
 
-const page: Page<CollectionEntry<"blog">> = {
+const page: Page<HybridPost> = {
   data: firstPageData,
   start: 0,
   end: Math.min(pageSize - 1, posts.length - 1),
@@ -42,7 +40,7 @@ const page: Page<CollectionEntry<"blog">> = {
 const currentTagMap = new Map<string, number>();
 
 for (const post of page.data) {
-  post.data.tags.forEach((tag) => {
+  post.tags.forEach((tag) => {
     currentTagMap.set(tag, (currentTagMap.get(tag) || 0) + 1);
   });
 }
@@ -56,10 +54,12 @@ const currentTags = Array.from(currentTagMap.entries()).sort((a, b) => b[1] - a[
       page.data.map((post) => (
         <CollapsibleBlogPost
           slug={post.slug}
-          title={post.data.title}
-          description={post.data.description}
-          date={post.data.date}
-          tags={post.data.tags}
+          title={post.title}
+          description={post.description}
+          date={post.date}
+          tags={post.tags}
+          source={post.source}
+          atUri={post.atUri}
         />
       ))
     }

@@ -1,0 +1,63 @@
+---
+/**
+ * Individual Leaflet post page
+ *
+ * Renders a Leaflet post fetched from AT Protocol with full content.
+ * Shows "Originally posted on Leaflet" badge with link to AT Protocol URI.
+ */
+
+import Base from "$layouts/Base.astro";
+import ArticleHeader from "$components/ArticleHeader.astro";
+import { loadHybridBlog } from "$lib/content-loader";
+import type { GetStaticPaths } from "astro";
+
+export const prerender = true;
+
+type TPost = { title: string; description: string; date: Date; tags: string[]; atUri?: string; content?: string };
+type Props = { rkey: string; post: TPost };
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  try {
+    const posts = await loadHybridBlog("desertthunder.dev");
+    const leafletPosts = posts.filter((p) => p.source === "leaflet" && p.leafletRkey);
+
+    if (leafletPosts.length === 0) {
+      return [];
+    }
+
+    return leafletPosts.map((post) => ({ params: { rkey: post.leafletRkey! }, props: { post } }));
+  } catch (error) {
+    console.warn("Failed to load Leaflet posts for static path generation:", error);
+    return [];
+  }
+};
+
+const { post, rkey } = Astro.props;
+const { title, description, date, tags } = post;
+const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+const wordCount = (post.content || "").split(/\s+/).length;
+const readingTime = Math.ceil(wordCount / 200);
+---
+
+<Base title={`${title} — Owais Jamil`} description={description}>
+  <article>
+    <ArticleHeader
+      title={title}
+      metadata={[{ value: formattedDate }, { value: `${readingTime} min read` }]}
+      tags={tags.map((tag: string) => ({ name: tag, href: `/tags/${tag}` }))}
+    />
+
+    <div class="flex items-center gap-2 mb-4 text-sm text-muted px-4 md:px-12">
+      <span class="inline-block px-2 py-1 border border-dotted border-line rounded">Leaflet</span>
+      <a
+        href={`https://desertthunder.leaflet.pub/${rkey}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-cyan transition-colors">
+        Originally posted on Leaflet
+      </a>
+    </div>
+
+    <div data-prose class="px-4 md:px-12" set:html={post.content || ""} />
+  </article>
+</Base>

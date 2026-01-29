@@ -1,7 +1,12 @@
 ---
 import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
-type Props = { page: Page<CollectionEntry<"blog" | "bookmarks">>; label?: string };
+import type { HybridPost } from "$lib/content-loader";
+
+type Props = {
+  page: Page<CollectionEntry<"blog" | "bookmarks"> | HybridPost>;
+  label?: string;
+};
 
 const { page, label = "" } = Astro.props;
 ---

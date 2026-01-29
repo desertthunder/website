@@ -8,6 +8,9 @@ const blog = defineCollection({
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    source: z.enum(["local", "leaflet"]).default("local"),
+    atUri: z.string().optional(),
+    leafletRkey: z.string().optional(),
   }),
 });
 

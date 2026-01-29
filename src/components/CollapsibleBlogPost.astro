@@ -1,10 +1,19 @@
 ---
 import Icon from "./Icon.astro";
 
-type Props = { slug: string; title: string; description: string; date: Date; tags: string[] };
+type Props = {
+  slug: string;
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  source?: "local" | "leaflet";
+  atUri?: string;
+};
 
-const { slug, title, description, date, tags } = Astro.props;
+const { slug, title, description, date, tags, source = "local", atUri } = Astro.props;
 const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+const isLeaflet = source === "leaflet";
 ---
 
 <article class="collapsible-post border-b border-dotted border-line my-0 py-4">
@@ -35,6 +44,20 @@ const formattedDate = date.toLocaleDateString("en-US", { year: "numeric", month:
               {tag}
             </a>
           ))}
+        </div>
+      )
+    }
+    {
+      isLeaflet && atUri && (
+        <div class="flex items-center gap-2 text-sm text-muted">
+          <span class="inline-block px-2 py-1 border border-dotted border-line rounded">Leaflet</span>
+          <a
+            href={`https://pdsls.dev/${atUri}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-cyan transition-colors">
+            View on PDSls
+          </a>
         </div>
       )
     }

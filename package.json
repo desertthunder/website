@@ -6,24 +6,29 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.6",
     "@astrojs/cloudflare": "^12.6.12",
-    "@astrojs/rss": "^4.0.13",
     "@astrojs/sitemap": "^3.6.0",
+    "@atproto/api": "^0.18.18",
     "@fontsource-variable/crimson-pro": "^5.2.8",
     "@fontsource-variable/dm-sans": "^5.2.7",
     "@fontsource-variable/google-sans-code": "^5.2.3",
     "@resvg/resvg-wasm": "^2.6.2",
     "@tailwindcss/vite": "^4.1.16",
+    "@types/marked": "^6.0.0",
     "astro": "5.14.8",
     "inquirer": "^13.0",
     "linkify-string": "^4.3.2",
     "linkifyjs": "^4.3.2",
+    "marked": "^17.0.1",
     "minisearch": "^7.2.0",
     "satori": "^0.18.3",
-    "tailwindcss": "^4.1.16"
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "cheerio": "^1.1.2",
