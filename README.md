@@ -6,6 +6,8 @@ The project runs on pnpm and targets Node 20+.
 
 ## Highlights
 
+### Leaflet (AT Proto) Integration
+
 ### Content Helper CLI (`scripts/create.js`)
 
 Run `node scripts/create.js` to launch a helper for creating blog posts, bookmarks, or pages. Use `--help` for more details.

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { loadHybridBlog, type HybridPost } from "$lib/content-loader";
 import type { GetStaticPaths } from "astro";
 import Base from "$layouts/Base.astro";
 import ArticleHeader from "$components/ArticleHeader.astro";
@@ -15,9 +16,8 @@ const { Content } = await post.render();
 const dateStr = post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
 const readingTime = calculateReadingTime(post.body);
-const allPosts = (await getCollection("blog"))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allPosts = (await loadHybridBlog("desertthunder.dev"))
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
 
 const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
 const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
@@ -51,7 +51,7 @@ const ogImage = `/og/${post.slug}.png`;
               data-nav="prev"
               class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
               <span class="block text-sm text-muted font-semibold mb-1">← Previous</span>
-              <span class="block text-cyan">{prevPost.data.title}</span>
+              <span class="block text-cyan">{prevPost.title}</span>
             </a>
           )
         }
@@ -64,7 +64,7 @@ const ogImage = `/og/${post.slug}.png`;
               data-nav="next"
               class="block p-4 border-2 border-dotted border-line rounded hover:border-cyan transition-colors duration-200">
               <span class="block text-sm text-muted font-semibold mb-1">Next →</span>
-              <span class="block text-cyan">{nextPost.data.title}</span>
+              <span class="block text-cyan">{nextPost.title}</span>
             </a>
           )
         }

@@ -1,13 +1,14 @@
 ---
 import { getCollection } from "astro:content";
+import { loadHybridBlog } from "$lib/content-loader";
 import Base from "$layouts/Base.astro";
 
-const posts = await getCollection("blog");
+const posts = await loadHybridBlog("desertthunder.dev");
 const bookmarks = await getCollection("bookmarks");
 const tagCounts = new Map<string, number>();
 
 posts.forEach((post) => {
-  post.data.tags.forEach((tag) => {
+  post.tags.forEach((tag) => {
     tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
   });
 });

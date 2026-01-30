@@ -35,13 +35,8 @@ export async function transformLeafletToMarkdown(document: LeafletDocument, _atU
     blocks = page.blocks || [];
   }
 
-  console.debug(`[LeafletTransform] Transforming "${document.title}": ${blocks.length} block wrappers`);
-
   const markdown = transformBlocks(blocks);
-  console.debug(`[LeafletTransform] Markdown: "${markdown}"`);
-
   const html = await marked.parse(markdown);
-  console.debug(`[LeafletTransform] HTML: "${html.slice(0, 200)}"`);
   return html;
 }
 
@@ -52,12 +47,9 @@ export async function transformLeafletToMarkdown(document: LeafletDocument, _atU
  * and converts each to markdown format, preserving structure and hierarchy.
  */
 function transformBlocks(blocks: BlockWrapper[]): string {
-  console.debug(`[LeafletTransform] transformBlocks: ${blocks.length} block wrappers`);
-  const results = blocks.map((wrapper, i) => {
+  const results = blocks.map((wrapper) => {
     const block = wrapper.block;
-    const result = transformBlock(block);
-    console.debug(`[LeafletTransform] Block ${i} ($type=${block.$type}): "${result.slice(0, 50)}"`);
-    return result;
+    return transformBlock(block);
   });
   return results.join("\n\n");
 }
@@ -68,9 +60,6 @@ function transformBlocks(blocks: BlockWrapper[]): string {
  * Dispatches to the appropriate transformer based on block type.
  */
 function transformBlock(block: Block): string {
-  const blockData = JSON.stringify(block);
-  console.debug(`[LeafletTransform] Block $type=${block.$type}, data=${blockData.slice(0, 200)}`);
-
   switch (block.$type) {
     case "pub.leaflet.blocks.text":
       return transformTextBlock(block as TextBlock);

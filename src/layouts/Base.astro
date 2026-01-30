@@ -44,6 +44,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, siteUrl).toString() : undefined;
     <meta name="generator" content={Astro.generator} />
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl.toString()} />
+    <link rel="alternate" type="application/rss+xml" title="Owais Jamil - Desert Thunder" href={`${siteUrl}/rss.xml`} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

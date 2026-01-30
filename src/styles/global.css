@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@fontsource-variable/dm-sans/index.css";
+@import "@fontsource-variable/onest/index.css";
 @import "@fontsource-variable/geist-mono/index.css";
 
 @font-face {
@@ -75,7 +75,7 @@
   --color-magenta: var(--color-magenta);
   --color-cyan: var(--color-cyan);
   --font-serif: "Redaction", serif;
-  --font-sans: "DM Sans Variable", sans-serif;
+  --font-sans: "Onest Variable", sans-serif;
   --font-mono: "Geist Mono Variable", monospace;
   --default-font-family: "Geist Variable", sans-serif;
   --shadow-custom: var(--shadow-custom);

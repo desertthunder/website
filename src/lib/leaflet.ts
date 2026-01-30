@@ -182,12 +182,11 @@ export async function fetchLeafletPosts(
 
   try {
     const { data: profile } = await agent.resolveHandle({ handle });
-    console.debug(`[Leaflet] Resolved handle "${handle}" to DID: ${profile.did}`);
 
     const params = { repo: profile.did, collection: LEAFLET_COLLECTION, limit: 100, reverse: true };
     const { data } = await agent.com.atproto.repo.listRecords(params);
 
-    console.debug(`[Leaflet] Fetched ${data.records.length} records from collection "${LEAFLET_COLLECTION}"`);
+    console.log(`[Leaflet] Fetched ${data.records.length} records from collection "${LEAFLET_COLLECTION}"`);
 
     const validRecords: AtprotoRecord[] = [];
 
@@ -198,7 +197,6 @@ export async function fetchLeafletPosts(
           uri: r.uri,
           cid: r.cid,
           valueKeys: Object.keys(r.value || {}),
-          value: r.value,
         });
         throw new Error(`Invalid AT Protocol record structure for URI: ${String(r.uri || "unknown")}`);
       }
@@ -217,7 +215,6 @@ export async function fetchLeafletPosts(
         );
       }
 
-      console.debug(`[Leaflet] Valid record: "${record.value.title}" (${record.uri})`);
       validRecords.push(record as unknown as AtprotoRecord);
     }
 
@@ -254,42 +251,31 @@ type ValidDoc = {
  */
 function isValidLeafletDocument(value: Record<string, unknown>): value is Record<string, unknown> & ValidDoc {
   if (value.$type !== "pub.leaflet.document") {
-    console.error(`[Leaflet] Wrong $type: ${value.$type}`);
     return false;
   }
 
   if (typeof value.title !== "string" || value.title.length === 0) {
-    console.error(`[Leaflet] Invalid title: ${value.title}`);
     return false;
   }
 
   if (typeof value.author !== "string") {
-    console.error(`[Leaflet] Invalid author: ${value.author}`);
     return false;
   }
 
   if (typeof value.publishedAt !== "string") {
-    console.error(`[Leaflet] Invalid publishedAt: ${value.publishedAt}`);
     return false;
   }
 
   if (!Array.isArray(value.pages) || value.pages.length === 0) {
-    console.error(`[Leaflet] Invalid pages: not an array or empty`);
     return false;
   }
 
   const page = value.pages[0] as Record<string, unknown>;
   if (typeof page !== "object" || page === null) {
-    console.error(`[Leaflet] Invalid first page: not an object`);
     return false;
   }
 
   if (!Array.isArray(page.blocks)) {
-    console.error(`[Leaflet] Invalid page.blocks: not an array`, {
-      pageKeys: Object.keys(page),
-      blocksType: typeof page.blocks,
-      blocksValue: page.blocks,
-    });
     return false;
   }
 

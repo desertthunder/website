@@ -1,17 +1,18 @@
 ---
 import { getCollection } from "astro:content";
+import { loadHybridBlog } from "$lib/content-loader";
 import type { GetStaticPaths } from "astro";
 import Base from "../../layouts/Base.astro";
 import CollapsibleBlogPost from "../../components/CollapsibleBlogPost.astro";
 import BookmarkCard from "../../components/BookmarkCard.astro";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection("blog");
+  const posts = await loadHybridBlog("desertthunder.dev");
   const bookmarks = await getCollection("bookmarks");
   const tags = new Set<string>();
 
   posts.forEach((post) => {
-    post.data.tags.forEach((tag) => tags.add(tag));
+    post.tags.forEach((tag) => tags.add(tag));
   });
 
   bookmarks.forEach((bookmark) => {
@@ -22,8 +23,8 @@ export const getStaticPaths = (async () => {
     params: { tag },
     props: {
       posts: posts
-        .filter((post) => post.data.tags.includes(tag) && !post.data.draft)
-        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+        .filter((post) => post.tags.includes(tag))
+        .sort((a, b) => b.date.valueOf() - a.date.valueOf()),
       bookmarks: bookmarks
         .filter((bookmark) => bookmark.data.categories.includes(tag))
         .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
@@ -47,10 +48,12 @@ const { posts, bookmarks } = Astro.props;
             {posts.map((post) => (
               <CollapsibleBlogPost
                 slug={post.slug}
-                title={post.data.title}
-                description={post.data.description}
-                date={post.data.date}
-                tags={post.data.tags}
+                title={post.title}
+                description={post.description}
+                date={post.date}
+                tags={post.tags}
+                source={post.source}
+                atUri={post.atUri}
               />
             ))}
           </div>

@@ -8,6 +8,7 @@
 import { getCollection } from "astro:content";
 import { fetchLeafletPosts, extractRkey, type AtprotoRecord } from "./leaflet";
 import { transformLeafletToMarkdown } from "./leaflet-transform";
+import { cacheLeafletImages } from "./leaflet-images";
 
 /**
  * Hybrid blog post representation
@@ -43,6 +44,10 @@ export async function loadHybridBlog(handle: string): Promise<HybridPost[]> {
       return [] as AtprotoRecord[];
     }),
   ]);
+
+  if (leafletRecords.length > 0) {
+    await cacheLeafletImages(handle, leafletRecords);
+  }
 
   const transformedLeaflet = await Promise.all(leafletRecords.map(transformRecordToHybridPost));
   const merged = deduplicatePosts([...localPosts, ...transformedLeaflet]);
@@ -82,8 +87,6 @@ async function transformRecordToHybridPost(record: AtprotoRecord): Promise<Hybri
   const doc = record.value;
   const rkey = extractRkey(record.uri);
 
-  console.debug(`[ContentLoader] Transforming record: "${doc.title}" (${record.uri})`);
-
   if (!doc.title) {
     throw new Error(`Leaflet document missing title at URI: ${record.uri}`);
   }
@@ -102,15 +105,15 @@ async function transformRecordToHybridPost(record: AtprotoRecord): Promise<Hybri
   }
 
   const content = await transformLeafletToMarkdown(doc, record.uri);
-  console.debug(`[ContentLoader] Transformed content length: ${content.length}, preview: ${content.slice(0, 100)}`);
+  const textToScan = `${doc.title} ${doc.description || ""}`;
+  const tags = extractHashtags(textToScan);
 
   return {
     slug: `leaflet/${rkey}`,
     title: doc.title,
     description: doc.description || "",
     date: publishedDate,
-    // TODO: Extract tags from document or content
-    tags: [],
+    tags,
     source: "leaflet",
     atUri: record.uri,
     leafletRkey: rkey,
@@ -142,6 +145,30 @@ function deduplicatePosts(posts: HybridPost[]): HybridPost[] {
   }
 
   return Array.from(seen.values());
+}
+
+/**
+ * Extracts hashtags from text for tag generation
+ *
+ * Parses hashtags like #javascript from the provided text
+ * and returns them as a cleaned array without the # prefix.
+ *
+ * @param text - Text to extract hashtags from
+ * @returns Array of hashtag names without the # prefix
+ */
+function extractHashtags(text: string): string[] {
+  const hashtagRegex = /#(\w+)/g;
+  const hashtags = new Set<string>();
+  let match;
+
+  while ((match = hashtagRegex.exec(text)) !== null) {
+    const tag = match[1].toLowerCase();
+    if (tag.length > 0) {
+      hashtags.add(tag);
+    }
+  }
+
+  return Array.from(hashtags);
 }
 
 /**

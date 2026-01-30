@@ -5,6 +5,7 @@
  * Prerendered at build time, dynamically generated in dev.
  */
 import { getCollection } from "astro:content";
+import { loadHybridBlog } from "$lib/content-loader";
 import type { APIRoute } from "astro";
 
 /**
@@ -28,17 +29,17 @@ function stripMarkdown(text: string): string {
 export const GET: APIRoute = async () => {
   const documents = [];
 
-  const blogPosts = await getCollection("blog", ({ data }) => !data.draft);
+  const blogPosts = await loadHybridBlog("desertthunder.dev");
   for (const post of blogPosts) {
-    const text = stripMarkdown(post.body).slice(0, 500);
+    const text = post.description.slice(0, 500);
     documents.push({
       id: `blog:${post.slug}`,
-      title: post.data.title,
-      description: post.data.description,
+      title: post.title,
+      description: post.description,
       url: `/blog/${post.slug}`,
       type: "blog",
       text,
-      tags: post.data.tags || [],
+      tags: post.tags || [],
       categories: [],
     });
   }
