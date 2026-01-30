@@ -21,7 +21,7 @@ export const LEAFLET_COLLECTION = "pub.leaflet.document";
 /**
  * Leaflet document record from AT Protocol
  *
- * @see https://github.com/bsky-protocol/lexicons/blob/main/lexicons/pub/leaflet/document.json
+ * @see https://github.com/mary-ext/atcute/blob/b113eafe3b768b6578759b205b0bb9df57c239e0/packages/definitions/leaflet/lexicons/pub/leaflet/document.json
  */
 export type LeafletDocument = {
   $type: "pub.leaflet.document";
@@ -61,8 +61,12 @@ export type Block =
   | HorizontalRuleBlock
   | UnorderedListBlock
   | ImageBlock
+  | CodeBlock
+  | MathBlock
   | WebsiteEmbedBlock
-  | BskyPostEmbedBlock;
+  | BskyPostEmbedBlock
+  | WebsiteBlock
+  | BskyPostBlock;
 
 /**
  * Rich text block with facets (bold, italic, links)
@@ -88,12 +92,52 @@ export type BlockquoteBlock = { $type: "pub.leaflet.blocks.blockquote"; text: st
 /**
  * Horizontal rule divider
  */
-export type HorizontalRuleBlock = { $type: "pub.leaflet.blocks.hr" };
+export type HorizontalRuleBlock = { $type: "pub.leaflet.blocks.hr" | "pub.leaflet.blocks.horizontalRule" };
 
 /**
  * Unordered list items
  */
-export type UnorderedListBlock = { $type: "pub.leaflet.blocks.ul"; items: string[] };
+export type UnorderedListBlock = {
+  $type: "pub.leaflet.blocks.ul" | "pub.leaflet.blocks.unorderedList";
+  children: Array<{ $type: string; content: TextBlock; children: unknown[] }>;
+};
+
+/**
+ * Code block with syntax highlighting
+ */
+export type CodeBlock = {
+  $type: "pub.leaflet.blocks.code";
+  plaintext: string;
+  language?: string;
+  syntaxHighlightingTheme?: string;
+};
+
+/**
+ * Math block for LaTeX equations
+ */
+export type MathBlock = { $type: "pub.leaflet.blocks.math"; tex: string; caption?: string };
+
+/**
+ * Bluesky post embed (alternative type name)
+ */
+export type BskyPostBlock = {
+  $type: "pub.leaflet.blocks.bskyPost";
+  uri: string;
+  cid: string;
+  author: BSkyAuthor;
+  record: BSkyRecord;
+};
+
+/**
+ * Website link embed (alternative type name)
+ */
+export type WebsiteBlock = {
+  $type: "pub.leaflet.blocks.website";
+  uri: string;
+  title?: string;
+  description?: string;
+  thumbnail?: WebEmbedThumb;
+};
 
 /**
  * Image embedded from blob storage
@@ -164,6 +208,7 @@ export type ItalicFeature = { $type: "pub.leaflet.richtext.facet#italic" };
  */
 export type AtprotoRecord = { uri: string; cid: string; value: LeafletDocument };
 
+const DEFAULT_SERVICE = "https://bsky.social";
 /**
  * Fetches all Leaflet posts from AT Protocol
  *
@@ -174,10 +219,7 @@ export type AtprotoRecord = { uri: string; cid: string; value: LeafletDocument }
  * @param service - The PDS service URL (defaults to bsky.social)
  * @returns Array of Leaflet document records
  */
-export async function fetchLeafletPosts(
-  handle: string,
-  service: string = "https://bsky.social",
-): Promise<AtprotoRecord[]> {
+export async function fetchLeafletPosts(handle: string, service: string = DEFAULT_SERVICE): Promise<AtprotoRecord[]> {
   const agent = new AtpAgent({ service });
 
   try {
@@ -193,11 +235,8 @@ export async function fetchLeafletPosts(
     for (const record of data.records) {
       if (!isValidAtprotoRecord(record)) {
         const r = record as Record<string, unknown>;
-        console.error("[Leaflet] Invalid record structure:", {
-          uri: r.uri,
-          cid: r.cid,
-          valueKeys: Object.keys(r.value || {}),
-        });
+        const valueKeys = Object.keys(r.value || {});
+        console.error("[Leaflet] Invalid record structure:", { uri: r.uri, cid: r.cid, valueKeys });
         throw new Error(`Invalid AT Protocol record structure for URI: ${String(r.uri || "unknown")}`);
       }
 

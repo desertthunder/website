@@ -16,8 +16,12 @@ import type {
   HorizontalRuleBlock,
   UnorderedListBlock,
   ImageBlock,
+  CodeBlock,
+  MathBlock,
   WebsiteEmbedBlock,
   BskyPostEmbedBlock,
+  WebsiteBlock,
+  BskyPostBlock,
   Facet,
 } from "./leaflet";
 
@@ -68,14 +72,22 @@ function transformBlock(block: Block): string {
     case "pub.leaflet.blocks.blockquote":
       return transformBlockquoteBlock(block as BlockquoteBlock);
     case "pub.leaflet.blocks.hr":
+    case "pub.leaflet.blocks.horizontalRule":
       return transformHorizontalRuleBlock(block as HorizontalRuleBlock);
     case "pub.leaflet.blocks.ul":
+    case "pub.leaflet.blocks.unorderedList":
       return transformUnorderedListBlock(block as UnorderedListBlock);
     case "pub.leaflet.blocks.image":
       return transformImageBlock(block as ImageBlock);
+    case "pub.leaflet.blocks.code":
+      return transformCodeBlock(block as CodeBlock);
+    case "pub.leaflet.blocks.math":
+      return transformMathBlock(block as MathBlock);
     case "pub.leaflet.blocks.websiteEmbed":
+    case "pub.leaflet.blocks.website":
       return transformWebsiteEmbedBlock(block as WebsiteEmbedBlock);
     case "pub.leaflet.blocks.bskyPostEmbed":
+    case "pub.leaflet.blocks.bskyPost":
       return transformBskyPostEmbedBlock(block as BskyPostEmbedBlock);
     default:
       console.warn(`Unknown block type: ${(block as { $type: string }).$type}`);
@@ -191,7 +203,58 @@ function transformHorizontalRuleBlock(_block: HorizontalRuleBlock): string {
  * Uses - prefix for each list item.
  */
 function transformUnorderedListBlock(block: UnorderedListBlock): string {
-  return block.items.map((item) => `- ${item}`).join("\n");
+  if (!block.children || !Array.isArray(block.children)) {
+    console.warn("[LeafletTransform] UnorderedListBlock missing children:", block);
+    return "";
+  }
+
+  return block.children
+    .map((child) => {
+      if (child.content && child.content.plaintext) {
+        return `- ${child.content.plaintext}`;
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
+/**
+ * Transforms code block to markdown
+ *
+ * Creates fenced code block with optional language.
+ */
+function transformCodeBlock(block: CodeBlock): string {
+  if (!block.plaintext) {
+    console.warn("[LeafletTransform] CodeBlock missing plaintext:", block);
+    return "";
+  }
+
+  const language = block.language || "";
+
+  return "```" + language + "\n" + block.plaintext + "\n```";
+}
+
+/**
+ * Transforms math block to markdown
+ *
+ * Creates LaTeX math block with optional caption.
+ */
+function transformMathBlock(block: MathBlock): string {
+  if (!block.tex) {
+    console.warn("[LeafletTransform] MathBlock missing tex:", block);
+    return "";
+  }
+
+  const caption = block.caption || "";
+
+  let result = "$$" + "\n" + block.tex + "\n" + "$$";
+
+  if (caption) {
+    result += "\n*" + caption + "*";
+  }
+
+  return result;
 }
 
 /**
@@ -199,8 +262,6 @@ function transformUnorderedListBlock(block: UnorderedListBlock): string {
  *
  * Creates markdown image reference with cached blob URL.
  * Images are downloaded and cached during build.
- *
- * @todo: Implement blob downloading and caching
  */
 function transformImageBlock(block: ImageBlock): string {
   const blobRef = block.image.ref as unknown as Record<string, unknown>;
@@ -221,8 +282,10 @@ function transformImageBlock(block: ImageBlock): string {
  * Transforms website embed to markdown
  *
  * Creates link with optional title and description.
+ *
+ * @todo: make this match design system
  */
-function transformWebsiteEmbedBlock(block: WebsiteEmbedBlock): string {
+function transformWebsiteEmbedBlock(block: WebsiteEmbedBlock | WebsiteBlock): string {
   const lines: string[] = [];
 
   lines.push(`🔗 ${block.uri}`);
@@ -242,12 +305,19 @@ function transformWebsiteEmbedBlock(block: WebsiteEmbedBlock): string {
  * Transforms Bluesky post embed to markdown
  *
  * Creates blockquote with author info and link to post.
+ *
+ * @todo: make this match design system
  */
-function transformBskyPostEmbedBlock(block: BskyPostEmbedBlock): string {
+function transformBskyPostEmbedBlock(block: BskyPostEmbedBlock | BskyPostBlock): string {
+  if (!block.author || !block.author.handle) {
+    console.warn("[LeafletTransform] BskyPostEmbedBlock missing author:", block);
+    return `📱 [Bluesky Post](${block.uri})`;
+  }
+
   const handle = block.author.handle;
   const displayName = block.author.displayName || handle;
   const postUri = block.uri;
-  const text = block.record.text;
+  const text = block.record?.text || "";
 
   return `> **${displayName}** (@${handle})\n>\n> ${text}\n>\n> [View post](${postUri})`;
 }
