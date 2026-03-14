@@ -23,7 +23,8 @@ const bookmarksCollection = defineCollection({
     title: z.string(),
     url: z.string().url(),
     date: z.coerce.date(),
-    categories: z.array(z.string()).default([]),
+    category: z.string().default("other"),
+    tags: z.array(z.string()).default([]),
   }),
 });
 
