@@ -13,12 +13,11 @@ const bookmarks = bookmarksWithContent.sort((a, b) => b.data.date.getTime() - a.
 
 const groupedBookmarks = bookmarks.reduce(
   (acc, bookmark) => {
-    bookmark.data.categories.forEach((category: string) => {
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(bookmark);
-    });
+    const cat = bookmark.data.category;
+    if (!acc[cat]) {
+      acc[cat] = [];
+    }
+    acc[cat].push(bookmark);
     return acc;
   },
   {} as Record<string, typeof bookmarks>,
@@ -26,7 +25,7 @@ const groupedBookmarks = bookmarks.reduce(
 
 const categories = Object.keys(groupedBookmarks).sort();
 
-const uniqueCategories = [...new Set(bookmarks.flatMap((b) => b.data.categories))];
+const uniqueCategories = [...new Set(bookmarks.map((b) => b.data.category))];
 
 const categoryIcons: Record<string, string> = {
   learning: "i-ri-book-open-line",

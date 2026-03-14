@@ -5,7 +5,8 @@
  */
 
 import type { Loader, LoaderContext } from "astro/loaders";
-import { fetchLeafletPosts, extractRkey, type LeafletDocument } from "./leaflet";
+import { fetchLeafletPosts, extractRkey, type LeafletDocument, type BlockWrapper } from "./leaflet";
+import { cacheLeafletImages } from "./leaflet-images";
 
 /**
  * Creates a Leaflet loader that fetches blog posts from AT Protocol
@@ -46,6 +47,15 @@ export function leafletLoader(handle: string): Loader {
         }
 
         logger.info(`Loaded ${records.length} Leaflet posts`);
+
+        const imageRecords = records.map((r) => ({
+          uri: r.uri,
+          value: r.value as unknown as { content: { pages: Array<{ blocks: BlockWrapper[] }> } },
+        }));
+        const cached = await cacheLeafletImages(handle, imageRecords);
+        if (cached.size > 0) {
+          logger.info(`Cached ${cached.size} images`);
+        }
       } catch (error) {
         logger.error(`Failed to load Leaflet posts: ${error}`);
         logger.warn("empty collection - continuing build");

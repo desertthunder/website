@@ -50,9 +50,9 @@ const { Content } = await render(bookmark);
         }</span
       >
       {
-        bookmark.data.categories.map((category: string) => (
+        bookmark.data.tags.map((tag: string) => (
           <span class="text-[10px] sm:text-xs text-terminal-primary bg-terminal-primary/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
-            #{category}
+            #{tag}
           </span>
         ))
       }
