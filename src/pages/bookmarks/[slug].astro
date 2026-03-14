@@ -1,18 +1,16 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../../components/TerminalLayout.astro";
 
 export async function getStaticPaths() {
-  const bookmarks = await getCollection('bookmarks');
-  return bookmarks.map((bookmark: CollectionEntry<'bookmarks'>) => ({
+  const bookmarks = await getCollection("bookmarks");
+  return bookmarks.map((bookmark: CollectionEntry<"bookmarks">) => ({
     params: { slug: bookmark.id },
     props: { bookmark },
   }));
 }
 
-type Props = {
-  bookmark: CollectionEntry<'bookmarks'>;
-};
+type Props = { bookmark: CollectionEntry<"bookmarks"> };
 
 const { bookmark } = Astro.props;
 const { Content } = await render(bookmark);
@@ -22,51 +20,47 @@ const { Content } = await render(bookmark);
   title={bookmark.data.title}
   description={`Bookmarked on ${bookmark.data.date.toLocaleDateString()}`}
   currentPath={`/bookmarks/${bookmark.id}`}
-  showTitle={false}
->
-
-  <!-- Bookmark Header -->
+  showTitle={false}>
   <div class="border-b border-terminal-border pb-6 mb-8">
     <div class="flex items-center gap-2 text-terminal-text-dim text-sm mb-4">
       <a href="/bookmarks" class="terminal-link">bookmarks</a>
       <span>/</span>
       <span>{bookmark.id}</span>
     </div>
-    
+
     <h1 class="text-3xl font-bold text-terminal-text mb-4">{bookmark.data.title}</h1>
-    
+
     <div class="flex flex-wrap items-center gap-4 text-sm text-terminal-text-muted">
-      <a 
-        href={bookmark.data.url} 
-        target="_blank" 
+      <a
+        href={bookmark.data.url}
+        target="_blank"
         rel="noopener noreferrer"
-        class="flex items-center gap-2 text-terminal-primary terminal-link"
-      >
+        class="flex items-center gap-2 text-terminal-primary terminal-link">
         <span class="flex items-center">
           <i class="i-ri-external-link-line w-4 h-4"></i>
         </span>
         <span>{bookmark.data.url}</span>
       </a>
     </div>
-    
+
     <div class="flex flex-wrap gap-2 mt-4">
-      <span class="text-xs text-terminal-text-dim">Bookmarked on {bookmark.data.date.toLocaleDateString('en-US', { 
-        year: 'numeric',
-        month: 'long', 
-        day: 'numeric' 
-      })}</span>
-      {bookmark.data.categories.map((category: string) => (
-        <span class="text-xs text-terminal-primary bg-terminal-primary/10 px-2 py-1 rounded">#{category}</span>
-      ))}
+      <span class="text-xs text-terminal-text-dim"
+        >Bookmarked on {
+          bookmark.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+        }</span
+      >
+      {
+        bookmark.data.categories.map((category: string) => (
+          <span class="text-xs text-terminal-primary bg-terminal-primary/10 px-2 py-1 rounded">#{category}</span>
+        ))
+      }
     </div>
   </div>
 
-  <!-- Bookmark Content -->
   <article class="prose prose-invert prose-terminal max-w-none">
     <Content />
   </article>
 
-  <!-- Bookmark Footer -->
   <div class="mt-12 pt-6 border-t border-terminal-border">
     <div class="flex items-center justify-between">
       <a href="/bookmarks" class="text-terminal-primary terminal-link flex items-center gap-2">
@@ -75,14 +69,13 @@ const { Content } = await render(bookmark);
         </span>
         <span>back to bookmarks</span>
       </a>
-      
+
       <div class="flex items-center gap-4">
-        <a 
-          href={bookmark.data.url} 
-          target="_blank" 
+        <a
+          href={bookmark.data.url}
+          target="_blank"
           rel="noopener noreferrer"
-          class="text-terminal-primary terminal-link flex items-center gap-2"
-        >
+          class="text-terminal-primary terminal-link flex items-center gap-2">
           <span class="flex items-center">
             <i class="i-ri-external-link-line w-4 h-4"></i>
           </span>
@@ -91,7 +84,6 @@ const { Content } = await render(bookmark);
       </div>
     </div>
   </div>
-
 </TerminalLayout>
 
 <style>
@@ -100,7 +92,7 @@ const { Content } = await render(bookmark);
   .prose-terminal {
     @apply text-terminal-text;
   }
-  
+
   .prose-terminal p {
     @apply text-terminal-text-muted mb-4 leading-relaxed;
   }

@@ -155,7 +155,6 @@ async function resolvePdsEndpoint(did: string): Promise<string> {
 function extractBlobsFromBlock(block: Record<string, unknown>): Array<{ $link: string; mimeType: string }> {
   const blobs: Array<{ $link: string; mimeType: string }> = [];
 
-  // Image blocks
   if (block.$type === "pub.leaflet.blocks.image" && block.image && typeof block.image === "object") {
     const rawImage = block.image as Record<string, unknown>;
     const rawRef = rawImage.ref as { toString: () => string };
@@ -166,7 +165,6 @@ function extractBlobsFromBlock(block: Record<string, unknown>): Array<{ $link: s
     }
   }
 
-  // Website preview images
   if (block.$type === "pub.leaflet.blocks.website" && block.previewImage && typeof block.previewImage === "object") {
     const rawImage = block.previewImage as Record<string, unknown>;
     const rawRef = rawImage.ref as { toString: () => string };

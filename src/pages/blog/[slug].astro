@@ -1,60 +1,46 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../../components/TerminalLayout.astro";
 import { transformLeafletToMarkdown } from "../../lib/leaflet-transform";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
-type Props = {
-  post: CollectionEntry<'blog'>;
-};
+type Props = { post: CollectionEntry<"blog"> };
 
 const { post } = Astro.props;
 
-// Parse the body which contains the full Leaflet document as JSON
-const doc = JSON.parse(post.body || '{}');
+const doc = JSON.parse(post.body || "{}");
 
-// Transform to HTML using the existing transform function
 const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 ---
 
-<TerminalLayout 
+<TerminalLayout
   title={post.data.title}
-  description={post.data.description || ''}
+  description={post.data.description || ""}
   currentPath={`/blog/${post.id}`}
-  showTitle={false}
->
-
-  <!-- Post Header -->
+  showTitle={false}>
   <div class="border-b border-terminal-border pb-6 mb-8">
     <div class="flex items-center gap-2 text-terminal-text-dim text-sm mb-4">
       <a href="/blog" class="terminal-link">blog</a>
       <span>/</span>
       <span>{post.id}</span>
     </div>
-    
+
     <h1 class="text-3xl font-bold text-terminal-text mb-4">{post.data.title}</h1>
-    
+
     <div class="flex flex-wrap items-center gap-4 text-sm text-terminal-text-muted">
       <span class="flex items-center gap-2">
         <span class="flex items-center">
           <i class="i-ri-calendar-line w-4 h-4"></i>
         </span>
         <time>
-          {post.data.date.toLocaleDateString('en-US', { 
-            year: 'numeric',
-            month: 'long', 
-            day: 'numeric' 
-          })}
+          {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
         </time>
       </span>
-      
+
       <span class="flex items-center gap-2">
         <span class="flex items-center">
           <i class="i-ri-user-line w-4 h-4"></i>
@@ -64,10 +50,8 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     </div>
   </div>
 
-  <!-- Post Content -->
   <article class="leaflet-content prose prose-invert max-w-none" set:html={contentHtml} />
 
-  <!-- Post Footer -->
   <div class="mt-12 pt-6 border-t border-terminal-border">
     <div class="flex items-center justify-between">
       <a href="/blog" class="text-terminal-primary terminal-link flex items-center gap-2">
@@ -76,9 +60,9 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
         </span>
         <span>back to blog</span>
       </a>
-      
+
       <div class="flex items-center gap-4">
-        <a 
+        <a
           href={`https://bsky.app/profile/desertthunder.dev/post/${post.data.leafletRkey}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -91,7 +75,6 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
       </div>
     </div>
   </div>
-
 </TerminalLayout>
 
 <style>

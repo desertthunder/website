@@ -1,65 +1,50 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../../components/TerminalLayout.astro";
 
-// Get all posts sorted by date
-const allPosts = await getCollection('blog');
-const posts = allPosts.sort((a, b) => 
-  b.data.date.getTime() - a.data.date.getTime()
-);
-
-// Leaflet posts don't have tags, so we'll show a message
-const tagCount = 0;
+const allPosts = await getCollection("blog");
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<TerminalLayout 
-  title="blog" 
+<TerminalLayout
+  title="blog"
   description="Thoughts on software engineering, terminals, and developer experience"
   currentPath="/blog">
-
-  <!-- Posts List -->
   <div class="space-y-4">
-    {posts.map((post, index) => (
-      <article class="border border-terminal-border rounded-lg overflow-hidden hover:border-terminal-primary transition-colors">
-        <div class="p-5">
-          <div class="flex items-start justify-between gap-4 mb-3">
-            <div class="flex items-center gap-3">
-              <span class="text-terminal-text-dim font-mono text-sm">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <a href={`/blog/${post.id}`} class="text-lg font-bold text-terminal-text terminal-link">
-                {post.data.title}
+    {
+      posts.map((post, index) => (
+        <article class="border border-terminal-border rounded-lg overflow-hidden hover:border-terminal-primary transition-colors">
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="text-terminal-text-dim font-mono text-sm">{String(index + 1).padStart(2, "0")}</span>
+                <a href={`/blog/${post.id}`} class="text-lg font-bold text-terminal-text terminal-link">
+                  {post.data.title}
+                </a>
+              </div>
+              <time class="text-terminal-text-dim text-xs whitespace-nowrap">
+                {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+              </time>
+            </div>
+
+            {post.data.description && <p class="text-terminal-text-muted text-sm mb-4 ml-8">{post.data.description}</p>}
+
+            <div class="flex items-center justify-between ml-8">
+              <span class="text-xs text-terminal-text-dim">by desertthunder.dev</span>
+
+              <a href={`/blog/${post.id}`} class="text-terminal-primary text-sm terminal-link flex items-center gap-1">
+                <span>read more</span>
+                <span class="flex items-center">
+                  <i class="i-ri-arrow-right-line w-4 h-4" />
+                </span>
               </a>
             </div>
-            <time class="text-terminal-text-dim text-xs whitespace-nowrap">
-              {post.data.date.toLocaleDateString('en-US', { 
-                year: 'numeric',
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </time>
           </div>
-          
-          {post.data.description && (
-            <p class="text-terminal-text-muted text-sm mb-4 ml-8">{post.data.description}</p>
-          )}
-          
-          <div class="flex items-center justify-between ml-8">
-            <span class="text-xs text-terminal-text-dim">by desertthunder.dev</span>
-            
-            <a href={`/blog/${post.id}`} class="text-terminal-primary text-sm terminal-link flex items-center gap-1">
-              <span>read more</span>
-              <span class="flex items-center">
-                <i class="i-ri-arrow-right-line w-4 h-4"></i>
-              </span>
-            </a>
-          </div>
-        </div>
-      </article>
-    ))}
+        </article>
+      ))
+    }
   </div>
 
-  <!-- Stats Footer -->
   <div class="mt-8 pt-4 border-t border-terminal-border flex items-center gap-6 text-sm text-terminal-text-dim">
     <span class="flex items-center gap-2">
       <span class="flex items-center">
@@ -68,5 +53,4 @@ const tagCount = 0;
       <span>{posts.length} posts</span>
     </span>
   </div>
-
 </TerminalLayout>

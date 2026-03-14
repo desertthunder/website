@@ -10,6 +10,10 @@ interface Props {
 
 const { title, description = "", currentPath = "/", showTitle = true } = Astro.props;
 
+const siteUrl = Astro.site || "https://desertthunder.dev";
+const ogImageUrl = new URL("/og.png", siteUrl).toString();
+const canonicalUrl = new URL(currentPath, siteUrl).toString();
+
 const navItems = [
   { path: "/", label: "~/home", icon: "i-ri-home-4-line" },
   { path: "/blog", label: "~/blog", icon: "i-ri-article-line" },
@@ -27,12 +31,25 @@ const navItems = [
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <title>{title} | terminal</title>
+    <title>{title}</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${title}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="Desert Thunder" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={`${title}`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImageUrl} />
+
+    <link rel="canonical" href={canonicalUrl} />
   </head>
   <body class="h-full bg-terminal-bg text-terminal-text font-mono overflow-hidden">
-    <!-- Terminal Container -->
     <div class="h-full flex flex-col border-2 border-terminal-border m-2 rounded-lg overflow-hidden">
-      <!-- Terminal Header -->
       <header
         class="bg-terminal-bg-secondary border-b border-terminal-border px-4 py-3 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
@@ -54,9 +71,7 @@ const navItems = [
         </div>
       </header>
 
-      <!-- Terminal Body -->
       <div class="flex-1 flex overflow-hidden">
-        <!-- Sidebar Navigation -->
         <nav class="w-56 bg-terminal-bg-secondary border-r border-terminal-border flex flex-col shrink-0">
           <div class="p-4 border-b border-terminal-border">
             <div class="text-terminal-text-muted text-xs mb-2">DIRECTORY</div>
@@ -86,7 +101,6 @@ const navItems = [
             }
           </div>
 
-          <!-- Status Bar -->
           <div class="p-4 border-t border-terminal-border text-xs text-terminal-text-dim">
             <div class="flex items-center gap-2 mb-1">
               <span class="flex items-center">
@@ -103,14 +117,10 @@ const navItems = [
           </div>
         </nav>
 
-        <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto bg-terminal-bg relative">
-          <!-- Scanline Effect -->
           <div class="absolute inset-0 terminal-scanline pointer-events-none z-10"></div>
 
-          <!-- Content -->
           <div class="p-6 min-h-full">
-            <!-- Breadcrumb -->
             <div class="flex items-center gap-2 text-sm text-terminal-text-dim mb-6">
               <span class="flex items-center">
                 <i class="i-ri-home-4-line w-4 h-4"></i>
@@ -120,7 +130,6 @@ const navItems = [
               <span class="cursor-blink text-terminal-primary">_</span>
             </div>
 
-            <!-- Page Title -->
             {
               showTitle && (
                 <div class="mb-8">
@@ -130,13 +139,11 @@ const navItems = [
               )
             }
 
-            <!-- Main Content -->
             <slot />
           </div>
         </main>
       </div>
 
-      <!-- Terminal Footer -->
       <footer
         class="bg-terminal-bg-secondary border-t border-terminal-border px-4 py-2 flex items-center justify-between text-xs text-terminal-text-dim shrink-0">
         <div class="flex items-center gap-4">
@@ -165,18 +172,13 @@ const navItems = [
       </footer>
     </div>
 
-    <!-- Clock Script -->
     <script>
       function updateClock() {
         const clock = document.getElementById("clock");
         if (clock) {
           const now = new Date();
-          clock.textContent = now.toLocaleTimeString("en-US", {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          });
+          const opts = { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" };
+          clock.textContent = now.toLocaleTimeString("en-US", opts as Intl.DateTimeFormatOptions);
         }
       }
       updateClock();

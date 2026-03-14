@@ -85,9 +85,9 @@ function transformBlock(block: Block): string {
     case "pub.leaflet.blocks.iframe":
       return transformIframeBlock(block as IframeBlock);
     case "pub.leaflet.blocks.poll":
-      return ""; // Polls are interactive; skip in static rendering
+      return "";
     case "pub.leaflet.blocks.page":
-      return ""; // Page links are internal navigation; skip
+      return "";
     default:
       console.warn(`Unknown block type: ${(block as { $type: string }).$type}`);
       return "";
