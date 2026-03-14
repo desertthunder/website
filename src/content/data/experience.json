@@ -2,59 +2,56 @@
   "experience": [
     {
       "id": "current",
-      "company": "Vercel",
-      "role": "Senior Frontend Engineer",
-      "period": "2022 - Present",
-      "location": "Remote",
-      "description": "Building the future of web deployment and developer experience",
+      "company": "Stormlight Labs",
+      "role": "Founder and Lead Software Engineer",
+      "period": "2024 - Present",
+      "location": "Remote/Austin, TX",
+      "description": "Lead Engineer of a mental health & open-source focused startup, architecting scalable systems and leading development from concept to production.",
       "highlights": [
-        "Led development of the new dashboard interface",
-        "Implemented real-time deployment logs with WebSockets",
-        "Reduced bundle size by 40% through code splitting",
-        "Mentored junior engineers on React and TypeScript"
+        "Translated complex technical and product requirements into intuitive, performant, and maintainable software solutions grounded in research and user feedback",
+        "Developed and optimized multi-platform applications and open-source libraries using Svelte, Rust, Go, and Flutter, applying modern software design patterns, concurrency models, and profiling for high reliability and performance"
       ],
-      "technologies": ["Next.js", "React", "TypeScript", "Tailwind CSS", "PostgreSQL"]
+      "technologies": ["Rust", "Go", "Solid", "Tauri", "Svelte"]
     },
     {
-      "id": "stripe",
-      "company": "Stripe",
-      "role": "Frontend Engineer",
-      "period": "2020 - 2022",
-      "location": "San Francisco, CA",
-      "description": "Developer platform and dashboard experiences",
+      "id": "edlink",
+      "name": "Edlink",
+      "role": "Senior Software Engineer",
+      "location": "Austin, TX",
+      "period": "2023-2024",
+      "description": "Technical lead and project manager for Flow, a data pipeline connecting LMS to SIS providers for schools.",
       "highlights": [
-        "Built the Stripe CLI dashboard interface",
-        "Implemented design system components used across 20+ products",
-        "Improved dashboard performance by 60%",
-        "Led accessibility initiative achieving WCAG 2.1 AA compliance"
+        "Adapted new data model to the API, as well as connectors for new integrations",
+        "Built and designed novel system architecture around PubSub and BigQuery, and Cloud functions",
+        "NestJS (with TypeScript) and Postgres in a Kubernetes cluster on GCP with Redis. Dashboard built with Vue"
       ],
-      "technologies": ["React", "Ruby", "TypeScript", "GraphQL", "Jest"]
+      "technologies": ["Kubernetes", "Postgres", "NestJS", "TypeScript", "Vue", "GCP"]
     },
+
     {
-      "id": "github",
-      "company": "GitHub",
+      "id": "campusoptics",
+      "company": "CampusOptics",
       "role": "Software Engineer",
-      "period": "2018 - 2020",
-      "location": "San Francisco, CA",
-      "description": "GitHub Actions and developer workflows",
+      "period": "2022 - 2023",
+      "location": "Austin",
+      "description": "Independently gathered requirements from customers and management to develop new features for a higher education Environmental Health and Safety SaaS.",
       "highlights": [
-        "Contributed to GitHub Actions workflow editor",
-        "Built visualization components for CI/CD pipelines",
-        "Implemented real-time log streaming with server-sent events"
+        "Built features for a React Native application while adding endpoints to the internal API",
+        "Complete Stack: Redis for Sidekiq, Ruby on Rails monolith, and Postgres deployed to AWS Elastic Container Service"
       ],
-      "technologies": ["React", "Ruby on Rails", "GraphQL", "MySQL", "Redis"]
+      "technologies": ["React", "Ruby on Rails", "Postgres", "AWS", "Redis"]
     },
     {
-      "id": "startup",
-      "company": "Terminal Labs",
-      "role": "Full Stack Developer",
-      "period": "2016 - 2018",
-      "location": "New York, NY",
-      "description": "Developer tools for cloud infrastructure management",
+      "id": "tacc",
+      "company": "Texas Advanced Computing Center",
+      "role": "Software Engineer",
+      "period": "2019 - 2022",
+      "location": "Austin, TX",
+      "description": "Architected the Frontera User Portal, the first implementation of the Core Experience Portal v2.",
       "highlights": [
-        "Built terminal-based UI for server provisioning",
-        "Implemented real-time monitoring dashboard",
-        "Created CLI tool used by 10,000+ developers"
+        "Built with React, Django, and Postgres",
+        "Developed SEO optimization strategy and publication pipeline update on DesignSafe-CI",
+        "Advocated for and improved internal testing practices and implemented Pytest for Core V2"
       ],
       "technologies": ["Node.js", "Go", "React", "MongoDB", "Docker"]
     }

@@ -1,35 +1,33 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../components/TerminalLayout.astro";
 
 // Get all projects sorted by featured first, then date
-const allProjects = await getCollection('projects');
-const projects: CollectionEntry<'projects'>[] = allProjects.sort((a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) => {
-  if (a.data.featured && !b.data.featured) return -1;
-  if (!a.data.featured && b.data.featured) return 1;
-  return b.data.date.getTime() - a.data.date.getTime();
-});
+const allProjects = await getCollection("projects");
+const projects: CollectionEntry<"projects">[] = allProjects.sort(
+  (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => {
+    if (a.data.featured && !b.data.featured) return -1;
+    if (!a.data.featured && b.data.featured) return 1;
+    return b.data.date.getTime() - a.data.date.getTime();
+  },
+);
 
 const statusColors: Record<string, string> = {
-  'In Development': 'text-terminal-warning',
-  'Active': 'text-terminal-success',
-  'Completed': 'text-terminal-secondary',
-  'Archived': 'text-terminal-text-dim',
+  "In Development": "text-terminal-warning",
+  Active: "text-terminal-success",
+  Completed: "text-terminal-secondary",
+  Archived: "text-terminal-text-dim",
 };
 
 const statusLabels: Record<string, string> = {
-  'In Development': '● in development',
-  'Active': '● active',
-  'Completed': '● completed',
-  'Archived': '○ archived',
+  "In Development": "● in development",
+  Active: "● active",
+  Completed: "● completed",
+  Archived: "○ archived",
 };
 ---
 
-<TerminalLayout 
-  title="projects" 
-  description="Open source projects and developer tools"
-  currentPath="/projects">
-
+<TerminalLayout title="projects" description="Open source projects and developer tools" currentPath="/projects">
   <!-- Stats Overview -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="border border-terminal-border rounded p-4">
@@ -38,64 +36,71 @@ const statusLabels: Record<string, string> = {
     </div>
     <div class="border border-terminal-border rounded p-4">
       <div class="text-terminal-text-dim text-xs">Active</div>
-      <div class="text-2xl font-bold text-terminal-success">{projects.filter(p => p.data.status === 'Active').length}</div>
+      <div class="text-2xl font-bold text-terminal-success">
+        {projects.filter((p) => !["Completed", "Archived"].includes(p.data.status)).length}
+      </div>
     </div>
     <div class="border border-terminal-border rounded p-4">
       <div class="text-terminal-text-dim text-xs">Featured</div>
-      <div class="text-2xl font-bold text-terminal-primary">{projects.filter(p => p.data.featured).length}</div>
+      <div class="text-2xl font-bold text-terminal-primary">{projects.filter((p) => p.data.featured).length}</div>
     </div>
     <div class="border border-terminal-border rounded p-4">
-      <div class="text-terminal-text-dim text-xs">Languages</div>
-      <div class="text-2xl font-bold text-terminal-secondary">{[...new Set(projects.flatMap(p => p.data.tech))].length}</div>
+      <div class="text-terminal-text-dim text-xs">Tools</div>
+      <div class="text-2xl font-bold text-terminal-secondary">
+        {[...new Set(projects.flatMap((p) => p.data.tech))].length}
+      </div>
     </div>
   </div>
 
   <!-- Projects Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {projects.map((project) => (
-      <a 
-        href={`/projects/${project.id}`}
-        class="block border border-terminal-border rounded-lg p-5 hover:border-terminal-primary transition-colors"
-      >
-        <div class="flex items-start justify-between mb-3">
-          <div class="flex items-center gap-3">
-            <span class="flex items-center">
-              <i class="i-ri-folder-3-line w-6 h-6 text-terminal-primary"></i>
-            </span>
-            <div>
-              <div class="font-bold text-terminal-text">{project.data.title}</div>
-              <div class:list={["text-xs", statusColors[project.data.status]]}>{statusLabels[project.data.status]}</div>
-            </div>
-          </div>
-          
-          {project.data.featured && (
-            <span class="flex items-center text-terminal-warning text-xs">
+    {
+      projects.map((project) => (
+        <a
+          href={`/projects/${project.id}`}
+          class="block border border-terminal-border rounded-lg p-5 hover:border-terminal-primary transition-colors">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
               <span class="flex items-center">
-                <i class="i-ri-star-fill w-3 h-3 mr-1"></i>
+                <i class="i-ri-folder-3-line w-6 h-6 text-terminal-primary" />
               </span>
-              featured
+              <div>
+                <div class="font-bold text-terminal-text">{project.data.title}</div>
+                <div class:list={["text-xs", statusColors[project.data.status]]}>
+                  {statusLabels[project.data.status]}
+                </div>
+              </div>
+            </div>
+
+            {project.data.featured && (
+              <span class="flex items-center text-terminal-warning text-xs">
+                <span class="flex items-center">
+                  <i class="i-ri-star-fill w-3 h-3 mr-1" />
+                </span>
+                featured
+              </span>
+            )}
+          </div>
+
+          <p class="text-terminal-text-muted text-sm mb-4">{project.data.description}</p>
+
+          <div class="flex flex-wrap gap-1 mb-4">
+            {project.data.tech.map((tech) => (
+              <span class="text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-2 py-1 rounded">{tech}</span>
+            ))}
+          </div>
+
+          <div class="flex items-center gap-3 text-sm text-terminal-primary">
+            <span class="flex items-center gap-1">
+              <span class="flex items-center">
+                <i class="i-ri-arrow-right-line w-4 h-4" />
+              </span>
+              <span>view project</span>
             </span>
-          )}
-        </div>
-        
-        <p class="text-terminal-text-muted text-sm mb-4">{project.data.description}</p>
-        
-        <div class="flex flex-wrap gap-1 mb-4">
-          {project.data.tech.map((tech) => (
-            <span class="text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-2 py-1 rounded">{tech}</span>
-          ))}
-        </div>
-        
-        <div class="flex items-center gap-3 text-sm text-terminal-primary">
-          <span class="flex items-center gap-1">
-            <span class="flex items-center">
-              <i class="i-ri-arrow-right-line w-4 h-4"></i>
-            </span>
-            <span>view project</span>
-          </span>
-        </div>
-      </a>
-    ))}
+          </div>
+        </a>
+      ))
+    }
   </div>
 
   <!-- Legend -->
@@ -119,5 +124,4 @@ const statusLabels: Record<string, string> = {
       archived
     </span>
   </div>
-
 </TerminalLayout>

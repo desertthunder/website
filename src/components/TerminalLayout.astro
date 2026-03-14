@@ -44,7 +44,7 @@ const navItems = [
           <span class="flex items-center">
             <i class="i-ri-terminal-box-line w-4 h-4 text-terminal-primary"></i>
           </span>
-          <span class="text-terminal-text-muted text-sm">user@portfolio</span>
+          <span class="text-terminal-text-muted text-sm">owais@portfolio</span>
         </div>
         <div class="flex items-center gap-2 text-sm text-terminal-text-dim">
           <span class="flex items-center">
@@ -60,7 +60,7 @@ const navItems = [
         <nav class="w-56 bg-terminal-bg-secondary border-r border-terminal-border flex flex-col shrink-0">
           <div class="p-4 border-b border-terminal-border">
             <div class="text-terminal-text-muted text-xs mb-2">DIRECTORY</div>
-            <div class="text-terminal-primary font-bold">portfolio/</div>
+            <div class="text-terminal-primary font-bold">owais/</div>
           </div>
 
           <div class="flex-1 overflow-y-auto py-2">
@@ -121,14 +121,14 @@ const navItems = [
             </div>
 
             <!-- Page Title -->
-            {showTitle && (
-              <div class="mb-8">
-                <h1 class="text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">
-                  {title}
-                </h1>
-                {description && <p class="text-terminal-text-muted">{description}</p>}
-              </div>
-            )}
+            {
+              showTitle && (
+                <div class="mb-8">
+                  <h1 class="text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">{title}</h1>
+                  {description && <p class="text-terminal-text-muted">{description}</p>}
+                </div>
+              )
+            }
 
             <!-- Main Content -->
             <slot />

@@ -1,19 +1,43 @@
 # desertthunder.dev
 
-## Spec
+## AT Protocol / Leaflet Integration
 
-1. Create a terminal/tui styled website with a dark theme (black and blue).
+Blog posts are fetched from the AT Protocol using the `site.standard.document` collection
+(migrated from the original `pub.leaflet.document` lexicon). Documents are authored on
+[Leaflet](https://leaflet.pub) and stored in the author's PDS.
 
-2. Create the following collections and pages:
+### How it works
 
-    1. Blog Post (markdown)
-    2. Projects (json)
-    3. Work Experience (json)
-    4. Bookmarks (json)
-3. Add color tokens to `./src/styles/styles.css` and use tailwind v4 utility classes in markup
-4. For icons, wrap `i` elements with class `i-ri-*` (remix icons) in `span`s with `flex items-center`
-   classes.
+1. **`src/lib/leaflet.ts`** — Type definitions and fetch logic. Calls
+   `com.atproto.repo.listRecords` against the `site.standard.document` collection for the
+   resolved DID. Each record wraps a `pub.leaflet.content` object containing pages and blocks.
 
-Note:
-    - Placeholder content is fine
-    - Focus on readability and maintainability.
+2. **`src/lib/content-loader.ts`** — An Astro content collection loader that calls
+   `fetchLeafletPosts` and stores each record in the `blog` collection with its rkey as the ID.
+
+3. **`src/lib/leaflet-transform.ts`** — Converts the block-based Leaflet document model into
+   HTML via markdown. Handles all block types (`text`, `header`, `blockquote`, `code`, `image`,
+   `unorderedList`, `orderedList`, `horizontalRule`, `website`, `bskyPost`, `button`, `iframe`,
+   `math`, `poll`, `page`) and rich text facets (`bold`, `italic`, `underline`, `strikethrough`,
+   `code`, `highlight`, `link`, `didMention`, `atMention`, `footnote`).
+
+4. **`src/lib/leaflet-images.ts`** — Downloads and caches blob references (post images and
+   website preview thumbnails) from the author's PDS into `public/leaflet-images/` during build.
+
+### Document structure
+
+```sh
+site.standard.document
+  ├── title, description, publishedAt, path, tags
+  ├── site        → at-uri to site.standard.publication
+  ├── bskyPostRef → strongRef to cross-posted bsky feed post
+  └── content ($type: pub.leaflet.content)
+      └── pages[] ($type: pub.leaflet.pages.linearDocument)
+          └── blocks[] (pub.leaflet.blocks.*)
+              └── facets[] (pub.leaflet.richtext.facet#*)
+```
+
+### Lexicon references
+
+- [atcute leaflet lexicons](https://github.com/mary-ext/atcute/tree/trunk/packages/definitions/leaflet/lexicons)
+- [AT Protocol docs](https://atproto.com/guides/lexicon)

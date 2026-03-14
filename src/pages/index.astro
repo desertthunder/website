@@ -1,23 +1,16 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../components/TerminalLayout.astro";
-import projectsData from "../content/data/projects.json";
 
-// Get recent blog posts
-const allPosts = await getCollection('blog');
-const posts: CollectionEntry<'blog'>[] = allPosts
-  .sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.date.getTime() - a.data.date.getTime())
+const allPosts = await getCollection("blog");
+const posts: CollectionEntry<"blog">[] = allPosts
+  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
-// Get featured projects
-const featuredProjects = projectsData.projects.filter(p => p.featured).slice(0, 3);
+const featuredProjects = await getCollection("projects");
 ---
 
-<TerminalLayout 
-  title="home" 
-  description="Software engineer building terminal-inspired interfaces"
-  currentPath="/">
-
+<TerminalLayout title="home" description="Owais Jamil" currentPath="/">
   <!-- Hero Section -->
   <section class="mb-12">
     <div class="border border-terminal-border rounded-lg p-6 bg-terminal-bg-secondary">
@@ -26,27 +19,29 @@ const featuredProjects = projectsData.projects.filter(p => p.featured).slice(0, 
           <i class="i-ri-user-3-line w-12 h-12 text-terminal-primary"></i>
         </span>
         <div>
-          <h2 class="text-xl font-bold text-terminal-text mb-1">> welcome</h2>
-          <p class="text-terminal-text-muted">Software engineer specializing in developer tools and terminal interfaces.</p>
+          <h2 class="text-xl font-bold text-terminal-text mb-1">{"> welcome"}</h2>
+          <p class="text-terminal-text-muted">Software & writer with a passion for learning.</p>
         </div>
       </div>
-      
+
       <div class="flex flex-wrap gap-4 text-sm">
-        <a href="https://github.com" class="flex items-center gap-2 text-terminal-primary terminal-link">
+        <a href="https://github.com/desertthunder" class="flex items-center gap-2 text-terminal-primary terminal-link">
           <span class="flex items-center">
             <i class="i-ri-github-line w-4 h-4"></i>
           </span>
           <span>github</span>
         </a>
-        
-        <a href="https://twitter.com" class="flex items-center gap-2 text-terminal-primary terminal-link">
+
+        <a
+          href="https://bsky.app/profile/desertthunder.dev"
+          class="flex items-center gap-2 text-terminal-primary terminal-link">
           <span class="flex items-center">
-            <i class="i-ri-twitter-x-line w-4 h-4"></i>
+            <i class="i-ri-bluesky-line w-4 h-4"></i>
           </span>
-          <span>twitter</span>
+          <span>bluesky</span>
         </a>
-        
-        <a href="mailto:hello@example.com" class="flex items-center gap-2 text-terminal-primary terminal-link">
+
+        <a href="mailto:me@desertthunder.dev" class="flex items-center gap-2 text-terminal-primary terminal-link">
           <span class="flex items-center">
             <i class="i-ri-mail-line w-4 h-4"></i>
           </span>
@@ -64,24 +59,24 @@ const featuredProjects = projectsData.projects.filter(p => p.featured).slice(0, 
       </span>
       <span>SYSTEM_STATS</span>
     </div>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="border border-terminal-border rounded p-4">
         <div class="text-terminal-text-dim text-xs mb-1">Uptime</div>
-        <div class="text-terminal-primary text-2xl font-bold">8+ years</div>
+        <div class="text-terminal-primary text-2xl font-bold">7+ years</div>
         <div class="text-terminal-text-muted text-xs">Building software</div>
       </div>
-      
+
       <div class="border border-terminal-border rounded p-4">
         <div class="text-terminal-text-dim text-xs mb-1">Projects</div>
-        <div class="text-terminal-secondary text-2xl font-bold">{projectsData.projects.length}</div>
+        <div class="text-terminal-secondary text-2xl font-bold">{featuredProjects.length}</div>
         <div class="text-terminal-text-muted text-xs">Open source</div>
       </div>
-      
+
       <div class="border border-terminal-border rounded p-4">
         <div class="text-terminal-text-dim text-xs mb-1">Location</div>
-        <div class="text-terminal-success text-2xl font-bold">Remote</div>
-        <div class="text-terminal-text-muted text-xs">Global timezone</div>
+        <div class="text-terminal-success text-2xl font-bold">Austin, TX</div>
+        <div class="text-terminal-text-muted text-xs">GMT-6 (US Central Time)</div>
       </div>
     </div>
   </section>
@@ -102,26 +97,27 @@ const featuredProjects = projectsData.projects.filter(p => p.featured).slice(0, 
         </span>
       </a>
     </div>
-    
+
     <div class="space-y-3">
-      {posts.map((post: CollectionEntry<'blog'>) => (
-        <a href={`/blog/${post.id}`} class="block border border-terminal-border rounded p-4 hover:border-terminal-primary transition-colors terminal-link">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <h3 class="text-terminal-text font-bold mb-1">{post.data.title}</h3>
-              <p class="text-terminal-text-muted text-sm line-clamp-2">{post.data.summary}</p>
+      {
+        posts.map((post) => (
+          <a
+            href={`/blog/${post.id}`}
+            class="block border border-terminal-border rounded p-4 hover:border-terminal-primary transition-colors terminal-link">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <h3 class="text-terminal-text font-bold mb-1">{post.data.title}</h3>
+                {post.data.description && (
+                  <p class="text-terminal-text-muted text-sm line-clamp-2">{post.data.description}</p>
+                )}
+              </div>
+              <span class="text-terminal-text-dim text-xs whitespace-nowrap">
+                {post.data.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              </span>
             </div>
-            <span class="text-terminal-text-dim text-xs whitespace-nowrap">
-              {post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </span>
-          </div>
-          <div class="flex gap-2 mt-3">
-            {post.data.tags.map((tag: string) => (
-              <span class="text-xs text-terminal-primary bg-terminal-primary/10 px-2 py-1 rounded">#{tag}</span>
-            ))}
-          </div>
-        </a>
-      ))}
+          </a>
+        ))
+      }
     </div>
   </section>
 
@@ -141,28 +137,29 @@ const featuredProjects = projectsData.projects.filter(p => p.featured).slice(0, 
         </span>
       </a>
     </div>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {featuredProjects.map((project) => (
-        <div class="border border-terminal-border rounded p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="flex items-center">
-              <i class="i-ri-folder-3-line w-5 h-5 text-terminal-primary"></i>
-            </span>
-            <span class="font-bold text-terminal-text">{project.name}</span>
-            <span class="ml-auto flex items-center">
-              <i class="i-ri-circle-fill w-2 h-2 text-terminal-success"></i>
-            </span>
+      {
+        featuredProjects.map((project) => (
+          <div class="border border-terminal-border rounded p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="flex items-center">
+                <i class="i-ri-folder-3-line w-5 h-5 text-terminal-primary" />
+              </span>
+              <span class="font-bold text-terminal-text">{project.data.title}</span>
+              <span class="ml-auto flex items-center">
+                <i class="i-ri-circle-fill w-2 h-2 text-terminal-success" />
+              </span>
+            </div>
+            <p class="text-terminal-text-muted text-sm mb-3">{project.data.description}</p>
+            <div class="flex flex-wrap gap-1">
+              {project.data.tech.slice(0, 3).map((tech) => (
+                <span class="text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-2 py-1 rounded">{tech}</span>
+              ))}
+            </div>
           </div>
-          <p class="text-terminal-text-muted text-sm mb-3">{project.description}</p>
-          <div class="flex flex-wrap gap-1">
-            {project.tech.slice(0, 3).map((tech) => (
-              <span class="text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-2 py-1 rounded">{tech}</span>
-            ))}
-          </div>
-        </div>
-      ))}
+        ))
+      }
     </div>
   </section>
-
 </TerminalLayout>

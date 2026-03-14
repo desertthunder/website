@@ -1,9 +1,20 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { leafletLoader } from "./lib/content-loader";
 
 const blogCollection = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z.object({ title: z.string(), date: z.date(), summary: z.string(), tags: z.array(z.string()) }),
+  loader: leafletLoader("desertthunder.dev"),
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.date(),
+    publishedAt: z.string(),
+    atUri: z.string(),
+    leafletRkey: z.string(),
+    tags: z.array(z.string()).default([]),
+  }),
 });
 
 const bookmarksCollection = defineCollection({

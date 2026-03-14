@@ -1,56 +1,52 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import TerminalLayout from "../components/TerminalLayout.astro";
 
-// Get all bookmarks sorted by date
-const allBookmarks = await getCollection('bookmarks');
+const allBookmarks = await getCollection("bookmarks");
 const bookmarksWithContent = await Promise.all(
   allBookmarks.map(async (bookmark) => {
     const { Content } = await render(bookmark);
     return { ...bookmark, Content };
-  })
+  }),
 );
-const bookmarks = bookmarksWithContent.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
+const bookmarks = bookmarksWithContent.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Group bookmarks by category
-const groupedBookmarks = bookmarks.reduce((acc, bookmark) => {
-  bookmark.data.categories.forEach((category: string) => {
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(bookmark);
-  });
-  return acc;
-}, {} as Record<string, typeof bookmarks>);
+const groupedBookmarks = bookmarks.reduce(
+  (acc, bookmark) => {
+    bookmark.data.categories.forEach((category: string) => {
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(bookmark);
+    });
+    return acc;
+  },
+  {} as Record<string, typeof bookmarks>,
+);
 
 const categories = Object.keys(groupedBookmarks).sort();
 
-// Get unique categories count
 const uniqueCategories = [...new Set(bookmarks.flatMap((b) => b.data.categories))];
 
 const categoryIcons: Record<string, string> = {
-  learning: 'i-ri-book-open-line',
-  reference: 'i-ri-file-list-3-line',
-  tools: 'i-ri-tools-line',
-  community: 'i-ri-team-line',
-  education: 'i-ri-graduation-cap-line',
-  cli: 'i-ri-terminal-line',
-  shell: 'i-ri-terminal-box-line',
-  customization: 'i-ri-palette-line',
-  documentation: 'i-ri-article-line',
-  news: 'i-ri-newspaper-line',
-  macos: 'i-ri-apple-line',
+  learning: "i-ri-book-open-line",
+  reference: "i-ri-file-list-3-line",
+  tools: "i-ri-tools-line",
+  community: "i-ri-team-line",
+  education: "i-ri-graduation-cap-line",
+  cli: "i-ri-terminal-line",
+  shell: "i-ri-terminal-box-line",
+  customization: "i-ri-palette-line",
+  documentation: "i-ri-article-line",
+  news: "i-ri-newspaper-line",
+  macos: "i-ri-apple-line",
 };
 ---
 
-<TerminalLayout 
-  title="bookmarks" 
+<TerminalLayout
+  title="bookmarks"
   description="Curated collection of useful tools and resources"
   currentPath="/bookmarks">
-
-  <!-- Stats -->
   <div class="flex items-center gap-6 mb-8 text-sm text-terminal-text-dim">
     <span class="flex items-center gap-2">
       <span class="flex items-center">
@@ -66,54 +62,54 @@ const categoryIcons: Record<string, string> = {
     </span>
   </div>
 
-  <!-- Bookmarks by Category -->
   <div class="space-y-8">
-    {categories.map((category: string) => (
-      <section>
-        <div class="flex items-center gap-2 text-terminal-text-muted text-sm mb-4 border-b border-terminal-border pb-2">
-          <span class="flex items-center">
-            <i class:list={[categoryIcons[category] || 'i-ri-folder-3-line', 'w-4', 'h-4']}"></i>
-          </span>
-          <span class="uppercase tracking-wider">{category}</span>
-          <span class="text-terminal-text-dim">({groupedBookmarks[category].length})</span>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {groupedBookmarks[category].map((bookmark: any) => (
-            <a 
-              href={`/bookmarks/${bookmark.id}`}
-              class="group border border-terminal-border rounded p-4 hover:border-terminal-primary transition-colors"
-            >
-              <div class="flex items-start gap-3">
-                <span class="flex items-center">
-                  <i class="i-ri-bookmark-line w-5 h-5 text-terminal-primary group-hover:text-terminal-primary-bright transition-colors"></i>
-                </span>
-                
-                <div class="flex-1 min-w-0">
-                  <div class="font-bold text-terminal-text truncate">{bookmark.data.title}</div>
-                  <div class="text-terminal-text-muted text-sm mt-1 line-clamp-2"><bookmark.Content /></div>
+    {
+      categories.map((category: string) => (
+        <section>
+          <div class="flex items-center gap-2 text-terminal-text-muted text-sm mb-4 border-b border-terminal-border pb-2">
+            <span class="flex items-center">
+              <i class:list={[categoryIcons[category] || "i-ri-folder-3-line", "w-4", "h-4"]} />
+            </span>
+            <span class="uppercase tracking-wider">{category}</span>
+            <span class="text-terminal-text-dim">({groupedBookmarks[category].length})</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {groupedBookmarks[category].map((bookmark: any) => (
+              <a
+                href={`/bookmarks/${bookmark.id}`}
+                class="group border border-terminal-border rounded p-4 hover:border-terminal-primary transition-colors">
+                <div class="flex items-start gap-3">
+                  <span class="flex items-center">
+                    <i class="i-ri-bookmark-line w-5 h-5 text-terminal-primary group-hover:text-terminal-primary-bright transition-colors" />
+                  </span>
+
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold text-terminal-text truncate">{bookmark.data.title}</div>
+                    <div class="text-terminal-text-muted text-sm mt-1 line-clamp-2">
+                      <bookmark.Content />
+                    </div>
+                  </div>
+
+                  <span class="flex items-center">
+                    <i class="i-ri-arrow-right-line w-4 h-4 text-terminal-text-dim group-hover:text-terminal-primary transition-colors" />
+                  </span>
                 </div>
-                
-                <span class="flex items-center">
-                  <i class="i-ri-arrow-right-line w-4 h-4 text-terminal-text-dim group-hover:text-terminal-primary transition-colors"></i>
-                </span>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-    ))}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
   </div>
 
-  <!-- Footer Note -->
   <div class="mt-12 pt-4 border-t border-terminal-border text-center">
     <p class="text-terminal-text-muted text-sm">
-      Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+      Last updated: {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
     </p>
     <p class="text-terminal-text-dim text-xs mt-2">
-      Know a great tool? 
+      Know a great tool?
       <a href="mailto:hello@example.com" class="text-terminal-primary terminal-link">Send a suggestion</a>
     </p>
   </div>
-
 </TerminalLayout>
