@@ -22,3 +22,5 @@ export const GET: APIRoute = async () => {
 export async function getStaticPaths() {
   return [{ params: {} }];
 }
+
+export const prerender = true;

@@ -111,3 +111,5 @@ export const GET: APIRoute = async () => {
 
   return new Response(JSON.stringify(entries), { headers: { "Content-Type": "application/json" } });
 };
+
+export const prerender = true;
