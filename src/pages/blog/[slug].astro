@@ -1,0 +1,157 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import TerminalLayout from "../../components/TerminalLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post: CollectionEntry<'blog'>) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<'blog'>;
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<TerminalLayout 
+  title={post.data.title}
+  description={post.data.summary}
+  currentPath={`/blog/${post.id}`}>
+
+  <!-- Post Header -->
+  <div class="border-b border-terminal-border pb-6 mb-8">
+    <div class="flex items-center gap-2 text-terminal-text-dim text-sm mb-4">
+      <a href="/blog" class="terminal-link">blog</a>
+      <span>/</span>
+      <span>{post.id}</span>
+      <span class="text-terminal-primary">.md</span>
+    </div>
+    
+    <h1 class="text-3xl font-bold text-terminal-text mb-4">{post.data.title}</h1>
+    
+    <div class="flex flex-wrap items-center gap-4 text-sm text-terminal-text-muted">
+      <span class="flex items-center gap-2">
+        <span class="flex items-center">
+          <i class="i-ri-calendar-line w-4 h-4"></i>
+        </span>
+        <time>
+          {post.data.date.toLocaleDateString('en-US', { 
+            year: 'numeric',
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </time>
+      </span>
+      
+      <span class="flex items-center gap-2">
+        <span class="flex items-center">
+          <i class="i-ri-time-line w-4 h-4"></i>
+        </span>
+        <span>5 min read</span>
+      </span>
+    </div>
+    
+    <div class="flex gap-2 mt-4">
+      {post.data.tags.map((tag: string) => (
+        <span class="text-xs text-terminal-primary bg-terminal-primary/10 px-2 py-1 rounded">#{tag}</span>
+      ))}
+    </div>
+  </div>
+
+  <!-- Post Content -->
+  <article class="prose prose-invert prose-terminal max-w-none">
+    <Content />
+  </article>
+
+  <!-- Post Footer -->
+  <div class="mt-12 pt-6 border-t border-terminal-border">
+    <div class="flex items-center justify-between">
+      <a href="/blog" class="text-terminal-primary terminal-link flex items-center gap-2">
+        <span class="flex items-center">
+          <i class="i-ri-arrow-left-line w-4 h-4"></i>
+        </span>
+        <span>back to blog</span>
+      </a>
+      
+      <div class="flex items-center gap-4">
+        <button class="text-terminal-text-muted hover:text-terminal-text flex items-center gap-2 transition-colors">
+          <span class="flex items-center">
+            <i class="i-ri-share-line w-4 h-4"></i>
+          </span>
+          <span>share</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</TerminalLayout>
+
+<style>
+  @reference "../../styles/styles.css";
+
+  .prose-terminal {
+    @apply text-terminal-text;
+  }
+  
+  .prose-terminal h2 {
+    @apply text-xl font-bold text-terminal-text mt-8 mb-4 border-b border-terminal-border pb-2;
+  }
+  
+  .prose-terminal h3 {
+    @apply text-lg font-bold text-terminal-text mt-6 mb-3;
+  }
+  
+  .prose-terminal p {
+    @apply text-terminal-text-muted mb-4 leading-relaxed;
+  }
+  
+  .prose-terminal ul {
+    @apply list-disc list-inside text-terminal-text-muted mb-4 ml-2;
+  }
+  
+  .prose-terminal ol {
+    @apply list-decimal list-inside text-terminal-text-muted mb-4 ml-2;
+  }
+  
+  .prose-terminal li {
+    @apply mb-1;
+  }
+  
+  .prose-terminal code {
+    @apply bg-terminal-bg-tertiary text-terminal-primary px-1.5 py-0.5 rounded text-sm;
+  }
+  
+  .prose-terminal pre {
+    @apply bg-terminal-bg-secondary border border-terminal-border rounded-lg p-4 overflow-x-auto mb-6;
+  }
+  
+  .prose-terminal pre code {
+    @apply bg-transparent text-terminal-text p-0;
+  }
+  
+  .prose-terminal blockquote {
+    @apply border-l-4 border-terminal-primary pl-4 italic text-terminal-text-muted my-6;
+  }
+  
+  .prose-terminal a {
+    @apply text-terminal-primary;
+  }
+  
+  .prose-terminal a:hover {
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    color: var(--color-terminal-primary-bright);
+  }
+  
+  .prose-terminal hr {
+    @apply border-terminal-border my-8;
+  }
+  
+  .prose-terminal strong {
+    @apply text-terminal-text font-bold;
+  }
+</style>

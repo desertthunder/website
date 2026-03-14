@@ -1,0 +1,88 @@
+{
+  "bookmarks": [
+    {
+      "id": "1",
+      "title": "Julia Evans - Wizard Zines",
+      "url": "https://wizardzines.com",
+      "category": "Learning",
+      "description": "Illustrated programming and systems concepts"
+    },
+    {
+      "id": "2",
+      "title": "Bash Scripting Guide",
+      "url": "https://tldp.org/LDP/abs/html/",
+      "category": "Reference",
+      "description": "Advanced Bash-Scripting Guide"
+    },
+    {
+      "id": "3",
+      "title": "Modern Unix Tools",
+      "url": "https://github.com/ibraheemdev/modern-unix",
+      "category": "Tools",
+      "description": "A collection of modern/faster/saner alternatives to common unix commands"
+    },
+    {
+      "id": "4",
+      "title": "The Missing Semester",
+      "url": "https://missing.csail.mit.edu",
+      "category": "Learning",
+      "description": "MIT course on practical computing skills"
+    },
+    {
+      "id": "5",
+      "title": "Nushell",
+      "url": "https://www.nushell.sh",
+      "category": "Tools",
+      "description": "A new type of shell with structured data"
+    },
+    {
+      "id": "6",
+      "title": "Starship Prompt",
+      "url": "https://starship.rs",
+      "category": "Tools",
+      "description": "The minimal, blazing-fast, and infinitely customizable prompt"
+    },
+    {
+      "id": "7",
+      "title": "Fish Shell",
+      "url": "https://fishshell.com",
+      "category": "Tools",
+      "description": "A smart and user-friendly command line shell"
+    },
+    {
+      "id": "8",
+      "title": "Homebrew",
+      "url": "https://brew.sh",
+      "category": "Tools",
+      "description": "The Missing Package Manager for macOS"
+    },
+    {
+      "id": "9",
+      "title": "tmux",
+      "url": "https://github.com/tmux/tmux",
+      "category": "Tools",
+      "description": "A terminal multiplexer"
+    },
+    {
+      "id": "10",
+      "title": "zoxide",
+      "url": "https://github.com/ajeetdsouza/zoxide",
+      "category": "Tools",
+      "description": "A smarter cd command inspired by z and autojump"
+    },
+    {
+      "id": "11",
+      "title": "asciinema",
+      "url": "https://asciinema.org",
+      "category": "Tools",
+      "description": "Record and share your terminal sessions"
+    },
+    {
+      "id": "12",
+      "title": "Lobsters",
+      "url": "https://lobste.rs",
+      "category": "Community",
+      "description": "Computing-focused community centered around link aggregation and discussion"
+    }
+  ]
+}

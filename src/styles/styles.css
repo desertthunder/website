@@ -1,0 +1,189 @@
+@import "tailwindcss";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+@import "@fontsource/jetbrains-mono/400-italic.css";
+@import "@fontsource/jetbrains-mono/700-italic.css";
+@plugin "@egoist/tailwindcss-icons";
+
+@theme {
+  /* Font families */
+  --font-mono: "JetBrains Mono", "SF Mono", Monaco, Consolas, monospace;
+
+  /* Terminal color tokens */
+  --color-terminal-bg: #0a0a0a;
+  --color-terminal-bg-secondary: #111111;
+  --color-terminal-bg-tertiary: #1a1a1a;
+  --color-terminal-border: #1e3a5f;
+  --color-terminal-border-bright: #2563eb;
+
+  /* Text colors */
+  --color-terminal-text: #e2e8f0;
+  --color-terminal-text-muted: #64748b;
+  --color-terminal-text-dim: #475569;
+
+  /* Accent colors - Blue theme */
+  --color-terminal-primary: #3b82f6;
+  --color-terminal-primary-bright: #60a5fa;
+  --color-terminal-primary-dim: #1e40af;
+  --color-terminal-secondary: #06b6d4;
+  --color-terminal-secondary-bright: #22d3ee;
+
+  /* Status colors */
+  --color-terminal-success: #10b981;
+  --color-terminal-warning: #f59e0b;
+  --color-terminal-error: #ef4444;
+  --color-terminal-info: #3b82f6;
+
+  /* Glow effects */
+  --color-glow-blue: rgba(59, 130, 246, 0.5);
+  --color-glow-cyan: rgba(6, 182, 212, 0.5);
+}
+
+/* Utility classes that map to CSS custom properties */
+.bg-terminal-bg {
+  background-color: var(--color-terminal-bg);
+}
+.bg-terminal-bg-secondary {
+  background-color: var(--color-terminal-bg-secondary);
+}
+.bg-terminal-bg-tertiary {
+  background-color: var(--color-terminal-bg-tertiary);
+}
+
+.border-terminal-border {
+  border-color: var(--color-terminal-border);
+}
+.border-terminal-primary {
+  border-color: var(--color-terminal-primary);
+}
+
+.text-terminal-text {
+  color: var(--color-terminal-text);
+}
+.text-terminal-text-muted {
+  color: var(--color-terminal-text-muted);
+}
+.text-terminal-text-dim {
+  color: var(--color-terminal-text-dim);
+}
+
+.text-terminal-primary {
+  color: var(--color-terminal-primary);
+}
+.text-terminal-primary-bright {
+  color: var(--color-terminal-primary-bright);
+}
+.text-terminal-secondary {
+  color: var(--color-terminal-secondary);
+}
+.text-terminal-success {
+  color: var(--color-terminal-success);
+}
+.text-terminal-warning {
+  color: var(--color-terminal-warning);
+}
+.text-terminal-error {
+  color: var(--color-terminal-error);
+}
+
+/* Terminal cursor animation */
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Scanline effect */
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.terminal-scanline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Glow effects */
+.text-glow {
+  text-shadow:
+    0 0 10px var(--color-glow-blue),
+    0 0 20px var(--color-glow-cyan);
+}
+
+.border-glow {
+  box-shadow:
+    0 0 10px var(--color-glow-blue),
+    inset 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-terminal-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-terminal-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-terminal-primary);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-terminal-primary-dim);
+  color: var(--color-terminal-text);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--color-terminal-primary);
+  outline-offset: 2px;
+}
+
+/* Custom utilities using Tailwind v4 @utility directive */
+@utility terminal-link {
+  transition: all 0.2s ease;
+}
+
+@utility terminal-link-hover {
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+}
+
+/* Link hover glow */
+.terminal-link {
+  transition: all 0.2s ease;
+}
+
+.terminal-link:hover {
+  text-shadow: 0 0 8px var(--color-glow-blue);
+  color: var(--color-terminal-primary-bright);
+}

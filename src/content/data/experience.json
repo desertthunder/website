@@ -1,0 +1,62 @@
+{
+  "experience": [
+    {
+      "id": "current",
+      "company": "Vercel",
+      "role": "Senior Frontend Engineer",
+      "period": "2022 - Present",
+      "location": "Remote",
+      "description": "Building the future of web deployment and developer experience",
+      "highlights": [
+        "Led development of the new dashboard interface",
+        "Implemented real-time deployment logs with WebSockets",
+        "Reduced bundle size by 40% through code splitting",
+        "Mentored junior engineers on React and TypeScript"
+      ],
+      "technologies": ["Next.js", "React", "TypeScript", "Tailwind CSS", "PostgreSQL"]
+    },
+    {
+      "id": "stripe",
+      "company": "Stripe",
+      "role": "Frontend Engineer",
+      "period": "2020 - 2022",
+      "location": "San Francisco, CA",
+      "description": "Developer platform and dashboard experiences",
+      "highlights": [
+        "Built the Stripe CLI dashboard interface",
+        "Implemented design system components used across 20+ products",
+        "Improved dashboard performance by 60%",
+        "Led accessibility initiative achieving WCAG 2.1 AA compliance"
+      ],
+      "technologies": ["React", "Ruby", "TypeScript", "GraphQL", "Jest"]
+    },
+    {
+      "id": "github",
+      "company": "GitHub",
+      "role": "Software Engineer",
+      "period": "2018 - 2020",
+      "location": "San Francisco, CA",
+      "description": "GitHub Actions and developer workflows",
+      "highlights": [
+        "Contributed to GitHub Actions workflow editor",
+        "Built visualization components for CI/CD pipelines",
+        "Implemented real-time log streaming with server-sent events"
+      ],
+      "technologies": ["React", "Ruby on Rails", "GraphQL", "MySQL", "Redis"]
+    },
+    {
+      "id": "startup",
+      "company": "Terminal Labs",
+      "role": "Full Stack Developer",
+      "period": "2016 - 2018",
+      "location": "New York, NY",
+      "description": "Developer tools for cloud infrastructure management",
+      "highlights": [
+        "Built terminal-based UI for server provisioning",
+        "Implemented real-time monitoring dashboard",
+        "Created CLI tool used by 10,000+ developers"
+      ],
+      "technologies": ["Node.js", "Go", "React", "MongoDB", "Docker"]
+    }
+  ]
+}

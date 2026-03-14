@@ -1,0 +1,186 @@
+---
+import "../styles/styles.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPath?: string;
+  showTitle?: boolean;
+}
+
+const { title, description = "", currentPath = "/", showTitle = true } = Astro.props;
+
+const navItems = [
+  { path: "/", label: "~/home", icon: "i-ri-home-4-line" },
+  { path: "/blog", label: "~/blog", icon: "i-ri-article-line" },
+  { path: "/projects", label: "~/projects", icon: "i-ri-code-box-line" },
+  { path: "/experience", label: "~/work", icon: "i-ri-briefcase-line" },
+  { path: "/bookmarks", label: "~/bookmarks", icon: "i-ri-bookmark-line" },
+];
+---
+
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title} | terminal</title>
+  </head>
+  <body class="h-full bg-terminal-bg text-terminal-text font-mono overflow-hidden">
+    <!-- Terminal Container -->
+    <div class="h-full flex flex-col border-2 border-terminal-border m-2 rounded-lg overflow-hidden">
+      <!-- Terminal Header -->
+      <header
+        class="bg-terminal-bg-secondary border-b border-terminal-border px-4 py-3 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-terminal-error"></span>
+            <span class="w-3 h-3 rounded-full bg-terminal-warning"></span>
+            <span class="w-3 h-3 rounded-full bg-terminal-success"></span>
+          </div>
+          <span class="flex items-center">
+            <i class="i-ri-terminal-box-line w-4 h-4 text-terminal-primary"></i>
+          </span>
+          <span class="text-terminal-text-muted text-sm">user@portfolio</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-terminal-text-dim">
+          <span class="flex items-center">
+            <i class="i-ri-time-line w-4 h-4"></i>
+          </span>
+          <span id="clock">--:--:--</span>
+        </div>
+      </header>
+
+      <!-- Terminal Body -->
+      <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <nav class="w-56 bg-terminal-bg-secondary border-r border-terminal-border flex flex-col shrink-0">
+          <div class="p-4 border-b border-terminal-border">
+            <div class="text-terminal-text-muted text-xs mb-2">DIRECTORY</div>
+            <div class="text-terminal-primary font-bold">portfolio/</div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto py-2">
+            {
+              navItems.map((item) => {
+                const isActive = currentPath === item.path || (item.path !== "/" && currentPath.startsWith(item.path));
+                return (
+                  <a
+                    href={item.path}
+                    class:list={[
+                      "flex items-center gap-3 px-4 py-2 text-sm terminal-link",
+                      isActive
+                        ? "bg-terminal-primary/10 text-terminal-primary-bright border-r-2 border-terminal-primary"
+                        : "text-terminal-text-muted hover:text-terminal-text",
+                    ]}>
+                    <span class="flex items-center">
+                      <i class:list={[item.icon, "w-4", "h-4"]} />
+                    </span>
+                    <span>{item.label}</span>
+                  </a>
+                );
+              })
+            }
+          </div>
+
+          <!-- Status Bar -->
+          <div class="p-4 border-t border-terminal-border text-xs text-terminal-text-dim">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="flex items-center">
+                <i class="i-ri-git-branch-line w-3 h-3"></i>
+              </span>
+              <span>main</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="flex items-center">
+                <i class="i-ri-circle-fill w-2 h-2 text-terminal-success"></i>
+              </span>
+              <span>online</span>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-terminal-bg relative">
+          <!-- Scanline Effect -->
+          <div class="absolute inset-0 terminal-scanline pointer-events-none z-10"></div>
+
+          <!-- Content -->
+          <div class="p-6 min-h-full">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-terminal-text-dim mb-6">
+              <span class="flex items-center">
+                <i class="i-ri-home-4-line w-4 h-4"></i>
+              </span>
+              <span>/</span>
+              <span class="text-terminal-primary">{currentPath === "/" ? "home" : currentPath.slice(1)}</span>
+              <span class="cursor-blink text-terminal-primary">_</span>
+            </div>
+
+            <!-- Page Title -->
+            {showTitle && (
+              <div class="mb-8">
+                <h1 class="text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">
+                  {title}
+                </h1>
+                {description && <p class="text-terminal-text-muted">{description}</p>}
+              </div>
+            )}
+
+            <!-- Main Content -->
+            <slot />
+          </div>
+        </main>
+      </div>
+
+      <!-- Terminal Footer -->
+      <footer
+        class="bg-terminal-bg-secondary border-t border-terminal-border px-4 py-2 flex items-center justify-between text-xs text-terminal-text-dim shrink-0">
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1">
+            <span class="flex items-center">
+              <i class="i-ri-keyboard-line w-3 h-3"></i>
+            </span>
+            <span>NORMAL</span>
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="flex items-center">
+              <i class="i-ri-file-code-line w-3 h-3"></i>
+            </span>
+            <span>UTF-8</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span>ln 1, col 1</span>
+          <span class="flex items-center gap-1">
+            <span class="flex items-center">
+              <i class="i-ri-heart-3-line w-3 h-3"></i>
+            </span>
+            <span>built with Astro</span>
+          </span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Clock Script -->
+    <script>
+      function updateClock() {
+        const clock = document.getElementById("clock");
+        if (clock) {
+          const now = new Date();
+          clock.textContent = now.toLocaleTimeString("en-US", {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+        }
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+  </body>
+</html>
