@@ -28,7 +28,7 @@ const navItems = [
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
@@ -49,30 +49,46 @@ const navItems = [
     <link rel="canonical" href={canonicalUrl} />
   </head>
   <body class="h-full bg-terminal-bg text-terminal-text font-mono overflow-hidden">
-    <div class="h-full flex flex-col border-2 border-terminal-border m-2 rounded-lg overflow-hidden">
+    <div class="h-full flex flex-col border-2 border-terminal-border m-1 sm:m-2 rounded-lg overflow-hidden">
+      <!-- Terminal Header -->
       <header
-        class="bg-terminal-bg-secondary border-b border-terminal-border px-4 py-3 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-3">
+        class="bg-terminal-bg-secondary border-b border-terminal-border px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Mobile Menu Button -->
+          <button
+            id="mobile-menu-toggle"
+            class="lg:hidden flex items-center justify-center w-8 h-8 rounded hover:bg-terminal-bg-tertiary transition-colors"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false">
+            <i class="i-ri-menu-line w-5 h-5 text-terminal-text-muted"></i>
+          </button>
+
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-terminal-error"></span>
-            <span class="w-3 h-3 rounded-full bg-terminal-warning"></span>
-            <span class="w-3 h-3 rounded-full bg-terminal-success"></span>
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-terminal-error"></span>
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-terminal-warning"></span>
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-terminal-success"></span>
           </div>
-          <span class="flex items-center">
+          <span class="hidden sm:flex items-center">
             <i class="i-ri-terminal-box-line w-4 h-4 text-terminal-primary"></i>
           </span>
-          <span class="text-terminal-text-muted text-sm">owais@portfolio</span>
+          <span class="text-terminal-text-muted text-xs sm:text-sm truncate max-w-30 sm:max-w-none"
+            >owais@portfolio</span
+          >
         </div>
-        <div class="flex items-center gap-2 text-sm text-terminal-text-dim">
+        <div class="flex items-center gap-2 text-xs sm:text-sm text-terminal-text-dim">
           <span class="flex items-center">
-            <i class="i-ri-time-line w-4 h-4"></i>
+            <i class="i-ri-time-line w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
           </span>
-          <span id="clock">--:--:--</span>
+          <span id="clock" class="tabular-nums">--:--:--</span>
         </div>
       </header>
 
-      <div class="flex-1 flex overflow-hidden">
-        <nav class="w-56 bg-terminal-bg-secondary border-r border-terminal-border flex flex-col shrink-0">
+      <!-- Terminal Body -->
+      <div class="flex-1 flex overflow-hidden relative">
+        <!-- Sidebar Navigation - Hidden on mobile by default, shown with overlay -->
+        <nav
+          id="sidebar"
+          class="absolute lg:relative z-20 w-64 lg:w-56 bg-terminal-bg-secondary border-r border-terminal-border flex flex-col shrink-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-out h-full">
           <div class="p-4 border-b border-terminal-border">
             <div class="text-terminal-text-muted text-xs mb-2">DIRECTORY</div>
             <div class="text-terminal-primary font-bold">owais/</div>
@@ -86,12 +102,12 @@ const navItems = [
                   <a
                     href={item.path}
                     class:list={[
-                      "flex items-center gap-3 px-4 py-2 text-sm terminal-link",
+                      "flex items-center gap-3 px-4 py-3 lg:py-2 text-sm terminal-link min-h-11",
                       isActive
                         ? "bg-terminal-primary/10 text-terminal-primary-bright border-r-2 border-terminal-primary"
                         : "text-terminal-text-muted hover:text-terminal-text",
                     ]}>
-                    <span class="flex items-center">
+                    <span class="flex items-center shrink-0">
                       <i class:list={[item.icon, "w-4", "h-4"]} />
                     </span>
                     <span>{item.label}</span>
@@ -117,11 +133,16 @@ const navItems = [
           </div>
         </nav>
 
-        <main class="flex-1 overflow-y-auto bg-terminal-bg relative">
+        <!-- Mobile Overlay - Click to close sidebar -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-10 hidden lg:hidden" aria-hidden="true"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-terminal-bg relative w-full">
           <div class="absolute inset-0 terminal-scanline pointer-events-none z-10"></div>
 
-          <div class="p-6 min-h-full">
-            <div class="flex items-center gap-2 text-sm text-terminal-text-dim mb-6">
+          <div class="p-4 sm:p-6 min-h-full">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-terminal-text-dim mb-4 sm:mb-6">
               <span class="flex items-center">
                 <i class="i-ri-home-4-line w-4 h-4"></i>
               </span>
@@ -132,9 +153,9 @@ const navItems = [
 
             {
               showTitle && (
-                <div class="mb-8">
-                  <h1 class="text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">{title}</h1>
-                  {description && <p class="text-terminal-text-muted">{description}</p>}
+                <div class="mb-6 sm:mb-8">
+                  <h1 class="text-xl sm:text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">{title}</h1>
+                  {description && <p class="text-terminal-text-muted text-sm sm:text-base">{description}</p>}
                 </div>
               )
             }
@@ -144,14 +165,16 @@ const navItems = [
         </main>
       </div>
 
+      <!-- Terminal Footer -->
       <footer
-        class="bg-terminal-bg-secondary border-t border-terminal-border px-4 py-2 flex items-center justify-between text-xs text-terminal-text-dim shrink-0">
-        <div class="flex items-center gap-4">
+        class="bg-terminal-bg-secondary border-t border-terminal-border px-3 sm:px-4 py-2 flex items-center justify-between text-[10px] sm:text-xs text-terminal-text-dim shrink-0">
+        <div class="flex items-center gap-2 sm:gap-4">
           <span class="flex items-center gap-1">
             <span class="flex items-center">
               <i class="i-ri-keyboard-line w-3 h-3"></i>
             </span>
-            <span>NORMAL</span>
+            <span class="hidden sm:inline">NORMAL</span>
+            <span class="sm:hidden">NOR</span>
           </span>
           <span class="flex items-center gap-1">
             <span class="flex items-center">
@@ -160,19 +183,21 @@ const navItems = [
             <span>UTF-8</span>
           </span>
         </div>
-        <div class="flex items-center gap-4">
-          <span>ln 1, col 1</span>
+        <div class="flex items-center gap-2 sm:gap-4">
+          <span class="hidden sm:inline">ln 1, col 1</span>
           <span class="flex items-center gap-1">
             <span class="flex items-center">
               <i class="i-ri-heart-3-line w-3 h-3"></i>
             </span>
-            <span>built with Astro</span>
+            <span class="hidden sm:inline">built with Astro</span>
+            <span class="sm:hidden">Astro</span>
           </span>
         </div>
       </footer>
     </div>
 
     <script>
+      // Clock
       function updateClock() {
         const clock = document.getElementById("clock");
         if (clock) {
@@ -183,6 +208,61 @@ const navItems = [
       }
       updateClock();
       setInterval(updateClock, 1000);
+
+      // Mobile menu toggle
+      const menuToggle = document.getElementById("mobile-menu-toggle");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+
+      function toggleMenu() {
+        const isExpanded = menuToggle?.getAttribute("aria-expanded") === "true";
+        menuToggle?.setAttribute("aria-expanded", String(!isExpanded));
+        sidebar?.classList.toggle("-translate-x-full");
+        overlay?.classList.toggle("hidden");
+
+        // Update icon
+        const icon = menuToggle?.querySelector("i");
+        if (icon) {
+          if (isExpanded) {
+            icon.classList.remove("i-ri-close-line");
+            icon.classList.add("i-ri-menu-line");
+          } else {
+            icon.classList.remove("i-ri-menu-line");
+            icon.classList.add("i-ri-close-line");
+          }
+        }
+      }
+
+      function closeMenu() {
+        menuToggle?.setAttribute("aria-expanded", "false");
+        sidebar?.classList.add("-translate-x-full");
+        overlay?.classList.add("hidden");
+
+        const icon = menuToggle?.querySelector("i");
+        if (icon) {
+          icon.classList.remove("i-ri-close-line");
+          icon.classList.add("i-ri-menu-line");
+        }
+      }
+
+      menuToggle?.addEventListener("click", toggleMenu);
+      overlay?.addEventListener("click", closeMenu);
+
+      // Close menu on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMenu();
+        }
+      });
+
+      // Close menu when clicking a nav link on mobile
+      sidebar?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth < 1024) {
+            closeMenu();
+          }
+        });
+      });
     </script>
   </body>
 </html>

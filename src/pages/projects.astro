@@ -27,63 +27,69 @@ const statusLabels: Record<string, string> = {
 ---
 
 <TerminalLayout title="projects" description="Open source projects and developer tools" currentPath="/projects">
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <div class="border border-terminal-border rounded p-4">
-      <div class="text-terminal-text-dim text-xs">Total</div>
-      <div class="text-2xl font-bold text-terminal-text">{projects.length}</div>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+    <div class="border border-terminal-border rounded p-3 sm:p-4">
+      <div class="text-terminal-text-dim text-[10px] sm:text-xs">Total</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-text">{projects.length}</div>
     </div>
-    <div class="border border-terminal-border rounded p-4">
-      <div class="text-terminal-text-dim text-xs">Active</div>
-      <div class="text-2xl font-bold text-terminal-success">
+    <div class="border border-terminal-border rounded p-3 sm:p-4">
+      <div class="text-terminal-text-dim text-[10px] sm:text-xs">Active</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-success">
         {projects.filter((p) => !["Completed", "Archived"].includes(p.data.status)).length}
       </div>
     </div>
-    <div class="border border-terminal-border rounded p-4">
-      <div class="text-terminal-text-dim text-xs">Featured</div>
-      <div class="text-2xl font-bold text-terminal-primary">{projects.filter((p) => p.data.featured).length}</div>
+    <div class="border border-terminal-border rounded p-3 sm:p-4">
+      <div class="text-terminal-text-dim text-[10px] sm:text-xs">Featured</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-primary">
+        {projects.filter((p) => p.data.featured).length}
+      </div>
     </div>
-    <div class="border border-terminal-border rounded p-4">
-      <div class="text-terminal-text-dim text-xs">Tools</div>
-      <div class="text-2xl font-bold text-terminal-secondary">
+    <div class="border border-terminal-border rounded p-3 sm:p-4">
+      <div class="text-terminal-text-dim text-[10px] sm:text-xs">Tools</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-secondary">
         {[...new Set(projects.flatMap((p) => p.data.tech))].length}
       </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
     {
       projects.map((project) => (
         <a
           href={`/projects/${project.id}`}
-          class="block border border-terminal-border rounded-lg p-5 hover:border-terminal-primary transition-colors">
+          class="block border border-terminal-border rounded-lg p-4 sm:p-5 hover:border-terminal-primary transition-colors">
           <div class="flex items-start justify-between mb-3">
-            <div class="flex items-center gap-3">
-              <span class="flex items-center">
-                <i class="i-ri-folder-3-line w-6 h-6 text-terminal-primary" />
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <span class="flex items-center shrink-0">
+                <i class="i-ri-folder-3-line w-5 h-5 sm:w-6 sm:h-6 text-terminal-primary" />
               </span>
-              <div>
-                <div class="font-bold text-terminal-text">{project.data.title}</div>
-                <div class:list={["text-xs", statusColors[project.data.status]]}>
+              <div class="min-w-0">
+                <div class="font-bold text-terminal-text text-sm sm:text-base truncate">{project.data.title}</div>
+                <div class:list={["text-[10px] sm:text-xs", statusColors[project.data.status]]}>
                   {statusLabels[project.data.status]}
                 </div>
               </div>
             </div>
 
             {project.data.featured && (
-              <span class="flex items-center text-terminal-warning text-xs">
+              <span class="flex items-center text-terminal-warning text-xs shrink-0 ml-2">
                 <span class="flex items-center">
                   <i class="i-ri-star-fill w-3 h-3 mr-1" />
                 </span>
-                featured
+                <span class="hidden sm:inline">featured</span>
               </span>
             )}
           </div>
 
-          <p class="text-terminal-text-muted text-sm mb-4">{project.data.description}</p>
+          <p class="text-terminal-text-muted text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+            {project.data.description}
+          </p>
 
-          <div class="flex flex-wrap gap-1 mb-4">
+          <div class="flex flex-wrap gap-1 mb-3 sm:mb-4">
             {project.data.tech.map((tech) => (
-              <span class="text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-2 py-1 rounded">{tech}</span>
+              <span class="text-[10px] sm:text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
+                {tech}
+              </span>
             ))}
           </div>
 
@@ -100,24 +106,25 @@ const statusLabels: Record<string, string> = {
     }
   </div>
 
-  <div class="mt-8 pt-4 border-t border-terminal-border flex items-center gap-6 text-xs text-terminal-text-dim">
+  <div
+    class="mt-6 sm:mt-8 pt-4 border-t border-terminal-border flex items-center gap-4 sm:gap-6 text-xs text-terminal-text-dim">
     <span class="flex items-center gap-1">
       <span class="flex items-center">
         <i class="i-ri-circle-fill w-2 h-2 text-terminal-success"></i>
       </span>
-      active
+      <span>active</span>
     </span>
     <span class="flex items-center gap-1">
       <span class="flex items-center">
         <i class="i-ri-circle-fill w-2 h-2 text-terminal-secondary"></i>
       </span>
-      completed
+      <span>completed</span>
     </span>
     <span class="flex items-center gap-1">
       <span class="flex items-center">
         <i class="i-ri-circle-fill w-2 h-2 text-terminal-text-dim"></i>
       </span>
-      archived
+      <span>archived</span>
     </span>
   </div>
 </TerminalLayout>

@@ -22,19 +22,19 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   description={post.data.description || ""}
   currentPath={`/blog/${post.id}`}
   showTitle={false}>
-  <div class="border-b border-terminal-border pb-6 mb-8">
-    <div class="flex items-center gap-2 text-terminal-text-dim text-sm mb-4">
+  <div class="border-b border-terminal-border pb-4 sm:pb-6 mb-6 sm:mb-8">
+    <div class="flex items-center gap-2 text-terminal-text-dim text-xs sm:text-sm mb-3 sm:mb-4">
       <a href="/blog" class="terminal-link">blog</a>
       <span>/</span>
-      <span>{post.id}</span>
+      <span class="truncate">{post.id}</span>
     </div>
 
-    <h1 class="text-3xl font-bold text-terminal-text mb-4">{post.data.title}</h1>
+    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-terminal-text mb-3 sm:mb-4">{post.data.title}</h1>
 
-    <div class="flex flex-wrap items-center gap-4 text-sm text-terminal-text-muted">
+    <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-terminal-text-muted">
       <span class="flex items-center gap-2">
         <span class="flex items-center">
-          <i class="i-ri-calendar-line w-4 h-4"></i>
+          <i class="i-ri-calendar-line w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
         </span>
         <time>
           {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
@@ -43,18 +43,18 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 
       <span class="flex items-center gap-2">
         <span class="flex items-center">
-          <i class="i-ri-user-line w-4 h-4"></i>
+          <i class="i-ri-user-line w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
         </span>
         <span>desertthunder.dev</span>
       </span>
     </div>
   </div>
 
-  <article class="leaflet-content prose prose-invert max-w-none" set:html={contentHtml} />
+  <article class="leaflet-content prose prose-invert max-w-none text-sm sm:text-base" set:html={contentHtml} />
 
-  <div class="mt-12 pt-6 border-t border-terminal-border">
-    <div class="flex items-center justify-between">
-      <a href="/blog" class="text-terminal-primary terminal-link flex items-center gap-2">
+  <div class="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-terminal-border">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <a href="/blog" class="text-terminal-primary terminal-link flex items-center gap-2 min-h-11">
         <span class="flex items-center">
           <i class="i-ri-arrow-left-line w-4 h-4"></i>
         </span>
@@ -66,7 +66,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
           href={`https://bsky.app/profile/desertthunder.dev/post/${post.data.leafletRkey}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-terminal-primary terminal-link flex items-center gap-2">
+          class="text-terminal-primary terminal-link flex items-center gap-2 min-h-11">
           <span class="flex items-center">
             <i class="i-ri-bluesky-line w-4 h-4"></i>
           </span>
@@ -86,39 +86,39 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(h1) {
-    @apply text-3xl font-bold text-terminal-text mt-8 mb-4 border-b border-terminal-border pb-2;
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold text-terminal-text mt-6 sm:mt-8 mb-3 sm:mb-4 border-b border-terminal-border pb-2;
   }
 
   .leaflet-content :global(h2) {
-    @apply text-2xl font-bold text-terminal-text mt-8 mb-4 border-b border-terminal-border pb-2;
+    @apply text-lg sm:text-xl lg:text-2xl font-bold text-terminal-text mt-6 sm:mt-8 mb-3 sm:mb-4 border-b border-terminal-border pb-2;
   }
 
   .leaflet-content :global(h3) {
-    @apply text-xl font-bold text-terminal-text mt-6 mb-3;
+    @apply text-base sm:text-lg lg:text-xl font-bold text-terminal-text mt-4 sm:mt-6 mb-2 sm:mb-3;
   }
 
   .leaflet-content :global(h4) {
-    @apply text-lg font-bold text-terminal-text mt-6 mb-3;
+    @apply text-sm sm:text-base lg:text-lg font-bold text-terminal-text mt-4 sm:mt-6 mb-2 sm:mb-3;
   }
 
   .leaflet-content :global(h5) {
-    @apply text-base font-bold text-terminal-text mt-4 mb-2;
+    @apply text-sm sm:text-base font-bold text-terminal-text mt-3 sm:mt-4 mb-1 sm:mb-2;
   }
 
   .leaflet-content :global(h6) {
-    @apply text-sm font-bold text-terminal-text mt-4 mb-2;
+    @apply text-xs sm:text-sm font-bold text-terminal-text mt-3 sm:mt-4 mb-1 sm:mb-2;
   }
 
   .leaflet-content :global(p) {
-    @apply text-terminal-text-muted mb-4 leading-relaxed;
+    @apply text-terminal-text-muted mb-3 sm:mb-4 leading-relaxed;
   }
 
   .leaflet-content :global(ul) {
-    @apply list-disc list-inside text-terminal-text-muted mb-4 ml-2;
+    @apply list-disc list-inside text-terminal-text-muted mb-3 sm:mb-4 ml-2;
   }
 
   .leaflet-content :global(ol) {
-    @apply list-decimal list-inside text-terminal-text-muted mb-4 ml-2;
+    @apply list-decimal list-inside text-terminal-text-muted mb-3 sm:mb-4 ml-2;
   }
 
   .leaflet-content :global(li) {
@@ -126,11 +126,11 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(code) {
-    @apply bg-terminal-bg-tertiary text-terminal-primary px-1.5 py-0.5 rounded text-sm;
+    @apply bg-terminal-bg-tertiary text-terminal-primary px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm;
   }
 
   .leaflet-content :global(pre) {
-    @apply bg-terminal-bg-secondary border border-terminal-border rounded-lg p-4 overflow-x-auto mb-6;
+    @apply bg-terminal-bg-secondary border border-terminal-border rounded-lg p-3 sm:p-4 overflow-x-auto mb-4 sm:mb-6;
   }
 
   .leaflet-content :global(pre code) {
@@ -138,7 +138,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(blockquote) {
-    @apply border-l-4 border-terminal-primary pl-4 italic text-terminal-text-muted my-6;
+    @apply border-l-4 border-terminal-primary pl-3 sm:pl-4 italic text-terminal-text-muted my-4 sm:my-6;
   }
 
   .leaflet-content :global(a) {
@@ -151,7 +151,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(hr) {
-    @apply border-terminal-border my-8;
+    @apply border-terminal-border my-6 sm:my-8;
   }
 
   .leaflet-content :global(strong) {
@@ -159,24 +159,24 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(img) {
-    @apply rounded-lg border border-terminal-border max-w-full my-6;
+    @apply rounded-lg border border-terminal-border max-w-full my-4 sm:my-6;
   }
 
   /* Bluesky embed cards */
   .leaflet-content :global(.bsky-embed-card) {
-    @apply border border-terminal-border rounded-lg p-4 mb-6 bg-terminal-bg-secondary;
+    @apply border border-terminal-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 bg-terminal-bg-secondary;
   }
 
   .leaflet-content :global(.bsky-embed-header) {
-    @apply flex items-center gap-3 mb-3;
+    @apply flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3;
   }
 
   .leaflet-content :global(.bsky-avatar) {
-    @apply w-10 h-10 rounded-full border border-terminal-border;
+    @apply w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-terminal-border;
   }
 
   .leaflet-content :global(.bsky-icon) {
-    @apply w-10 h-10 rounded-full bg-terminal-primary/10 flex items-center justify-center text-lg;
+    @apply w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-terminal-primary/10 flex items-center justify-center text-base sm:text-lg;
   }
 
   .leaflet-content :global(.bsky-author) {
@@ -184,7 +184,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(.bsky-display-name) {
-    @apply font-bold text-terminal-text;
+    @apply font-bold text-terminal-text text-sm sm:text-base;
   }
 
   .leaflet-content :global(.bsky-handle) {
@@ -192,20 +192,20 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(.bsky-label) {
-    @apply font-bold text-terminal-text;
+    @apply font-bold text-terminal-text text-sm sm:text-base;
   }
 
   .leaflet-content :global(.bsky-content) {
-    @apply text-terminal-text-muted mb-3;
+    @apply text-terminal-text-muted mb-2 sm:mb-3 text-sm;
   }
 
   .leaflet-content :global(.bsky-link) {
-    @apply text-terminal-primary text-sm terminal-link inline-block;
+    @apply text-terminal-primary text-xs sm:text-sm terminal-link inline-block;
   }
 
   /* Website embed cards */
   .leaflet-content :global(.website-embed-card) {
-    @apply border border-terminal-border rounded-lg overflow-hidden mb-6 bg-terminal-bg-secondary;
+    @apply border border-terminal-border rounded-lg overflow-hidden mb-4 sm:mb-6 bg-terminal-bg-secondary;
   }
 
   .leaflet-content :global(.website-embed-link) {
@@ -221,15 +221,15 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(.website-embed-thumb) {
-    @apply w-full h-40 object-cover border-0 rounded-none my-0;
+    @apply w-full h-32 sm:h-40 object-cover border-0 rounded-none my-0;
   }
 
   .leaflet-content :global(.website-embed-info) {
-    @apply flex flex-col gap-1 p-4;
+    @apply flex flex-col gap-1 p-3 sm:p-4;
   }
 
   .leaflet-content :global(.website-embed-title) {
-    @apply font-bold text-terminal-text text-sm;
+    @apply font-bold text-terminal-text text-xs sm:text-sm;
   }
 
   .leaflet-content :global(.website-embed-desc) {
@@ -242,7 +242,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 
   /* Button blocks */
   .leaflet-content :global(.leaflet-button) {
-    @apply inline-block px-4 py-2 border border-terminal-primary text-terminal-primary rounded text-sm font-mono mb-4;
+    @apply inline-block px-3 sm:px-4 py-1.5 sm:py-2 border border-terminal-primary text-terminal-primary rounded text-xs sm:text-sm font-mono mb-3 sm:mb-4;
   }
 
   .leaflet-content :global(.leaflet-button:hover) {
@@ -252,7 +252,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 
   /* Iframe link fallback */
   .leaflet-content :global(.leaflet-iframe-link) {
-    @apply text-terminal-primary text-sm terminal-link inline-block mb-4;
+    @apply text-terminal-primary text-xs sm:text-sm terminal-link inline-block mb-3 sm:mb-4;
   }
 
   /* Highlight (mark) styling */

@@ -10,29 +10,39 @@ const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTim
   title="blog"
   description="Thoughts on software engineering, terminals, and developer experience"
   currentPath="/blog">
-  <div class="space-y-4">
+  <div class="space-y-3 sm:space-y-4">
     {
       posts.map((post, index) => (
         <article class="border border-terminal-border rounded-lg overflow-hidden hover:border-terminal-primary transition-colors">
-          <div class="p-5">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex items-center gap-3">
-                <span class="text-terminal-text-dim font-mono text-sm">{String(index + 1).padStart(2, "0")}</span>
-                <a href={`/blog/${post.id}`} class="text-lg font-bold text-terminal-text terminal-link">
+          <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3 sm:gap-4 mb-2 sm:mb-3">
+              <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                <span class="text-terminal-text-dim font-mono text-sm shrink-0">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <a
+                  href={`/blog/${post.id}`}
+                  class="text-base sm:text-lg font-bold text-terminal-text terminal-link truncate">
                   {post.data.title}
                 </a>
               </div>
-              <time class="text-terminal-text-dim text-xs whitespace-nowrap">
+              <time class="text-terminal-text-dim text-xs whitespace-nowrap shrink-0">
                 {post.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
               </time>
             </div>
 
-            {post.data.description && <p class="text-terminal-text-muted text-sm mb-4 ml-8">{post.data.description}</p>}
+            {post.data.description && (
+              <p class="text-terminal-text-muted text-sm mb-3 sm:mb-4 ml-6 sm:ml-8 line-clamp-2">
+                {post.data.description}
+              </p>
+            )}
 
-            <div class="flex items-center justify-between ml-8">
+            <div class="flex items-center justify-between ml-6 sm:ml-8">
               <span class="text-xs text-terminal-text-dim">by desertthunder.dev</span>
 
-              <a href={`/blog/${post.id}`} class="text-terminal-primary text-sm terminal-link flex items-center gap-1">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-terminal-primary text-sm terminal-link flex items-center gap-1 min-h-11 px-2 -mr-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
                 <span>read more</span>
                 <span class="flex items-center">
                   <i class="i-ri-arrow-right-line w-4 h-4" />
@@ -45,7 +55,7 @@ const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTim
     }
   </div>
 
-  <div class="mt-8 pt-4 border-t border-terminal-border flex items-center gap-6 text-sm text-terminal-text-dim">
+  <div class="mt-6 sm:mt-8 pt-4 border-t border-terminal-border flex items-center gap-6 text-sm text-terminal-text-dim">
     <span class="flex items-center gap-2">
       <span class="flex items-center">
         <i class="i-ri-file-text-line w-4 h-4"></i>

@@ -47,7 +47,7 @@ const categoryIcons: Record<string, string> = {
   title="bookmarks"
   description="Curated collection of useful tools and resources"
   currentPath="/bookmarks">
-  <div class="flex items-center gap-6 mb-8 text-sm text-terminal-text-dim">
+  <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 mb-6 sm:mb-8 text-xs sm:text-sm text-terminal-text-dim">
     <span class="flex items-center gap-2">
       <span class="flex items-center">
         <i class="i-ri-bookmark-3-line w-4 h-4"></i>
@@ -62,11 +62,11 @@ const categoryIcons: Record<string, string> = {
     </span>
   </div>
 
-  <div class="space-y-8">
+  <div class="space-y-6 sm:space-y-8">
     {
       categories.map((category: string) => (
         <section>
-          <div class="flex items-center gap-2 text-terminal-text-muted text-sm mb-4 border-b border-terminal-border pb-2">
+          <div class="flex items-center gap-2 text-terminal-text-muted text-xs sm:text-sm mb-3 sm:mb-4 border-b border-terminal-border pb-2">
             <span class="flex items-center">
               <i class:list={[categoryIcons[category] || "i-ri-folder-3-line", "w-4", "h-4"]} />
             </span>
@@ -74,24 +74,25 @@ const categoryIcons: Record<string, string> = {
             <span class="text-terminal-text-dim">({groupedBookmarks[category].length})</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3">
             {groupedBookmarks[category].map((bookmark: any) => (
               <a
                 href={`/bookmarks/${bookmark.id}`}
-                class="group border border-terminal-border rounded p-4 hover:border-terminal-primary transition-colors">
-                <div class="flex items-start gap-3">
-                  <span class="flex items-center">
-                    <i class="i-ri-bookmark-line w-5 h-5 text-terminal-primary group-hover:text-terminal-primary-bright transition-colors" />
+                class="group border border-terminal-border rounded p-3 sm:p-4 hover:border-terminal-primary transition-colors"
+              >
+                <div class="flex items-start gap-2 sm:gap-3">
+                  <span class="flex items-center shrink-0">
+                    <i class="i-ri-bookmark-line w-4 h-4 sm:w-5 sm:h-5 text-terminal-primary group-hover:text-terminal-primary-bright transition-colors" />
                   </span>
 
                   <div class="flex-1 min-w-0">
-                    <div class="font-bold text-terminal-text truncate">{bookmark.data.title}</div>
-                    <div class="text-terminal-text-muted text-sm mt-1 line-clamp-2">
+                    <div class="font-bold text-terminal-text text-sm truncate">{bookmark.data.title}</div>
+                    <div class="text-terminal-text-muted text-xs sm:text-sm mt-1 line-clamp-2">
                       <bookmark.Content />
                     </div>
                   </div>
 
-                  <span class="flex items-center">
+                  <span class="flex items-center shrink-0">
                     <i class="i-ri-arrow-right-line w-4 h-4 text-terminal-text-dim group-hover:text-terminal-primary transition-colors" />
                   </span>
                 </div>
@@ -103,13 +104,13 @@ const categoryIcons: Record<string, string> = {
     }
   </div>
 
-  <div class="mt-12 pt-4 border-t border-terminal-border text-center">
-    <p class="text-terminal-text-muted text-sm">
+  <div class="mt-8 sm:mt-12 pt-4 border-t border-terminal-border text-center">
+    <p class="text-terminal-text-muted text-xs sm:text-sm">
       Last updated: {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
     </p>
     <p class="text-terminal-text-dim text-xs mt-2">
       Know a great tool?
-      <a href="mailto:hello@example.com" class="text-terminal-primary terminal-link">Send a suggestion</a>
+      <a href="mailto:me@desertthunder.dev" class="text-terminal-primary terminal-link">Send a suggestion</a>
     </p>
   </div>
 </TerminalLayout>
