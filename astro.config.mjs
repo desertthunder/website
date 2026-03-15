@@ -6,5 +6,5 @@ import { ogImagesIntegration } from "./src/integrations/og-images";
 export default defineConfig({
   site: "https://desertthunder.dev",
   integrations: [ogImagesIntegration()],
-  vite: { plugins: [tailwindcss()] },
+  vite: { plugins: [tailwindcss()], resolve: { alias: { $: "src" } } },
 });

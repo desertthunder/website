@@ -1,9 +1,9 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
-import TerminalLayout from "../../components/TerminalLayout.astro";
+import { getCollection } from "astro:content";
+import TerminalLayout from "$/components/TerminalLayout.astro";
 
 const allPosts = await getCollection("blog");
-const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const posts = [...allPosts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
 <TerminalLayout

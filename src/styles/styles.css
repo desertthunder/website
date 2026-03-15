@@ -187,3 +187,65 @@
   text-shadow: 0 0 8px var(--color-glow-blue);
   color: var(--color-terminal-primary-bright);
 }
+
+/* Prose styles for rendered markdown content */
+.prose-terminal {
+  @apply text-terminal-text;
+}
+
+.prose-terminal h2 {
+  @apply text-lg sm:text-xl font-bold text-terminal-text mt-6 sm:mt-8 mb-3 sm:mb-4 border-b border-terminal-border pb-2;
+}
+
+.prose-terminal h3 {
+  @apply text-base sm:text-lg font-bold text-terminal-text mt-4 sm:mt-6 mb-2 sm:mb-3;
+}
+
+.prose-terminal p {
+  @apply text-terminal-text-muted mb-3 sm:mb-4 leading-relaxed;
+}
+
+.prose-terminal ul {
+  @apply list-disc list-inside text-terminal-text-muted mb-3 sm:mb-4 ml-2;
+}
+
+.prose-terminal ol {
+  @apply list-decimal list-inside text-terminal-text-muted mb-3 sm:mb-4 ml-2;
+}
+
+.prose-terminal li {
+  @apply mb-1;
+}
+
+.prose-terminal code {
+  @apply bg-terminal-bg-tertiary text-terminal-primary px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm;
+}
+
+.prose-terminal pre {
+  @apply bg-terminal-bg-secondary border border-terminal-border rounded-lg p-3 sm:p-4 overflow-x-auto mb-4 sm:mb-6;
+}
+
+.prose-terminal pre code {
+  @apply bg-transparent text-terminal-text p-0;
+}
+
+.prose-terminal blockquote {
+  @apply border-l-4 border-terminal-primary pl-3 sm:pl-4 italic text-terminal-text-muted my-4 sm:my-6;
+}
+
+.prose-terminal a {
+  @apply text-terminal-primary;
+}
+
+.prose-terminal a:hover {
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+}
+
+.prose-terminal hr {
+  @apply border-terminal-border my-6 sm:my-8;
+}
+
+.prose-terminal strong {
+  @apply text-terminal-text font-bold;
+}

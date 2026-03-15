@@ -1,16 +1,14 @@
 ---
-import TerminalLayout from "../components/TerminalLayout.astro";
-import experienceData from "../content/data/experience.json";
-
-const { experience } = experienceData;
+import TerminalLayout from "$/components/TerminalLayout.astro";
+import data from "$/content/data/experience.json";
 ---
 
 <TerminalLayout title="work" description="Professional experience and career history" currentPath="/experience">
   <div class="space-y-0">
     {
-      experience.map((job, index) => (
+      data.experience.map((job, index) => (
         <div class="relative">
-          {index !== experience.length - 1 && (
+          {index !== data.experience.length - 1 && (
             <div class="absolute left-2.75 sm:left-3.25 top-7 sm:top-8 bottom-0 w-0.5 bg-terminal-border" />
           )}
 
@@ -79,7 +77,7 @@ const { experience } = experienceData;
 
   <div class="mt-6 sm:mt-8 pt-4 border-t border-terminal-border grid grid-cols-3 gap-2 sm:gap-4">
     <div class="text-center">
-      <div class="text-xl sm:text-2xl font-bold text-terminal-primary">{experience.length}</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-primary">{data.experience.length}</div>
       <div class="text-[10px] sm:text-xs text-terminal-text-dim">Positions</div>
     </div>
     <div class="text-center">
@@ -88,7 +86,7 @@ const { experience } = experienceData;
     </div>
     <div class="text-center">
       <div class="text-xl sm:text-2xl font-bold text-terminal-success">
-        {[...new Set(experience.flatMap((e) => e.technologies))].length}
+        {[...new Set(data.experience.flatMap((e) => e.technologies))].length}
       </div>
       <div class="text-[10px] sm:text-xs text-terminal-text-dim">Technologies</div>
     </div>

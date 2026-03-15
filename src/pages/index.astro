@@ -1,6 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
-import TerminalLayout from "../components/TerminalLayout.astro";
+import TerminalLayout from "$/components/TerminalLayout.astro";
 
 const allPosts = await getCollection("blog");
 const posts: CollectionEntry<"blog">[] = allPosts

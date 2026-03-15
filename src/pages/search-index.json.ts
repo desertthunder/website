@@ -7,10 +7,13 @@
 
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import experienceData from "../content/data/experience.json";
+import experienceData from "$/content/data/experience.json";
+import { stripHtml } from "$/lib/clean-utils";
+
+type EntryKind = "blog" | "project" | "bookmark" | "experience";
 
 export type SearchEntry = {
-  type: "blog" | "project" | "bookmark" | "experience";
+  type: EntryKind;
   title: string;
   description: string;
   url: string;
@@ -18,14 +21,6 @@ export type SearchEntry = {
   date?: string;
   tags?: string[];
 };
-
-/** Strip HTML tags and collapse whitespace */
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 /** Extract plaintext from Leaflet blocks */
 function extractLeafletText(doc: Record<string, unknown>): string {
@@ -73,40 +68,23 @@ export const GET: APIRoute = async () => {
   }
 
   const projects = await getCollection("projects");
-  for (const project of projects) {
-    entries.push({
-      type: "project",
-      title: project.data.title,
-      description: project.data.description,
-      url: `/projects/${project.id}`,
-      body: project.body ? stripHtml(project.body) : "",
-      tags: project.data.tags,
-    });
+  for (const { id, data, body } of projects) {
+    const { title, description, tags } = data;
+    entries.push({ type: "project", title, description, url: `/projects/${id}`, body: stripHtml(body), tags });
   }
 
   const bookmarks = await getCollection("bookmarks");
-  for (const bookmark of bookmarks) {
-    entries.push({
-      type: "bookmark",
-      title: bookmark.data.title,
-      description: "",
-      url: `/bookmarks/${bookmark.id}`,
-      body: bookmark.body ? stripHtml(bookmark.body) : "",
-      tags: bookmark.data.tags,
-    });
+  for (const { body, data, id } of bookmarks) {
+    const { title, tags } = data;
+    entries.push({ type: "bookmark", title, description: "", url: `/bookmarks/${id}`, body: stripHtml(body), tags });
   }
 
-  for (const job of experienceData.experience) {
-    const j = job as Record<string, unknown>;
-    const highlights = (j.highlights as string[]) || [];
-    entries.push({
-      type: "experience",
-      title: `${j.role} at ${j.company || j.name}`,
-      description: (j.description as string) || "",
-      url: "/experience",
-      body: highlights.join(" "),
-      tags: (j.technologies as string[]) || [],
-    });
+  for (const j of experienceData.experience) {
+    const body = ((j.highlights as string[]) ?? []).join(" ");
+    const tags = j.technologies ?? [];
+    const title = `${j.role} at ${j.company}`;
+    const description = j.description ?? "";
+    entries.push({ type: "experience", title, url: "/experience", description, body, tags });
   }
 
   return new Response(JSON.stringify(entries), { headers: { "Content-Type": "application/json" } });

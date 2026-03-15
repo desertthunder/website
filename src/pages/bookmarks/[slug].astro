@@ -1,6 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
-import TerminalLayout from "../../components/TerminalLayout.astro";
+import TerminalLayout from "$/components/TerminalLayout.astro";
 
 export async function getStaticPaths() {
   const bookmarks = await getCollection("bookmarks");
@@ -87,15 +87,3 @@ const { Content } = await render(bookmark);
     </div>
   </div>
 </TerminalLayout>
-
-<style>
-  @reference "../../styles/styles.css";
-
-  .prose-terminal {
-    @apply text-terminal-text;
-  }
-
-  .prose-terminal p {
-    @apply text-terminal-text-muted mb-3 sm:mb-4 leading-relaxed;
-  }
-</style>

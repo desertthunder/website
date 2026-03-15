@@ -1,9 +1,9 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
-import TerminalLayout from "../components/TerminalLayout.astro";
+import TerminalLayout from "$/components/TerminalLayout.astro";
 
 const allProjects = await getCollection("projects");
-const projects: CollectionEntry<"projects">[] = allProjects.sort(
+const projects: CollectionEntry<"projects">[] = [...allProjects].sort(
   (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => {
     if (a.data.featured && !b.data.featured) return -1;
     if (!a.data.featured && b.data.featured) return 1;
