@@ -107,7 +107,7 @@ export async function generateOGImage() {
             borderTop: `1px solid ${colors.border}`,
             padding: "12px 24px",
             fontSize: "12px",
-            color: colors.textDim,
+            color: colors.textMuted,
           }}>
           <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             <span>github.com/desertthunder</span>
