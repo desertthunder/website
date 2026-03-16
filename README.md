@@ -1,4 +1,12 @@
-# desertthunder.dev
+<!-- markdownlint-disable MD041 -->
+
+[![Open Graph image for desertthunder.dev](./doc/og-copy.png)](https://desertthunder.dev)
+
+My personal website & blog, powered by [standard.site](https://standard.site)/[leaflet](https://leaflet.pub) and the AT Protocol.
+
+Built with Astro (& React/Takumi-rs for the above OG-image) and deployed to Cloudflare Pages.
+
+Designed by [me](https://linkedin.com/in/owais-jamil).
 
 ## AT Protocol / Leaflet Integration
 
