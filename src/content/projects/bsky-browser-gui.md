@@ -10,7 +10,8 @@ date: 2026-03-15
 featured: true
 ---
 
-Bluesky Browser GUI is a desktop application that lets you search, browse, and manage your Bluesky saved bookmarks and liked posts offline via a native SQLite-backed full-text search index. Built with Go and Wails v2, it provides a fast, native desktop experience with a modern web-based UI.
+Bluesky Browser GUI is a desktop application that lets you search, browse, and manage your Bluesky saved bookmarks and liked posts offline via a native SQLite-backed full-text search index. It is built with Go and Wails v2, and has a fast, native desktop experience with a modern web-based UI, inspired
+by IBM Carbon and [anisota](https://anisota.net).
 
 ## Why I Built This
 
@@ -30,12 +31,12 @@ I made this to stop having to `CTRL`/`CMD`+`F` and infinite scroll through my sa
 
 ## Architecture
 
-The app follows a clean Go backend with a Wails v2 frontend architecture:
+The app has a clean Go backend (single `main` package) with Wails v2, and a Svelte SPA frontend:
 
 - **Go Backend** — Authentication service, index service, database layer with migrations
 - **SQLite + FTS5** — Local data persistence with full-text search indexing
 - **Wails v2** — Bridges Go backend with modern web frontend
-- **Frontend** — Web-based UI with search, filtering, and progress visualization
+- **Frontend** — Svelte 5 & Tailwind based UI with search, filtering, and progress visualization
 
 ## Database Schema
 
@@ -47,13 +48,3 @@ The app follows a clean Go backend with a Wails v2 frontend architecture:
 
 - **Database**: `~/.config/bsky-browser/bsky-browser.db`
 - **Logs**: `~/.config/bsky-browser/logs/bsky-browser_*.log`
-
-## Requirements
-
-- Go 1.24+
-- Wails v2
-- SQLite (via modernc.org/sqlite)
-
-## License
-
-MIT
