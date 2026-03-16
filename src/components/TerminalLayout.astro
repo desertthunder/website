@@ -127,16 +127,20 @@ const navItems = [
 
           <div class="p-4 border-t border-terminal-border text-xs text-terminal-text-dim">
             <div class="flex items-center gap-2 mb-1">
-              <span class="flex items-center">
+              <a
+                href="https://github.com/desertthunder/website"
+                class="flex items-center gap-2 hover:text-terminal-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer">
                 <i class="i-ri-git-branch-line w-3 h-3"></i>
-              </span>
-              <span>main</span>
+                <span>main</span>
+              </a>
             </div>
             <div class="flex items-center gap-2">
               <span class="flex items-center">
                 <i class="i-ri-circle-fill w-2 h-2 text-terminal-success"></i>
               </span>
-              <span>online</span>
+              <span>online (always)</span>
             </div>
           </div>
         </nav>
@@ -191,8 +195,7 @@ const navItems = [
             <span>UTF-8</span>
           </span>
         </div>
-        <div class="flex items-center gap-2 sm:gap-4">
-          <span class="hidden sm:inline">ln 1, col 1</span>
+        <div class="flex items-center gap-1 sm:gap-2">
           <span class="flex items-center gap-1">
             <span class="flex items-center">
               <i class="i-ri-flashlight-line w-3 h-3"></i>
@@ -200,6 +203,7 @@ const navItems = [
             <span class="hidden sm:inline">built by Owais</span>
             <span class="sm:hidden">Owais</span>
           </span>
+          <span class="hidden sm:inline">(est. 1993)</span>
         </div>
       </footer>
     </div>
