@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
+import { LEAFLET_PUBLICATION_URL } from "$/lib/leaflet";
 import { transformLeafletToMarkdown } from "$/lib/leaflet-transform";
 
 export async function getStaticPaths() {
@@ -63,7 +64,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 
       <div class="flex items-center gap-4">
         <a
-          href={`https://desertthunder.leaflet.pub/${post.data.leafletRkey}`}
+          href={`${LEAFLET_PUBLICATION_URL}/${post.data.leafletRkey}`}
           target="_blank"
           rel="noopener noreferrer"
           class="text-terminal-primary terminal-link flex items-center gap-2 min-h-11">
@@ -80,7 +81,6 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
 <style>
   @reference "../../styles/styles.css";
 
-  /* Style Leaflet-generated content with parent selectors */
   .leaflet-content {
     @apply text-terminal-text;
   }
@@ -162,7 +162,6 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     @apply rounded-lg border border-terminal-border max-w-full my-4 sm:my-6;
   }
 
-  /* Bluesky embed cards */
   .leaflet-content :global(.bsky-embed-card) {
     @apply border border-terminal-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 bg-terminal-bg-secondary;
   }
@@ -203,7 +202,6 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     @apply text-terminal-primary text-xs sm:text-sm terminal-link inline-block;
   }
 
-  /* Website embed cards */
   .leaflet-content :global(.website-embed-card) {
     @apply border border-terminal-border rounded-lg overflow-hidden mb-4 sm:mb-6 bg-terminal-bg-secondary;
   }
@@ -240,7 +238,6 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     @apply text-terminal-text-dim text-xs truncate;
   }
 
-  /* Button blocks */
   .leaflet-content :global(.leaflet-button) {
     @apply inline-block px-3 sm:px-4 py-1.5 sm:py-2 border border-terminal-primary text-terminal-primary rounded text-xs sm:text-sm font-mono mb-3 sm:mb-4;
   }
@@ -250,22 +247,18 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
   }
 
-  /* Iframe link fallback */
   .leaflet-content :global(.leaflet-iframe-link) {
     @apply text-terminal-primary text-xs sm:text-sm terminal-link inline-block mb-3 sm:mb-4;
   }
 
-  /* Highlight (mark) styling */
   .leaflet-content :global(mark) {
     @apply bg-terminal-primary/20 text-terminal-text px-0.5 rounded;
   }
 
-  /* Underline styling */
   .leaflet-content :global(u) {
     @apply underline decoration-terminal-primary/50;
   }
 
-  /* Strikethrough styling */
   .leaflet-content :global(del) {
     @apply text-terminal-text-dim;
   }

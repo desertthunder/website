@@ -16,11 +16,15 @@ import { AtpAgent } from "@atproto/api";
  */
 export const LEAFLET_DID = "did:plc:xg2vq45muivyy3xwatcehspu";
 
+export const LEAFLET_PUBLICATION_URL = "https://desertthunder.leaflet.pub";
+
 /**
  * AT Protocol collection namespace for site.standard documents
  * (migrated from pub.leaflet.document)
  */
 export const LEAFLET_COLLECTION = "site.standard.document";
+
+const LEAFLET_PUBLICATION_COLLECTION = "site.standard.publication";
 
 /**
  * Site standard document record from AT Protocol
@@ -44,10 +48,7 @@ export type LeafletDocument = {
 /**
  * Leaflet content wrapper containing pages
  */
-export type LeafletContent = {
-  $type: "pub.leaflet.content";
-  pages: LeafletPage[];
-};
+export type LeafletContent = { $type: "pub.leaflet.content"; pages: LeafletPage[] };
 
 const LEAFLET_CONTENT_TYPE = "pub.leaflet.content";
 
@@ -108,11 +109,7 @@ export type HeaderBlock = {
 /**
  * Blockquote with rich text
  */
-export type BlockquoteBlock = {
-  $type: "pub.leaflet.blocks.blockquote";
-  plaintext: string;
-  facets?: Facet[];
-};
+export type BlockquoteBlock = { $type: "pub.leaflet.blocks.blockquote"; plaintext: string; facets?: Facet[] };
 
 /**
  * Horizontal rule divider
@@ -120,28 +117,17 @@ export type BlockquoteBlock = {
 export type HorizontalRuleBlock = { $type: "pub.leaflet.blocks.horizontalRule" };
 
 /** List item used in both ordered and unordered lists */
-export type ListItem = {
-  $type: string;
-  content: TextBlock | HeaderBlock | ImageBlock;
-  children: ListItem[];
-};
+export type ListItem = { $type: string; content: TextBlock | HeaderBlock | ImageBlock; children: ListItem[] };
 
 /**
  * Unordered list with nested children
  */
-export type UnorderedListBlock = {
-  $type: "pub.leaflet.blocks.unorderedList";
-  children: ListItem[];
-};
+export type UnorderedListBlock = { $type: "pub.leaflet.blocks.unorderedList"; children: ListItem[] };
 
 /**
  * Ordered list with nested children
  */
-export type OrderedListBlock = {
-  $type: "pub.leaflet.blocks.orderedList";
-  startIndex?: number;
-  children: ListItem[];
-};
+export type OrderedListBlock = { $type: "pub.leaflet.blocks.orderedList"; startIndex?: number; children: ListItem[] };
 
 /**
  * Code block with syntax highlighting
@@ -191,36 +177,22 @@ export type BskyPostBlock = {
 /**
  * Button block with link
  */
-export type ButtonBlock = {
-  $type: "pub.leaflet.blocks.button";
-  text: string;
-  url: string;
-};
+export type ButtonBlock = { $type: "pub.leaflet.blocks.button"; text: string; url: string };
 
 /**
  * Iframe embed block
  */
-export type IframeBlock = {
-  $type: "pub.leaflet.blocks.iframe";
-  url: string;
-  height?: number;
-};
+export type IframeBlock = { $type: "pub.leaflet.blocks.iframe"; url: string; height?: number };
 
 /**
  * Poll block referencing a poll definition
  */
-export type PollBlock = {
-  $type: "pub.leaflet.blocks.poll";
-  pollRef: { uri: string; cid: string };
-};
+export type PollBlock = { $type: "pub.leaflet.blocks.poll"; pollRef: { uri: string; cid: string } };
 
 /**
  * Page link block referencing another page in the document
  */
-export type PageBlock = {
-  $type: "pub.leaflet.blocks.page";
-  id: string;
-};
+export type PageBlock = { $type: "pub.leaflet.blocks.page"; id: string };
 
 /** Blob reference type */
 export type BlobRef = { $type: "blob"; ref: { $link: string }; mimeType: string; size?: number };
@@ -268,6 +240,17 @@ export type FootnoteFeature = {
  */
 export type AtprotoRecord = { uri: string; cid: string; value: LeafletDocument };
 
+type PublicationRecord = {
+  uri: string;
+  cid: string;
+  rkey: string;
+  siteUri: string;
+  value: {
+    $type: "site.standard.publication";
+    url: string;
+  };
+};
+
 const DEFAULT_SERVICE = "https://bsky.social";
 
 /**
@@ -278,6 +261,7 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
 
   try {
     const { data: profile } = await agent.resolveHandle({ handle });
+    const publication = await fetchPublication(agent, profile.did);
 
     const params = { repo: profile.did, collection: LEAFLET_COLLECTION, limit: 100, reverse: true };
     const { data } = await agent.com.atproto.repo.listRecords(params);
@@ -295,7 +279,7 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
         throw new Error(`Invalid AT Protocol record structure for URI: ${String(r.uri || "unknown")}`);
       }
 
-      if (!isLeafletDocumentRecord(record.value)) {
+      if (!isLeafletDocumentRecord(record.value, publication.siteUri)) {
         skippedRecords += 1;
         continue;
       }
@@ -318,13 +302,50 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
     }
 
     if (skippedRecords > 0) {
-      console.log(`[Leaflet] Skipped ${skippedRecords} non-Leaflet standard.site records`);
+      console.log(`[Leaflet] Skipped ${skippedRecords} non-matching site.standard.document records`);
     }
 
     return validRecords;
   } catch (error) {
     console.error("Failed to fetch Leaflet posts:", error);
     throw new Error(`AT Protocol fetch failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
+}
+
+async function fetchPublication(agent: AtpAgent, repo: string): Promise<PublicationRecord> {
+  const params = { repo, collection: LEAFLET_PUBLICATION_COLLECTION, limit: 100 };
+  const { data } = await agent.com.atproto.repo.listRecords(params);
+
+  const publication = data.records.find((record): record is Omit<PublicationRecord, "rkey" | "siteUri"> => {
+    if (!isValidAtprotoRecord(record)) {
+      return false;
+    }
+
+    const value = record.value;
+    return (
+      value.$type === LEAFLET_PUBLICATION_COLLECTION &&
+      typeof value.url === "string" &&
+      normalizeUrlHost(value.url) === normalizeUrlHost(LEAFLET_PUBLICATION_URL)
+    );
+  });
+
+  if (!publication) {
+    throw new Error(`Could not find Leaflet publication for ${LEAFLET_PUBLICATION_URL}`);
+  }
+
+  const rkey = extractRkey(publication.uri);
+  const siteUri = `at://${repo}/${LEAFLET_PUBLICATION_COLLECTION}/${rkey}`;
+
+  console.log(`[Leaflet] Matched publication "${LEAFLET_PUBLICATION_URL}" to ${siteUri}`);
+
+  return { ...publication, rkey, siteUri };
+}
+
+function normalizeUrlHost(url: string): string | undefined {
+  try {
+    return new URL(url).host.toLowerCase();
+  } catch {
+    return undefined;
   }
 }
 
@@ -351,13 +372,13 @@ type ValidDoc = {
 /**
  * Checks whether a site.standard.document record uses Leaflet content.
  */
-function isLeafletDocumentRecord(value: Record<string, unknown>): boolean {
+function isLeafletDocumentRecord(value: Record<string, unknown>, siteUri: string): boolean {
   if (value.$type !== "site.standard.document") {
     return false;
   }
 
   const content = value.content as Record<string, unknown> | undefined;
-  return content?.$type === LEAFLET_CONTENT_TYPE;
+  return content?.$type === LEAFLET_CONTENT_TYPE && value.site === siteUri;
 }
 
 /**
