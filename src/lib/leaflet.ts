@@ -49,6 +49,8 @@ export type LeafletContent = {
   pages: LeafletPage[];
 };
 
+const LEAFLET_CONTENT_TYPE = "pub.leaflet.content";
+
 /**
  * Page wrapper containing blocks
  */
@@ -283,6 +285,7 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
     console.log(`[Leaflet] Fetched ${data.records.length} records from collection "${LEAFLET_COLLECTION}"`);
 
     const validRecords: AtprotoRecord[] = [];
+    let skippedRecords = 0;
 
     for (const record of data.records) {
       if (!isValidAtprotoRecord(record)) {
@@ -290,6 +293,11 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
         const valueKeys = Object.keys(r.value || {});
         console.error("[Leaflet] Invalid record structure:", { uri: r.uri, cid: r.cid, valueKeys });
         throw new Error(`Invalid AT Protocol record structure for URI: ${String(r.uri || "unknown")}`);
+      }
+
+      if (!isLeafletDocumentRecord(record.value)) {
+        skippedRecords += 1;
+        continue;
       }
 
       if (!isValidLeafletDocument(record.value)) {
@@ -307,6 +315,10 @@ export async function fetchLeafletPosts(handle: string, service: string = DEFAUL
       }
 
       validRecords.push(record as unknown as AtprotoRecord);
+    }
+
+    if (skippedRecords > 0) {
+      console.log(`[Leaflet] Skipped ${skippedRecords} non-Leaflet standard.site records`);
     }
 
     return validRecords;
@@ -337,6 +349,18 @@ type ValidDoc = {
 };
 
 /**
+ * Checks whether a site.standard.document record uses Leaflet content.
+ */
+function isLeafletDocumentRecord(value: Record<string, unknown>): boolean {
+  if (value.$type !== "site.standard.document") {
+    return false;
+  }
+
+  const content = value.content as Record<string, unknown> | undefined;
+  return content?.$type === LEAFLET_CONTENT_TYPE;
+}
+
+/**
  * Type guard for site.standard.document structure
  */
 function isValidLeafletDocument(value: Record<string, unknown>): value is Record<string, unknown> & ValidDoc {
@@ -354,6 +378,10 @@ function isValidLeafletDocument(value: Record<string, unknown>): value is Record
 
   const content = value.content as Record<string, unknown> | undefined;
   if (!content || typeof content !== "object") {
+    return false;
+  }
+
+  if (content.$type !== LEAFLET_CONTENT_TYPE) {
     return false;
   }
 
