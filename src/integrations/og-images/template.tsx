@@ -16,126 +16,164 @@ const colors = {
   error: "#ef4444",
 };
 
+const h = React.createElement;
+
 export async function generateOGImage() {
   return new ImageResponse(
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: colors.primaryBright,
-        fontFamily: '"JetBrains Mono", "SF Mono", monospace',
-        position: "relative",
-        overflow: "hidden",
-      }}>
-      <div
-        style={{
+    h(
+      "div",
+      {
+        style: {
+          width: "100%",
+          height: "100%",
           display: "flex",
           flexDirection: "column",
-          flex: 1,
-          margin: "40px",
-          border: `2px solid ${colors.border}`,
-          borderRadius: "12px",
+          backgroundColor: colors.primaryBright,
+          fontFamily: '"JetBrains Mono", "SF Mono", monospace',
+          position: "relative",
           overflow: "hidden",
-          backgroundColor: colors.bg,
-        }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: colors.bgSecondary,
-            borderBottom: `1px solid ${colors.border}`,
-            padding: "16px 24px",
-          }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.error }} />
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.warning }} />
-              <div style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.success }} />
-            </div>
-            <div style={{ width: "1px", height: "16px", backgroundColor: colors.border, marginLeft: "8px" }} />
-            <span style={{ color: colors.primary, fontSize: "14px" }}>Desert Thunder</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: colors.textMuted, fontSize: "13px" }}>Austin, TX</span>
-          </div>
-        </div>
-
-        <div
-          style={{
-            flex: 1,
+        },
+      },
+      h(
+        "div",
+        {
+          style: {
             display: "flex",
             flexDirection: "column",
+            flex: 1,
+            margin: "40px",
+            border: `2px solid ${colors.border}`,
+            borderRadius: "12px",
+            overflow: "hidden",
             backgroundColor: colors.bg,
-            padding: "48px",
-            justifyContent: "center",
-            maxWidth: "800px",
-          }}>
-          <h1
-            style={{
-              fontSize: "56px",
-              fontWeight: "700",
-              color: colors.text,
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-              marginBottom: "24px",
-              whiteSpace: "nowrap",
-            }}>
-            Owais Jamil
-          </h1>
-
-          <p
-            style={{
-              fontSize: "24px",
+          },
+        },
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: colors.bgSecondary,
+              borderBottom: `1px solid ${colors.border}`,
+              padding: "16px 24px",
+            },
+          },
+          h(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "12px" } },
+            h(
+              "div",
+              { style: { display: "flex", gap: "8px" } },
+              h("div", {
+                style: { width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.error },
+              }),
+              h("div", {
+                style: { width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.warning },
+              }),
+              h("div", {
+                style: { width: "12px", height: "12px", borderRadius: "50%", backgroundColor: colors.success },
+              }),
+            ),
+            h("div", { style: { width: "1px", height: "16px", backgroundColor: colors.border, marginLeft: "8px" } }),
+            h("span", { style: { color: colors.primary, fontSize: "14px" } }, "Desert Thunder"),
+          ),
+          h(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "8px" } },
+            h("span", { style: { color: colors.textMuted, fontSize: "13px" } }, "Austin, TX"),
+          ),
+        ),
+        h(
+          "div",
+          {
+            style: {
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: colors.bg,
+              padding: "48px",
+              justifyContent: "center",
+              maxWidth: "800px",
+            },
+          },
+          h(
+            "h1",
+            {
+              style: {
+                fontSize: "56px",
+                fontWeight: "700",
+                color: colors.text,
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+                marginBottom: "24px",
+                whiteSpace: "nowrap",
+              },
+            },
+            "Owais Jamil",
+          ),
+          h(
+            "p",
+            {
+              style: {
+                fontSize: "24px",
+                color: colors.textMuted,
+                lineHeight: 1.5,
+                maxWidth: "700px",
+                whiteSpace: "nowrap",
+              },
+            },
+            "Software Engineer & Writer with a passion for learning.",
+          ),
+        ),
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: colors.bgSecondary,
+              borderTop: `1px solid ${colors.border}`,
+              padding: "12px 24px",
+              fontSize: "12px",
               color: colors.textMuted,
-              lineHeight: 1.5,
-              maxWidth: "700px",
-              whiteSpace: "nowrap",
-            }}>
-            Software Engineer & Writer with a passion for learning.
-          </p>
-        </div>
-
-        <div
-          style={{
+            },
+          },
+          h(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "24px" } },
+            h("span", null, "github.com/desertthunder"),
+          ),
+          h(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "24px" } },
+            h("span", null, "desertthunder.dev"),
+          ),
+        ),
+      ),
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            inset: 0,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            backgroundColor: colors.bgSecondary,
-            borderTop: `1px solid ${colors.border}`,
-            padding: "12px 24px",
-            fontSize: "12px",
-            color: colors.textMuted,
-          }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <span>github.com/desertthunder</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <span>desertthunder.dev</span>
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          pointerEvents: "none",
-          opacity: 0.02,
-          zIndex: -1,
-        }}>
-        {Array.from({ length: 16 }).map((_, i) => (
-          <div
-            key={`h-${i}`}
-            style={{ width: "100%", height: "1px", backgroundColor: colors.primary, marginBottom: "40px" }}
-          />
-        ))}
-      </div>
-    </div>,
+            flexDirection: "column",
+            pointerEvents: "none",
+            opacity: 0.02,
+            zIndex: -1,
+          },
+        },
+        ...Array.from({ length: 16 }).map((_, i) =>
+          h("div", {
+            key: `h-${i}`,
+            style: { width: "100%", height: "1px", backgroundColor: colors.primary, marginBottom: "40px" },
+          }),
+        ),
+      ),
+    ),
     { width: 1200, height: 630, format: "png" },
   );
 }
