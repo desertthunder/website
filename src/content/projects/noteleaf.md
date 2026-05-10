@@ -8,7 +8,7 @@ status: Pre-release (Active Development)
 tech: [Go, Charm.sh]
 tags: [productivity, cli]
 date: 2025-10-30
-featured: true
+featured: false
 ---
 
 Noteleaf is a unified personal productivity CLI that combines task management, note-taking, and media tracking in one place.

@@ -6,7 +6,7 @@ status: Pre-release (Active Development)
 tech: [TypeScript, Signals, WebSockets, SSE, Hypermedia]
 tags: [frontend, library, framework]
 date: 2025-10-30
-featured: true
+featured: false
 ---
 
 Volt is a monorepo centered around the VoltX.js runtime, a lightweight, declarative alternative to component-centric UI frameworks.

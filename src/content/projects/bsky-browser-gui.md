@@ -7,7 +7,7 @@ status: Pre-release (Active Development)
 tech: [Go, Wails v2, SQLite, FTS5]
 tags: [productivity, desktop, social, search]
 date: 2026-03-15
-featured: true
+featured: false
 ---
 
 Bluesky Browser GUI is a desktop application that lets you search, browse, and manage your Bluesky saved bookmarks and liked posts offline via a native SQLite-backed full-text search index. It is built with Go and Wails v2, and has a fast, native desktop experience with a modern web-based UI, inspired
