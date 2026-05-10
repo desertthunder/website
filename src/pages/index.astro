@@ -7,7 +7,10 @@ const posts: CollectionEntry<"blog">[] = allPosts
   .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
-const featuredProjects = await getCollection("projects");
+const allProjects = await getCollection("projects");
+const featuredProjects: CollectionEntry<"projects">[] = allProjects
+  .filter((project: CollectionEntry<"projects">) => project.data.featured)
+  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
 <TerminalLayout title="home" description="Owais Jamil" currentPath="/">
