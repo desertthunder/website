@@ -10,7 +10,9 @@ const posts: CollectionEntry<"blog">[] = allPosts
 const allProjects = await getCollection("projects");
 const featuredProjects: CollectionEntry<"projects">[] = allProjects
   .filter((project: CollectionEntry<"projects">) => project.data.featured)
-  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(
+    (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => b.data.date.getTime() - a.data.date.getTime(),
+  );
 ---
 
 <TerminalLayout title="home" description="Owais Jamil" currentPath="/">
@@ -64,7 +66,7 @@ const featuredProjects: CollectionEntry<"projects">[] = allProjects
       <span class="flex items-center">
         <i class="i-ri-dashboard-line w-4 h-4"></i>
       </span>
-      <span>SYSTEM_STATS</span>
+      <span>SYSTEM STATS</span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -94,7 +96,7 @@ const featuredProjects: CollectionEntry<"projects">[] = allProjects
         <span class="flex items-center">
           <i class="i-ri-article-line w-4 h-4"></i>
         </span>
-        <span>RECENT_POSTS</span>
+        <span>RECENT POSTS</span>
       </div>
       <a
         href="/blog"
@@ -135,7 +137,7 @@ const featuredProjects: CollectionEntry<"projects">[] = allProjects
         <span class="flex items-center">
           <i class="i-ri-code-box-line w-4 h-4"></i>
         </span>
-        <span>FEATURED_PROJECTS</span>
+        <span>FEATURED PROJECTS</span>
       </div>
       <a
         href="/projects"
