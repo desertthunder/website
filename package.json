@@ -19,8 +19,6 @@
     "@astrojs/cloudflare": "13.1.1",
     "@astrojs/rss": "4.0.17",
     "@atproto/api": "0.19.3",
-    "@fontsource-variable/jetbrains-mono": "5.2.8",
-    "@fontsource/jetbrains-mono": "5.2.8",
     "@tailwindcss/vite": "4.3.0",
     "@takumi-rs/image-response": "0.73.0",
     "@types/react": "19.2.14",

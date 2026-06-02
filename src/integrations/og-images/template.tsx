@@ -1,4 +1,5 @@
 import { ImageResponse } from "@takumi-rs/image-response";
+import { readFile } from "node:fs/promises";
 import React from "react";
 
 const colors = {
@@ -18,6 +19,28 @@ const colors = {
 
 const h = React.createElement;
 
+const fontBaseUrl = new URL("../../../public/fonts/0xProto/", import.meta.url);
+const fonts = Promise.all([
+  readFile(new URL("0xProto-Regular.ttf", fontBaseUrl)).then((data) => ({
+    name: "0xProto",
+    data,
+    weight: 400,
+    style: "normal" as const,
+  })),
+  readFile(new URL("0xProto-Bold.ttf", fontBaseUrl)).then((data) => ({
+    name: "0xProto",
+    data,
+    weight: 700,
+    style: "normal" as const,
+  })),
+  readFile(new URL("0xProto-Italic.ttf", fontBaseUrl)).then((data) => ({
+    name: "0xProto",
+    data,
+    weight: 400,
+    style: "italic" as const,
+  })),
+]);
+
 export async function generateOGImage() {
   return new ImageResponse(
     h(
@@ -28,8 +51,8 @@ export async function generateOGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: colors.primaryBright,
-          fontFamily: '"JetBrains Mono", "SF Mono", monospace',
+          backgroundColor: colors.primary,
+          fontFamily: '"0xProto", "SF Mono", monospace',
           position: "relative",
           overflow: "hidden",
         },
@@ -104,7 +127,7 @@ export async function generateOGImage() {
               style: {
                 fontSize: "56px",
                 fontWeight: "700",
-                color: colors.text,
+                color: colors.primaryBright,
                 lineHeight: 1.1,
                 letterSpacing: "-0.02em",
                 marginBottom: "24px",
@@ -116,13 +139,7 @@ export async function generateOGImage() {
           h(
             "p",
             {
-              style: {
-                fontSize: "24px",
-                color: colors.textMuted,
-                lineHeight: 1.5,
-                maxWidth: "700px",
-                whiteSpace: "nowrap",
-              },
+              style: { fontSize: "24px", color: colors.text, lineHeight: 1.5, maxWidth: "700px", whiteSpace: "nowrap" },
             },
             "Software Engineer & Writer with a passion for learning.",
           ),
@@ -174,6 +191,6 @@ export async function generateOGImage() {
         ),
       ),
     ),
-    { width: 1200, height: 630, format: "png" },
+    { width: 1200, height: 630, format: "png", fonts: await fonts },
   );
 }

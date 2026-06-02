@@ -1,12 +1,32 @@
 @import "tailwindcss";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/700.css";
-@import "@fontsource/jetbrains-mono/400-italic.css";
-@import "@fontsource/jetbrains-mono/700-italic.css";
 @plugin "@egoist/tailwindcss-icons";
 
+@font-face {
+  font-family: "0xProto";
+  src: url("/fonts/0xProto/0xProto-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "0xProto";
+  src: url("/fonts/0xProto/0xProto-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "0xProto";
+  src: url("/fonts/0xProto/0xProto-Italic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
-  --font-mono: "JetBrains Mono", "SF Mono", Monaco, Consolas, monospace;
+  --font-mono: "0xProto", "SF Mono", Monaco, Consolas, monospace;
 
   --color-terminal-bg: #0a0a0a;
   --color-terminal-bg-secondary: #111111;
