@@ -22,6 +22,10 @@ const protoFontBaseUrl = new URL("../../../public/fonts/0xProto/", import.meta.u
 const recursiveFontBaseUrl = new URL("../../../public/fonts/Recursive/", import.meta.url);
 const atkinsonFontBaseUrl = new URL("../../../public/fonts/AtkinsonHyperlegibleNext/", import.meta.url);
 
+const backgroundImage = readFile(new URL("src/integrations/og-images/bliss.jpg", `file://${process.cwd()}/`)).then(
+  (data) => `data:image/jpeg;base64,${data.toString("base64")}`,
+);
+
 const fonts = Promise.all([
   readFile(new URL("0xProto-Regular.ttf", protoFontBaseUrl)).then((data) => {
     return { name: "0xProto", data, weight: 400, style: "normal" as const };
@@ -57,6 +61,11 @@ export async function generateOGImage() {
           overflow: "hidden",
         },
       },
+      h("img", {
+        src: await backgroundImage,
+        style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" },
+      }),
+      h("div", { style: { position: "absolute", inset: 0, backgroundColor: "rgba(10, 10, 10, 0.25)" } }),
       h(
         "div",
         {
@@ -64,8 +73,10 @@ export async function generateOGImage() {
             display: "flex",
             flexDirection: "column",
             flex: 1,
-            margin: "40px",
-            border: `2px solid ${colors.border}`,
+            position: "relative",
+            zIndex: 1,
+            margin: "60px",
+            border: `2px solid ${colors.primaryBright}`,
             borderRadius: "12px",
             overflow: "hidden",
             backgroundColor: colors.bg,
