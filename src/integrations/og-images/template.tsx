@@ -18,27 +18,26 @@ const colors = {
 };
 
 const h = React.createElement;
+const protoFontBaseUrl = new URL("../../../public/fonts/0xProto/", import.meta.url);
+const recursiveFontBaseUrl = new URL("../../../public/fonts/Recursive/", import.meta.url);
+const atkinsonFontBaseUrl = new URL("../../../public/fonts/AtkinsonHyperlegibleNext/", import.meta.url);
 
-const fontBaseUrl = new URL("../../../public/fonts/0xProto/", import.meta.url);
 const fonts = Promise.all([
-  readFile(new URL("0xProto-Regular.ttf", fontBaseUrl)).then((data) => ({
-    name: "0xProto",
-    data,
-    weight: 400,
-    style: "normal" as const,
-  })),
-  readFile(new URL("0xProto-Bold.ttf", fontBaseUrl)).then((data) => ({
-    name: "0xProto",
-    data,
-    weight: 700,
-    style: "normal" as const,
-  })),
-  readFile(new URL("0xProto-Italic.ttf", fontBaseUrl)).then((data) => ({
-    name: "0xProto",
-    data,
-    weight: 400,
-    style: "italic" as const,
-  })),
+  readFile(new URL("0xProto-Regular.ttf", protoFontBaseUrl)).then((data) => {
+    return { name: "0xProto", data, weight: 400, style: "normal" as const };
+  }),
+  readFile(new URL("0xProto-Bold.ttf", protoFontBaseUrl)).then((data) => {
+    return { name: "0xProto", data, weight: 700, style: "normal" as const };
+  }),
+  readFile(new URL("0xProto-Italic.ttf", protoFontBaseUrl)).then((data) => {
+    return { name: "0xProto", data, weight: 400, style: "italic" as const };
+  }),
+  readFile(new URL("recursive-latin-full-normal.woff2", recursiveFontBaseUrl)).then((data) => {
+    return { name: "Recursive Variable", data, weight: 400, style: "normal" as const };
+  }),
+  readFile(new URL("atkinson-hyperlegible-next-latin-wght-normal.woff2", atkinsonFontBaseUrl)).then((data) => {
+    return { name: "Atkinson Hyperlegible Next Variable", data, weight: 700, style: "normal" as const };
+  }),
 ]);
 
 export async function generateOGImage() {
@@ -52,7 +51,8 @@ export async function generateOGImage() {
           display: "flex",
           flexDirection: "column",
           backgroundColor: colors.primary,
-          fontFamily: '"0xProto", "SF Mono", monospace',
+          fontFamily: '"Recursive Variable", system-ui, sans-serif',
+          fontVariationSettings: '"CASL" 0.2, "MONO" 0.05',
           position: "relative",
           overflow: "hidden",
         },
@@ -81,6 +81,7 @@ export async function generateOGImage() {
               backgroundColor: colors.bgSecondary,
               borderBottom: `1px solid ${colors.border}`,
               padding: "16px 24px",
+              fontWeight: "500",
             },
           },
           h(
@@ -100,12 +101,12 @@ export async function generateOGImage() {
               }),
             ),
             h("div", { style: { width: "1px", height: "16px", backgroundColor: colors.border, marginLeft: "8px" } }),
-            h("span", { style: { color: colors.primary, fontSize: "14px" } }, "Desert Thunder"),
+            h("span", { style: { color: colors.text, fontSize: "20px" } }, "Desert Thunder"),
           ),
           h(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "8px" } },
-            h("span", { style: { color: colors.textMuted, fontSize: "13px" } }, "Austin, TX"),
+            h("span", { style: { color: colors.text, fontSize: "18px" } }, "Austin, TX"),
           ),
         ),
         h(
@@ -116,6 +117,8 @@ export async function generateOGImage() {
               display: "flex",
               flexDirection: "column",
               backgroundColor: colors.bg,
+              fontFamily: '"0xProto", "SF Mono", monospace',
+              fontVariationSettings: "normal",
               padding: "48px",
               justifyContent: "center",
               maxWidth: "800px",
@@ -125,6 +128,8 @@ export async function generateOGImage() {
             "h1",
             {
               style: {
+                fontFamily: '"Recursive Variable", system-ui, sans-serif',
+                fontVariationSettings: '"CASL" 0.2, "MONO" 0.05',
                 fontSize: "56px",
                 fontWeight: "700",
                 color: colors.primaryBright,
@@ -154,8 +159,9 @@ export async function generateOGImage() {
               backgroundColor: colors.bgSecondary,
               borderTop: `1px solid ${colors.border}`,
               padding: "12px 24px",
-              fontSize: "12px",
-              color: colors.textMuted,
+              fontSize: "17px",
+              fontWeight: "500",
+              color: colors.text,
             },
           },
           h(

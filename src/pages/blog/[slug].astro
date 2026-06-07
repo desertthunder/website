@@ -51,7 +51,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     </div>
   </div>
 
-  <article class="leaflet-content prose prose-invert max-w-none text-sm sm:text-base" set:html={contentHtml} />
+  <article class="leaflet-content prose prose-invert max-w-none text-sm sm:text-base font-mono" set:html={contentHtml} />
 
   <div class="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-terminal-border">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -82,7 +82,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   @reference "../../styles/styles.css";
 
   .leaflet-content {
-    @apply text-terminal-text;
+    @apply text-terminal-text font-mono;
   }
 
   .leaflet-content :global(h1) {
@@ -126,7 +126,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(code) {
-    @apply bg-terminal-bg-tertiary text-terminal-primary px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm;
+    @apply bg-terminal-bg-tertiary text-terminal-primary px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono;
   }
 
   .leaflet-content :global(pre) {
@@ -239,7 +239,7 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   }
 
   .leaflet-content :global(.leaflet-button) {
-    @apply inline-block px-3 sm:px-4 py-1.5 sm:py-2 border border-terminal-primary text-terminal-primary rounded text-xs sm:text-sm font-mono mb-3 sm:mb-4;
+    @apply inline-block px-3 sm:px-4 py-1.5 sm:py-2 border border-terminal-primary text-terminal-primary rounded text-xs sm:text-sm font-chrome mb-3 sm:mb-4;
   }
 
   .leaflet-content :global(.leaflet-button:hover) {
