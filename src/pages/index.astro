@@ -1,31 +1,26 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
+import { getLastPlayedTrack } from "$/lib/lastfm";
 
 const allPosts = await getCollection("blog");
-const posts: CollectionEntry<"blog">[] = allPosts
-  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
-
-const allProjects = await getCollection("projects");
-const featuredProjects: CollectionEntry<"projects">[] = allProjects
-  .filter((project: CollectionEntry<"projects">) => project.data.featured)
-  .sort(
-    (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => b.data.date.getTime() - a.data.date.getTime(),
-  );
+const lastPlayedTrack = await getLastPlayedTrack("browais");
 ---
 
-<TerminalLayout title="home" description="Owais Jamil" currentPath="/">
+<TerminalLayout title="home" description="Owais Jamil" showTitle={false} currentPath="/">
   <section class="mb-8 sm:mb-12">
     <div class="border border-terminal-border rounded-lg p-4 sm:p-6 bg-terminal-bg-secondary">
       <div class="flex items-start gap-3 sm:gap-4 mb-4">
         <span class="flex items-center shrink-0">
           <i class="i-ri-user-3-line w-10 h-10 sm:w-12 sm:h-12 text-terminal-primary"></i>
         </span>
-        <div class="min-w-0 flex-1">
+        <div class="min-w-0 flex-1 max-w-3/4 md:max-w-2/3 flex flex-col gap-2">
           <h2 class="text-lg sm:text-xl font-bold text-terminal-text mb-1">{"\u003e whoami"}</h2>
-          <p class="text-terminal-text/70 text-sm sm:text-base">
-            I'm Owais and I'm a software engineer & writer with a passion for learning.
+          <p class="text-terminal-text/70 text-lg sm:text-xl">Hello!</p>
+          <p class="text-terminal-text/70 text-lg">I'm Owais. Thanks for checking out my personal website & blog.</p>
+          <p class="text-terminal-text/70 text-lg">
+            Professionally I've been a software engineer working primarily on the web. More recently I've been working
+            on developer tools, ATProto, and mobile apps with Flutter.
           </p>
         </div>
       </div>
@@ -69,110 +64,68 @@ const featuredProjects: CollectionEntry<"projects">[] = allProjects
       <span>SYSTEM STATS</span>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       <div class="border border-terminal-border rounded p-3 sm:p-4">
-        <div class="text-terminal-text-dim text-xs mb-1">Uptime</div>
+        <div class="text-terminal-text text-sm font-heading mb-1">Uptime</div>
         <div class="text-terminal-primary text-xl sm:text-2xl font-bold">7+ years</div>
         <div class="text-terminal-text-muted text-xs">Building software</div>
       </div>
 
       <div class="border border-terminal-border rounded p-3 sm:p-4">
-        <div class="text-terminal-text-dim text-xs mb-1">Projects</div>
-        <div class="text-terminal-secondary text-xl sm:text-2xl font-bold">{featuredProjects.length}</div>
-        <div class="text-terminal-text-muted text-xs">Open source</div>
+        <div class="text-terminal-text text-sm font-chrome mb-1">Writing</div>
+        <div class="text-terminal-secondary text-xl sm:text-2xl font-bold">{allPosts.length}</div>
+        <div class="text-terminal-text-muted text-xs">
+          <a href="blog" class="inline-flex items-center gap-1 hover:underline terminal-link">
+            <span>View all</span>
+            <i class="i-ri-arrow-right-s-line w-4 h-4"></i>
+          </a>
+        </div>
       </div>
 
       <div class="border border-terminal-border rounded p-3 sm:p-4 sm:col-span-2 lg:col-span-1">
-        <div class="text-terminal-text-dim text-xs mb-1">Location</div>
+        <div class="text-terminal-text text-sm font-heading mb-1">Location</div>
         <div class="text-terminal-success text-xl sm:text-2xl font-bold">Austin, TX</div>
         <div class="text-terminal-text-muted text-xs">GMT-6 (US Central Time)</div>
       </div>
-    </div>
-  </section>
-
-  <section class="mb-8 sm:mb-12">
-    <div class="flex items-center justify-between mb-4">
-      <div class="text-terminal-text-muted text-sm flex items-center gap-2">
-        <span class="flex items-center">
-          <i class="i-ri-article-line w-4 h-4"></i>
-        </span>
-        <span>RECENT POSTS</span>
-      </div>
-      <a
-        href="/blog"
-        class="text-terminal-primary text-sm terminal-link flex items-center gap-1 min-h-11 px-2 -mr-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
-        <span>view all</span>
-        <span class="flex items-center">
-          <i class="i-ri-arrow-right-line w-4 h-4"></i>
-        </span>
-      </a>
-    </div>
-
-    <div class="space-y-3">
-      {
-        posts.map((post) => (
-          <a
-            href={`/blog/${post.id}`}
-            class="block border border-terminal-border rounded p-3 sm:p-4 hover:border-terminal-primary transition-colors terminal-link">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex-1 min-w-0">
-                <h3 class="text-terminal-text font-bold mb-1 text-sm sm:text-base truncate">{post.data.title}</h3>
-                {post.data.description && (
-                  <p class="text-terminal-text-muted text-xs sm:text-sm line-clamp-2">{post.data.description}</p>
-                )}
-              </div>
-              <span class="text-terminal-text-dim text-xs whitespace-nowrap shrink-0">
-                {post.data.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-              </span>
-            </div>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <section>
-    <div class="flex items-center justify-between mb-4">
-      <div class="text-terminal-text-muted text-sm flex items-center gap-2">
-        <span class="flex items-center">
-          <i class="i-ri-code-box-line w-4 h-4"></i>
-        </span>
-        <span>FEATURED PROJECTS</span>
-      </div>
-      <a
-        href="/projects"
-        class="text-terminal-primary text-sm terminal-link flex items-center gap-1 min-h-11 px-2 -mr-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
-        <span>view all</span>
-        <span class="flex items-center">
-          <i class="i-ri-arrow-right-line w-4 h-4"></i>
-        </span>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-      {
-        featuredProjects.map((project) => (
-          <div class="border border-terminal-border rounded p-3 sm:p-4">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="flex items-center shrink-0">
-                <i class="i-ri-folder-3-line w-5 h-5 text-terminal-primary" />
-              </span>
-              <span class="font-bold text-terminal-text text-sm sm:text-base truncate">{project.data.title}</span>
-              <span class="ml-auto flex items-center shrink-0">
-                <i class="i-ri-circle-fill w-2 h-2 text-terminal-success" />
-              </span>
-            </div>
-            <p class="text-terminal-text-muted text-xs sm:text-sm mb-3 line-clamp-2">{project.data.description}</p>
-            <div class="flex flex-wrap gap-1">
-              {project.data.tech.slice(0, 3).map((tech) => (
-                <span class="text-[10px] sm:text-xs text-terminal-text-dim bg-terminal-bg-tertiary px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
-                  {tech}
+      <div class="border border-terminal-border rounded p-3 sm:p-4 sm:col-span-2 lg:col-span-1">
+        <div class="text-terminal-text text-sm font-chrome mb-2 flex items-center gap-1.5">
+          <i class="i-ri-music-2-line w-4 h-4"></i>
+          <span>{lastPlayedTrack?.nowPlaying ? "Now Playing" : "Last Played"}</span>
+        </div>
+        {
+          lastPlayedTrack ? (
+            <a
+              href={lastPlayedTrack.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex items-center gap-3 min-w-0 rounded -m-1 p-1 hover:bg-terminal-bg-tertiary/50 transition-colors">
+              {lastPlayedTrack.imageUrl ? (
+                <img
+                  src={lastPlayedTrack.imageUrl}
+                  alt=""
+                  class="w-10 h-10 rounded border border-terminal-border object-cover shrink-0"
+                  loading="lazy"
+                />
+              ) : (
+                <span class="w-10 h-10 rounded border border-terminal-border bg-terminal-bg-secondary flex items-center justify-center shrink-0">
+                  <i class="i-ri-disc-line w-5 h-5 text-terminal-warning" />
                 </span>
-              ))}
-            </div>
-          </div>
-        ))
-      }
+              )}
+              <span class="min-w-0">
+                <span class="block text-terminal-warning text-sm sm:text-base font-bold truncate group-hover:underline">
+                  {lastPlayedTrack.name}
+                </span>
+                <span class="block text-terminal-text-muted text-xs truncate">{lastPlayedTrack.artist}</span>
+              </span>
+            </a>
+          ) : (
+            <>
+              <div class="text-terminal-warning text-xl sm:text-2xl font-bold">—</div>
+              <div class="text-terminal-text-muted text-xs">Last.fm unavailable</div>
+            </>
+          )
+        }
+      </div>
     </div>
   </section>
 </TerminalLayout>

@@ -206,16 +206,14 @@ const externalLinks = [
             </div>
 
             {
-              showTitle && (
+              showTitle && description && (
                 <div class="mb-6 sm:mb-8">
-                  <h1 class="text-xl sm:text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3 uppercase">
-                    {title}
+                  <h1 class="text-xl sm:text-2xl font-bold text-terminal-text mb-2 flex items-center gap-3">
+                    {description}
                   </h1>
-                  {description && <p class="text-terminal-text-muted text-sm sm:text-base">{description}</p>}
                 </div>
               )
             }
-
             <slot />
           </div>
         </main>
