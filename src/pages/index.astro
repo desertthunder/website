@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
 import { getLastPlayedTrack } from "$/lib/lastfm";
+import { Image } from "astro:assets";
 
 const allPosts = await getCollection("blog");
 const lastPlayedTrack = await getLastPlayedTrack("browais");
@@ -17,11 +18,13 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
         <div class="min-w-0 flex-1 max-w-3/4 md:max-w-2/3 flex flex-col gap-2">
           <h2 class="text-lg sm:text-xl font-bold text-terminal-text mb-1">{"\u003e whoami"}</h2>
           <p class="text-terminal-text/70 text-lg sm:text-xl">Hello!</p>
-          <p class="text-terminal-text/70 text-lg">I'm Owais. Thanks for checking out my personal website & blog.</p>
+          <p class="text-terminal-text/70 text-lg">I'm Owais, a software engineer based out of Austin, TX.</p>
+          <p class="text-terminal-text/70 text-lg">Thanks for checking out my personal website & blog.</p>
           <p class="text-terminal-text/70 text-lg">
-            Professionally I've been a software engineer working primarily on the web. More recently I've been working
-            on developer tools, ATProto, and mobile apps with Flutter.
+            Professionally I have a lot of experience building scalable web applications and systems. I have a deep
+            passion for learning new technologies and sharing my knowledge through writing and open source.
           </p>
+          <p class="text-terminal-text/70 text-lg"></p>
         </div>
       </div>
 
@@ -73,7 +76,7 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
 
       <div class="border border-terminal-border rounded p-3 sm:p-4">
         <div class="text-terminal-text text-sm font-chrome mb-1">Writing</div>
-        <div class="text-terminal-secondary text-xl sm:text-2xl font-bold">{allPosts.length}</div>
+        <div class="text-terminal-secondary text-xl sm:text-2xl font-bold">{allPosts.length} Posts</div>
         <div class="text-terminal-text-muted text-xs">
           <a href="blog" class="inline-flex items-center gap-1 hover:underline terminal-link">
             <span>View all</span>
@@ -100,11 +103,13 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
               rel="noopener noreferrer"
               class="group flex items-center gap-3 min-w-0 rounded -m-1 p-1 hover:bg-terminal-bg-tertiary/50 transition-colors">
               {lastPlayedTrack.imageUrl ? (
-                <img
+                <Image
                   src={lastPlayedTrack.imageUrl}
-                  alt=""
+                  alt={`last played track: ${lastPlayedTrack.name} by ${lastPlayedTrack.artist}`}
                   class="w-10 h-10 rounded border border-terminal-border object-cover shrink-0"
                   loading="lazy"
+                  width="40"
+                  height="40"
                 />
               ) : (
                 <span class="w-10 h-10 rounded border border-terminal-border bg-terminal-bg-secondary flex items-center justify-center shrink-0">
