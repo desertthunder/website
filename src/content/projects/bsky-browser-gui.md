@@ -1,7 +1,7 @@
 ---
 title: Bluesky Browser (GUI)
 description: >
-    A desktop app for searching your Bluesky bookmarks and likes, built with Go and Wails.
+  A desktop app for searching your Bluesky bookmarks and likes, built with Go and Wails.
 repo: https://github.com/desertthunder/bsky-browser-gui
 status: Pre-release (Active Development)
 tech: [Go, Wails v2, SQLite, FTS5]

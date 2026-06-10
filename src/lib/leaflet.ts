@@ -245,10 +245,7 @@ type PublicationRecord = {
   cid: string;
   rkey: string;
   siteUri: string;
-  value: {
-    $type: "site.standard.publication";
-    url: string;
-  };
+  value: { $type: "site.standard.publication"; url: string };
 };
 
 const DEFAULT_SERVICE = "https://bsky.social";

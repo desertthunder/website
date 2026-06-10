@@ -1,7 +1,7 @@
 ---
 title: Bluesky Browser (CLI)
 description: >
-    A Golang CLI that lets you search, browse, and manage your Bluesky saved/bookmarked and liked posts offline via SQLite FTS5.
+  A Golang CLI that lets you search, browse, and manage your Bluesky saved/bookmarked and liked posts offline via SQLite FTS5.
 repo: https://github.com/desertthunder/bsky-browser
 status: Released (Mature)
 tech: [Go, SQLite, FTS5, Cobra, Lipgloss]

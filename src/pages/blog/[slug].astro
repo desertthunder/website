@@ -51,7 +51,10 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
     </div>
   </div>
 
-  <article class="leaflet-content prose prose-invert max-w-none text-sm sm:text-base font-mono" set:html={contentHtml} />
+  <article
+    class="leaflet-content prose prose-invert max-w-none text-sm sm:text-base font-mono"
+    set:html={contentHtml}
+  />
 
   <div class="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-terminal-border">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
