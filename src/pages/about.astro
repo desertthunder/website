@@ -1,0 +1,127 @@
+---
+import TerminalLayout from "$/components/TerminalLayout.astro";
+import { getBuildInfo } from "$/lib/build-info";
+
+const buildInfo = getBuildInfo();
+
+const stackItems = [
+  { label: "Framework", value: "Astro" },
+  { label: "Styling", value: "Tailwind" },
+  { label: "Hosting", value: "Cloudflare" },
+  { label: "Source", value: "desertthunder/website", href: buildInfo.repo },
+];
+
+const typeItems = [
+  { label: "Monospace/Code", value: "0xProto" },
+  { label: "Chrome", value: "Recursive" },
+  { label: "Headings", value: "Atkinson Hyperlegible Next" },
+];
+
+const buildItems = [
+  { label: "ver", value: `v${buildInfo.version}` },
+  { label: "commit", value: buildInfo.shortCommitHash },
+  { label: "built_at", value: buildInfo.buildTime },
+];
+
+const commitLink = (commit: string) => `https://github.com/desertthunder/website/commit/${commit}`;
+---
+
+<TerminalLayout title="about" description="About this site" currentPath="/about">
+  <div class="space-y-6">
+    <section class="border border-terminal-border rounded-lg bg-terminal-bg-secondary overflow-hidden">
+      <div class="border-b border-terminal-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+        <h2 class="text-terminal-primary font-bold flex items-center gap-2">
+          <i class="i-ri-information-line w-4 h-4"></i>
+          <span>Blurb</span>
+        </h2>
+        <span class="text-xs text-terminal-text-dim">/usr/share/site-notes</span>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-terminal-text/80 leading-relaxed">
+        <p>
+          The personal website design borrows from shells, and modal text editors, made to be a little sandbox for
+          goofiness and experimentation.
+        </p>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <section class="border border-terminal-border rounded-lg bg-terminal-bg-secondary">
+        <div class="border-b border-terminal-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <h2 class="text-terminal-secondary font-bold flex items-center gap-2">
+            <i class="i-ri-stack-line w-4 h-4"></i>
+            <span>Stack</span>
+          </h2>
+        </div>
+        <dl class="p-4 sm:p-6 space-y-2 text-sm">
+          {
+            stackItems.map((item) => (
+              <div class="grid grid-cols-[7rem_1fr] gap-3 border-b border-terminal-border/60 pb-2 last:border-0 last:pb-0">
+                <dt class="text-terminal-text-dim font-sans">{item.label}</dt>
+                <dd class="text-terminal-text-muted wrap-break-word">
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="terminal-link text-terminal-primary">
+                      {item.value}
+                    </a>
+                  ) : (
+                    item.value
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="border border-terminal-border rounded-lg bg-terminal-bg-secondary">
+        <div class="border-b border-terminal-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <h2 class="text-terminal-secondary font-bold flex items-center gap-2">
+            <i class="i-ri-font-size-2 w-4 h-4"></i>
+            <span>Typography</span>
+          </h2>
+        </div>
+        <dl class="p-4 sm:p-6 space-y-2 text-sm">
+          {
+            typeItems.map((item) => (
+              <div class="grid grid-cols-[7rem_1fr] gap-3 border-b border-terminal-border/60 pb-2 last:border-0 last:pb-0">
+                <dt class="text-terminal-text-dim font-sans">{item.label}</dt>
+                <dd class="text-terminal-text-muted">{item.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+    </div>
+
+    <section class="border border-terminal-border rounded-lg bg-terminal-bg-secondary overflow-hidden">
+      <div class="border-b border-terminal-border px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+        <h2 class="text-terminal-warning font-bold flex items-center gap-2">
+          <i class="i-ri-git-commit-line w-4 h-4"></i>
+          <span class="uppercase">build</span>
+        </h2>
+        <span class="text-xs text-terminal-text-dim">readonly</span>
+      </div>
+
+      <dl class="p-4 sm:p-6 grid grid-cols-1 gap-3 text-sm">
+        {
+          buildItems.map((item) => (
+            <div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-4">
+              <dt class="text-terminal-text-dim">{item.label}</dt>
+              {item.label === "commit" ? (
+                <a class="terminal-link" href={commitLink(item.value)}>
+                  {item.value}
+                </a>
+              ) : (
+                <dd class="text-terminal-text font-mono break-all">{item.value}</dd>
+              )}
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+  </div>
+</TerminalLayout>

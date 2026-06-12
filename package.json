@@ -1,7 +1,11 @@
 {
-  "name": "personal-redesign",
+  "name": "desertthunder-dev",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/desertthunder/website"
+  },
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22.12.0"
