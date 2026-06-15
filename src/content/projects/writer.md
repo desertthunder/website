@@ -11,11 +11,16 @@ date: 2026-03-15
 featured: true
 ---
 
-Commonplace is a local-first desktop markdown editor that keeps your documents in plain folders you choose, not locked behind a proprietary database or cloud service. It pairs a React frontend with a multi-crate Rust backend to deliver a fast, native writing experience with professional export options.
+Commonplace is a local-first desktop markdown editor that keeps your documents on your filesystem.
+It pairs a React frontend with a multi-crate Rust backend to deliver a fast, native writing experience
+with professional export options.
 
 ## Why I Built This
 
-Most markdown editors either live in the browser, rely on cloud sync, or lack the polish of a native app. I wanted something that treats local folders as the source of truth, supports focused writing sessions, and can export to PDF, DOCX, and plaintext without leaving the app. Commonplace fills that gap with a Tauri-powered desktop app that feels lightweight but packs real functionality.
+Most markdown editors either live in the browser, rely on cloud sync, or lack the polish of a native app.
+I wanted something that treats the filesystem as the source of truth, supports focused writing sessions,
+and can export to PDF, DOCX, and plaintext. Commonplace aims to remedy that as a Tauri-powered desktop
+app that feels lightweight but packs powerful functionality.
 
 ## Features
 
@@ -36,7 +41,8 @@ Commonplace is organized as a Rust workspace with three crates behind the Tauri 
 - **commonplace-markdown** — rendering pipelines (comrak for parsing, docx-rs for DOCX)
 - **commonplace-store** — SQLite-backed persistence and indexed search
 
-The frontend uses Zustand for state management, a selector layer to decouple components from the store shape, and a dedicated `ports/` layer for all Tauri command interaction.
+The frontend uses Zustand for state management, a selector layer to decouple components from the store
+shape, and a dedicated `ports/` layer for all Tauri command interaction.
 
 ## Planned Features
 
