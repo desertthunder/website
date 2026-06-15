@@ -3,7 +3,7 @@ title: Lantern
 description: magical markdown slides
 repo: https://tangled.org/desertthunder.dev/lantern
 link: https://tangled.org/desertthunder.dev/lantern
-status: Completed
+status: completed
 tech: [Rust, Ratatui, Markdown]
 tags: [tui]
 date: 2026-03-14

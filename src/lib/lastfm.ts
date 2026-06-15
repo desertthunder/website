@@ -1,5 +1,8 @@
+import { censorProfanity } from "./clean-utils";
+
 const BASE_URL = "https://ws.audioscrobbler.com/2.0/";
 
+// TODO: need a way to censor names as needed
 export type LastFMRecentTrack = {
   name: string;
   artist: string;
@@ -28,11 +31,13 @@ const getApiKey = () => import.meta.env.LASTFM_API_KEY;
 
 function normalizeTrack(track: LastFMTrackResponse): LastFMRecentTrack | undefined {
   if (!track.name || !track.artist?.["#text"]) return undefined;
-
+  const name = censorProfanity(track.name);
+  const artist = censorProfanity(track.artist?.["#text"]);
+  const album = track.album?.["#text"] ? censorProfanity(track.album?.["#text"]) : undefined;
   return {
-    name: track.name,
-    artist: track.artist["#text"],
-    album: track.album?.["#text"] || undefined,
+    name,
+    artist,
+    album,
     url: track.url,
     imageUrl: track.image
       ?.slice()

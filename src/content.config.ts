@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { leafletLoader } from "./lib/content-loader";
+import { PROJECT_STATUS_KEYS } from "./lib/project-status";
 
 const blogCollection = defineCollection({
   loader: leafletLoader("desertthunder.dev"),
@@ -35,7 +36,7 @@ const projectsCollection = defineCollection({
     description: z.string(),
     repo: z.url(),
     link: z.optional(z.url()),
-    status: z.string(),
+    status: z.enum(PROJECT_STATUS_KEYS),
     tech: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     date: z.coerce.date(),

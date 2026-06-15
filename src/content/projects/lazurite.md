@@ -4,7 +4,7 @@ description: >
   A cross-platform mobile client for Bluesky and Blacksky with offline-aware feeds, 
   local semantic search, and AT Protocol tools.
 repo: https://github.com/stormlightlabs/lazurite
-status: Pre-release (Active Development)
+status: pre_release
 tech: [Dart, Flutter, BLoC, Drift, SQLite, ObjectBox, AT Protocol]
 tags: [mobile, social, atproto, search]
 date: 2026-01-04

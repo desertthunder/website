@@ -2,7 +2,7 @@
 title: Markdownz
 description: A CommonMark-compatible Markdown engine for Zig with CommonMark, GFM, and Obsidian dialect support.
 repo: https://codeberg.org/desertthunder/markdownz
-status: Pre-release (Active Development)
+status: paused
 tech: [Zig, Markdown]
 tags: [markdown, parser, zig, developer-tools]
 date: 2026-06-15

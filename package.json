@@ -30,6 +30,7 @@
     "astro": "6.0.4",
     "marked": "17.0.4",
     "minisearch": "7.2.0",
+    "obscenity": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwindcss": "4.3.0",

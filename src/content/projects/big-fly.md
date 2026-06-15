@@ -5,7 +5,7 @@ description: >
   Flutter clients,  and for Lahman and Retrosheet data.
 repo: https://github.com/stormlightlabs/baseball
 link: https://bigfly.tech
-status: Pre-release (Active Development)
+status: paused
 tech: [Go, PostgreSQL, Redis, SvelteKit, Flutter, Retrosheet, Lahman]
 tags: [baseball, api, data, analytics]
 date: 2025-12-10

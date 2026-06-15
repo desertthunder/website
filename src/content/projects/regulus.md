@@ -2,7 +2,7 @@
 title: Regulus
 description: An experimental Gleam to WebAssembly compiler written in Rust.
 repo: https://github.com/desertthunder/regulus
-status: Experimental (Active Development)
+status: experimental
 tech: [Rust, Gleam, WebAssembly, Tree-sitter]
 tags: [compiler, webassembly, gleam, rust]
 date: 2026-06-15

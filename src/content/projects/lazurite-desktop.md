@@ -4,7 +4,7 @@ description: >
   A desktop Bluesky and AT Protocol power tool with multicolumn feeds, saved-post search, and a 
   local PDS explorer.
 repo: https://github.com/stormlightlabs/lazurite-desktop
-status: Pre-release (Active Development)
+status: paused
 tech: [Rust, Tauri, Solid.js, TypeScript, SQLite, Tailwind, AT Protocol]
 tags: [desktop, social, atproto, search]
 date: 2026-03-29

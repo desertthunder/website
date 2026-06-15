@@ -8,6 +8,10 @@ Built with Astro (& React/Takumi-rs for the above OG-image) and deployed to Clou
 
 Designed by [me](https://linkedin.com/in/owais-jamil).
 
+## Resume
+
+You can view & download my resume at my [resume site](https://resume.desertthunder.dev) (also built with Astro and deployed to Cloudflare Pages).
+
 ## Integrations
 
 ### AT Protocol / Leaflet Integration
@@ -58,9 +62,23 @@ site.standard.document
 The last.fm integration is a build-time fetch of recent tracks from the last.fm API and rendered on the home page. You can learn more by looking at the [code](./src/lib/lastfm.ts)
 or reading the last.fm [api docs](https://www.last.fm/api/show/user.getRecentTracks).
 
-## Resume
+## Project states
 
-You can view & download my resume at my [resume site](https://resume.desertthunder.dev) (also built with Astro and deployed to Cloudflare Pages).
+Projects use a standardized `status` frontmatter field.
+
+Valid states are defined in the `project-status` module and enforced by the site's
+content collection schema.
+
+| State          | Meaning                                                               |
+| -------------- | --------------------------------------------------------------------- |
+| `active`       | Maintained, usable, and currently active.                             |
+| `pre_release`  | In active development but not yet considered stable or final.         |
+| `experimental` | Exploratory work where the interface, scope, or viability may change. |
+| `paused`       | Not currently being worked on, but not retired.                       |
+| `completed`    | Finished or feature-complete for its intended scope.                  |
+| `archived`     | Retired, no longer maintained, or kept for reference.                 |
+
+The UI treats `active`, `pre_release`, and `experimental` as "in progress."
 
 ## Credits
 

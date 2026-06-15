@@ -4,7 +4,7 @@ description: >
   A language server protocol implementation, static analyzer, and Hindley-Milner-inspired 
   type system for Python.
 repo: https://github.com/stormlightlabs/beacon
-status: In Development
+status: pre_release
 tech: [Rust, LSP, Python, Type Inference, Static Analysis]
 tags: [language-server, developer-tools, python, rust]
 date: 2025-10-30

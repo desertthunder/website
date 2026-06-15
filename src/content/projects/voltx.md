@@ -2,7 +2,7 @@
 title: VoltX.js
 description: A lightweight, declarative alternative to component-centric UI frameworks.
 repo: https://github.com/stormlightlabs/volt
-status: Paused
+status: paused
 tech: [TypeScript, Signals, WebSockets, SSE, Hypermedia]
 tags: [frontend, library, framework]
 date: 2025-10-30

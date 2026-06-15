@@ -4,7 +4,7 @@ description: >
   A unified personal productivity CLI that combines task management, note-taking,
   and media tracking in one place.
 repo: https://tangled.org/@desertthunder.dev/noteleaf
-status: Paused
+status: paused
 tech: [Go, Charm.sh]
 tags: [productivity, cli]
 date: 2025-10-30

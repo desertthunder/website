@@ -2,7 +2,7 @@
 title: Tempest
 description: A self-hostable AT Protocol Personal Data Server built with Elixir, Phoenix, SQLite, and pure-Elixir repo primitives.
 repo: https://github.com/desertthunder/tempest
-status: Pre-release (Active Development)
+status: pre_release
 tech: [Elixir, Phoenix, SQLite, XRPC, AT Protocol, CAR, MST]
 tags: [atproto, server, elixir, infrastructure]
 date: 2026-05-08

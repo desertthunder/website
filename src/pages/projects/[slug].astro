@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
+import { PROJECT_STATUS_META } from "$/lib/project-status";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -12,12 +13,7 @@ type Props = { project: CollectionEntry<"projects"> };
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-const statusColors: Record<string, string> = {
-  "In Development": "text-terminal-warning",
-  Active: "text-terminal-success",
-  Completed: "text-terminal-secondary",
-  Archived: "text-terminal-text-dim",
-};
+const statusMeta = PROJECT_STATUS_META[project.data.status];
 ---
 
 <TerminalLayout
@@ -36,7 +32,10 @@ const statusColors: Record<string, string> = {
       <div class="min-w-0">
         <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-terminal-text mb-2">{project.data.title}</h1>
         <div class="flex items-center gap-3 text-xs sm:text-sm">
-          <span class:list={["font-medium", statusColors[project.data.status]]}>{project.data.status}</span>
+          <span class:list={["flex items-center gap-1 font-medium", statusMeta.color]}>
+            <i class:list={[statusMeta.icon, "w-3.5 h-3.5"]}></i>
+            <span>{statusMeta.label}</span>
+          </span>
           {
             project.data.featured && (
               <span class="flex items-center text-terminal-warning">

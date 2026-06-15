@@ -4,11 +4,11 @@ description: >
   A local-first desktop markdown editor built with Tauri, designed for
   distraction-free writing with multi-format export.
 repo: https://github.com/stormlightlabs/writer
-status: Paused
+status: paused
 tech: [Rust, Tauri, React, TypeScript, SQLite]
 tags: [productivity, desktop, editor]
 date: 2026-03-15
-featured: true
+featured: false
 ---
 
 Commonplace is a local-first desktop markdown editor that keeps your documents on your filesystem.

@@ -1,3 +1,23 @@
+import {
+  RegExpMatcher,
+  TextCensor,
+  englishDataset,
+  englishRecommendedTransformers,
+  keepStartCensorStrategy,
+  keepEndCensorStrategy,
+  asteriskCensorStrategy,
+} from "obscenity";
+
+const matcher = new RegExpMatcher({ ...englishDataset.build(), ...englishRecommendedTransformers });
+
+const censor = new TextCensor().setStrategy(keepStartCensorStrategy(keepEndCensorStrategy(asteriskCensorStrategy())));
+
+/** Censors profanity using obscenity. */
+export function censorProfanity(input: string): string {
+  const matches = matcher.getAllMatches(input, true);
+  return censor.applyTo(input, matches);
+}
+
 /** Strip markdown links and formatting */
 export function stripMarkdown(text: string | undefined): string {
   if (!text) return "";
