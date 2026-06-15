@@ -4,7 +4,7 @@ description: >
   A local-first desktop markdown editor built with Tauri, designed for
   distraction-free writing with multi-format export.
 repo: https://github.com/stormlightlabs/writer
-status: Pre-release (Active Development)
+status: Paused
 tech: [Rust, Tauri, React, TypeScript, SQLite]
 tags: [productivity, desktop, editor]
 date: 2026-03-15
