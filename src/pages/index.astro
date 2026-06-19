@@ -11,11 +11,45 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
 <TerminalLayout title="home" description="Owais Jamil" showTitle={false} currentPath="/">
   <section class="mb-8 sm:mb-12">
     <div class="border border-terminal-border rounded-lg p-4 sm:p-6 bg-terminal-bg-secondary">
-      <div class="flex items-start gap-3 sm:gap-4 mb-4">
-        <span class="flex items-center shrink-0">
-          <i class="i-ri-user-3-line w-10 h-10 sm:w-12 sm:h-12 text-terminal-primary"></i>
-        </span>
-        <div class="min-w-0 flex-1 max-w-3/4 md:max-w-2/3 flex flex-col gap-2">
+      <div class="flex md:flex-row flex-col-reverse items-start gap-4 sm:gap-6 mb-4">
+        <div class="flex justify-evenly items-center w-full md:w-fit md:flex-col p-4 gap-2">
+          <div class="terminal-photo-frame mt-1 w-36 lg:w-40 shrink-0">
+            <div class="terminal-photo-titlebar">
+              <span>~/me.jpg</span>
+            </div>
+            <div class="terminal-photo-screen">
+              <img src="/owais.jpg" alt="Owais Jamil" class="terminal-photo" width="360" height="360" />
+            </div>
+          </div>
+          <div class="flex flex-col md:flex-row flex-wrap gap-2 text-sm">
+            <a
+              href="https://github.com/desertthunder"
+              class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
+              <span class="flex items-center">
+                <i class="i-ri-github-line w-4 h-4"></i>
+              </span>
+              <span>github</span>
+            </a>
+
+            <a
+              href="mailto:me@desertthunder.dev"
+              class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
+              <span class="flex items-center">
+                <i class="i-ri-mail-line w-4 h-4"></i>
+              </span>
+              <span>email</span>
+            </a>
+            <a
+              href="https://resume.desertthunder.dev"
+              class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
+              <span class="flex items-center">
+                <i class="i-ri-file-pdf-2-line w-4 h-4"></i>
+              </span>
+              <span>cv</span>
+            </a>
+          </div>
+        </div>
+        <div class="min-w-0 flex-1 max-w-3xl flex flex-col gap-2">
           <h2 class="text-lg sm:text-xl font-bold text-terminal-text mb-1">{"\u003e whoami"}</h2>
           <p class="text-terminal-text/70 text-lg sm:text-xl">Hello!</p>
           <p class="text-terminal-text/70 text-lg">I'm Owais, a software engineer based out of Austin, TX.</p>
@@ -24,37 +58,7 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
             Professionally I have a lot of experience building scalable web applications and systems. I have a deep
             passion for learning new technologies and sharing my knowledge through writing and open source.
           </p>
-          <p class="text-terminal-text/70 text-lg"></p>
         </div>
-      </div>
-
-      <div class="flex flex-wrap gap-3 sm:gap-4 text-sm">
-        <a
-          href="https://github.com/desertthunder"
-          class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
-          <span class="flex items-center">
-            <i class="i-ri-github-line w-4 h-4"></i>
-          </span>
-          <span>github</span>
-        </a>
-
-        <a
-          href="https://bsky.app/profile/desertthunder.dev"
-          class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
-          <span class="flex items-center">
-            <i class="i-ri-bluesky-line w-4 h-4"></i>
-          </span>
-          <span>bluesky</span>
-        </a>
-
-        <a
-          href="mailto:me@desertthunder.dev"
-          class="flex items-center gap-2 text-terminal-primary terminal-link min-h-11 px-2 -ml-2 rounded hover:bg-terminal-bg-tertiary/50 transition-colors">
-          <span class="flex items-center">
-            <i class="i-ri-mail-line w-4 h-4"></i>
-          </span>
-          <span>email</span>
-        </a>
       </div>
     </div>
   </section>

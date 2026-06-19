@@ -215,6 +215,70 @@
     inset 0 0 10px rgba(59, 130, 246, 0.1);
 }
 
+.terminal-photo-frame {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-terminal-border) 80%, var(--color-terminal-primary));
+  border-radius: 0.25rem;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.1), transparent 45%), var(--color-terminal-bg);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.08),
+    0 14px 40px rgba(0, 0, 0, 0.32),
+    inset 0 0 22px rgba(59, 130, 246, 0.08);
+}
+
+.terminal-photo-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--color-terminal-border);
+  color: var(--color-terminal-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.terminal-photo-screen {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0 0 calc(0.5rem - 1px) calc(0.5rem - 1px);
+  background: var(--color-terminal-bg);
+}
+
+.terminal-photo-screen::before,
+.terminal-photo-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.terminal-photo-screen::before {
+  z-index: 1;
+  background:
+    repeating-linear-gradient(180deg, rgba(226, 232, 240, 0.15) 0 1px, transparent 1px 3px),
+    radial-gradient(circle at 50% 38%, transparent 0 45%, rgba(10, 10, 10, 0.36) 100%);
+  mix-blend-mode: overlay;
+}
+
+.terminal-photo-screen::after {
+  z-index: 2;
+  box-shadow:
+    inset 0 0 0 1px rgba(226, 232, 240, 0.08),
+    inset 0 0 36px rgba(6, 182, 212, 0.16),
+    inset 0 -28px 42px rgba(10, 10, 10, 0.42);
+}
+
+.terminal-photo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 43%;
+  filter: grayscale(0.72) sepia(0.04) saturate(0.42) hue-rotate(165deg) contrast(1.2) brightness(0.88);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
