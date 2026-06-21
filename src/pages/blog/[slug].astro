@@ -265,4 +265,24 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   .leaflet-content :global(del) {
     @apply text-terminal-text-dim;
   }
+
+  .leaflet-content :global(.footnote-ref) {
+    @apply text-terminal-primary text-xs;
+  }
+
+  .leaflet-content :global(.footnotes) {
+    @apply mt-8 sm:mt-10 pt-4 sm:pt-5 border-t border-terminal-border text-xs sm:text-sm text-terminal-text-muted;
+  }
+
+  .leaflet-content :global(.footnotes ol) {
+    @apply list-decimal ml-6 mb-0;
+  }
+
+  .leaflet-content :global(.footnotes li) {
+    @apply pl-1 mb-2 leading-relaxed;
+  }
+
+  .leaflet-content :global(.footnote-backref) {
+    @apply text-terminal-primary ml-1;
+  }
 </style>

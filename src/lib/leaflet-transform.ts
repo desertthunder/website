@@ -26,9 +26,18 @@ import type {
   Facet,
 } from "./leaflet";
 
-type MarkdownFootnote = { id: string; url: string; title?: string };
+type Footnote = {
+  id: string;
+  safeId: string;
+  refLabel: string;
+  contentPlaintext: string;
+  contentFacets?: Facet[];
+  url?: string;
+};
 
-type MarkdownFootnoteMap = Map<string, MarkdownFootnote>;
+type FootnoteMap = Map<string, Footnote>;
+
+type ParsedMarkdownFootnote = { id: string; url: string; title?: string };
 
 /**
  * Transforms a complete Leaflet document to HTML
@@ -41,16 +50,16 @@ export async function transformLeafletToMarkdown(document: LeafletDocument, _atU
     blocks = page.blocks || [];
   }
 
-  const footnotes = extractMarkdownFootnotes(blocks);
+  const footnotes = extractFootnotes(blocks);
   const markdown = transformBlocks(blocks, footnotes);
   const html = await marked.parse(markdown);
-  return html;
+  return html + (await renderFootnotes(footnotes));
 }
 
 /**
  * Transforms an array of blocks to markdown
  */
-function transformBlocks(blocks: BlockWrapper[], footnotes: MarkdownFootnoteMap): string {
+function transformBlocks(blocks: BlockWrapper[], footnotes: FootnoteMap): string {
   const results = blocks.map((wrapper) => {
     const block = wrapper.block;
     return transformBlock(block, footnotes);
@@ -61,7 +70,7 @@ function transformBlocks(blocks: BlockWrapper[], footnotes: MarkdownFootnoteMap)
 /**
  * Transforms a single block to markdown based on its $type
  */
-function transformBlock(block: Block, footnotes: MarkdownFootnoteMap): string {
+function transformBlock(block: Block, footnotes: FootnoteMap): string {
   switch (block.$type) {
     case "pub.leaflet.blocks.text":
       return transformTextBlock(block as TextBlock, footnotes);
@@ -102,18 +111,18 @@ function transformBlock(block: Block, footnotes: MarkdownFootnoteMap): string {
 /**
  * Transforms a text block with optional rich text facets
  */
-function transformTextBlock(block: TextBlock, footnotes: MarkdownFootnoteMap = new Map()): string {
+function transformTextBlock(block: TextBlock, footnotes: FootnoteMap = new Map()): string {
   if (isMarkdownFootnoteDefinitions(block.plaintext)) {
-    return renderMarkdownFootnotes(block.plaintext);
+    return "";
   }
 
   let text = block.plaintext;
 
   if (block.facets && block.facets.length > 0) {
-    text = applyFacets(text, block.facets);
+    text = applyFacets(text, block.facets, footnotes);
   }
 
-  return applyMarkdownFootnoteRefs(text, footnotes);
+  return applyFootnoteRefs(text, footnotes);
 }
 
 /**
@@ -122,7 +131,7 @@ function transformTextBlock(block: TextBlock, footnotes: MarkdownFootnoteMap = n
  * Sorts facets by byte start position descending to avoid
  * index shifting issues when applying multiple formats.
  */
-export function applyFacets(text: string, facets: Facet[]): string {
+export function applyFacets(text: string, facets: Facet[], footnotes: FootnoteMap = new Map()): string {
   const sorted = [...facets].sort((a, b) => b.index.byteStart - a.index.byteStart);
   let result = text;
 
@@ -162,10 +171,14 @@ export function applyFacets(text: string, facets: Facet[]): string {
           result = result.slice(0, start) + `[${slice}](${feature.atURI})` + result.slice(end);
           break;
         case "pub.leaflet.richtext.facet#footnote":
-          result =
-            result.slice(0, start) +
-            `${slice}<sup title="${escapeHtml(feature.contentPlaintext)}">[*]</sup>` +
-            result.slice(end);
+          {
+            const footnote = footnotes.get(feature.footnoteId);
+            const label = footnote ? escapeHtml(footnote.refLabel) : escapeHtml(slice || "*");
+            const marker = footnote
+              ? `<sup id="fnref-${footnote.safeId}" class="footnote-ref"><a href="#fn-${footnote.safeId}" aria-label="Footnote ${label}">${label}</a></sup>`
+              : `<sup title="${escapeHtml(feature.contentPlaintext)}" class="footnote-ref">${label}</sup>`;
+            result = result.slice(0, start) + marker + result.slice(end);
+          }
           break;
       }
     }
@@ -194,20 +207,83 @@ function escapeHtml(text: string): string {
   return text.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function extractMarkdownFootnotes(blocks: BlockWrapper[]): MarkdownFootnoteMap {
-  const footnotes: MarkdownFootnote[] = [];
+function extractFootnotes(blocks: BlockWrapper[]): FootnoteMap {
+  const footnotes: Footnote[] = [];
+  const seen = new Set<string>();
 
   for (const wrapper of blocks) {
-    const block = wrapper.block;
-    if (block.$type === "pub.leaflet.blocks.text") {
-      footnotes.push(...parseMarkdownFootnotes((block as TextBlock).plaintext));
-    }
+    collectFootnotes(wrapper.block, footnotes, seen);
   }
 
   return new Map(footnotes.map((footnote) => [footnote.id, footnote]));
 }
 
-function parseMarkdownFootnotes(text: string): MarkdownFootnote[] {
+function collectFootnotes(block: Block, footnotes: Footnote[], seen: Set<string>): void {
+  if (block.$type === "pub.leaflet.blocks.text" && isMarkdownFootnoteDefinitions((block as TextBlock).plaintext)) {
+    for (const footnote of parseMarkdownFootnotes((block as TextBlock).plaintext)) {
+      if (seen.has(footnote.id)) {
+        continue;
+      }
+
+      seen.add(footnote.id);
+      footnotes.push({
+        id: footnote.id,
+        safeId: slugifyFootnoteId(footnote.id),
+        refLabel: footnote.id,
+        contentPlaintext: footnote.title || footnote.url,
+        url: footnote.url,
+      });
+    }
+  }
+
+  const facets = getBlockFacets(block);
+  for (const facet of facets) {
+    for (const feature of facet.features) {
+      if (feature.$type !== "pub.leaflet.richtext.facet#footnote" || seen.has(feature.footnoteId)) {
+        continue;
+      }
+
+      seen.add(feature.footnoteId);
+      footnotes.push({
+        id: feature.footnoteId,
+        safeId: slugifyFootnoteId(feature.footnoteId),
+        refLabel: String(footnotes.length + 1),
+        contentPlaintext: feature.contentPlaintext,
+        contentFacets: feature.contentFacets,
+      });
+    }
+  }
+
+  if (block.$type === "pub.leaflet.blocks.unorderedList" || block.$type === "pub.leaflet.blocks.orderedList") {
+    for (const child of (block as UnorderedListBlock | OrderedListBlock).children || []) {
+      collectListItemFootnotes(child, footnotes, seen);
+    }
+  }
+}
+
+function collectListItemFootnotes(item: ListItem, footnotes: Footnote[], seen: Set<string>): void {
+  if (item.content) {
+    collectFootnotes(item.content, footnotes, seen);
+  }
+
+  for (const child of item.children || []) {
+    collectListItemFootnotes(child, footnotes, seen);
+  }
+}
+
+function getBlockFacets(block: Block): Facet[] {
+  if (
+    block.$type === "pub.leaflet.blocks.text" ||
+    block.$type === "pub.leaflet.blocks.header" ||
+    block.$type === "pub.leaflet.blocks.blockquote"
+  ) {
+    return (block as TextBlock | HeaderBlock | BlockquoteBlock).facets || [];
+  }
+
+  return [];
+}
+
+function parseMarkdownFootnotes(text: string): ParsedMarkdownFootnote[] {
   return text
     .split("\n")
     .map((line) => line.match(/^\[\^([^\]]+)\]:\s+(\S+)(?:\s+"([^"]+)")?\s*$/))
@@ -220,7 +296,7 @@ function isMarkdownFootnoteDefinitions(text: string): boolean {
   return lines.length > 0 && lines.every((line) => /^\[\^[^\]]+\]:\s+\S+/.test(line));
 }
 
-function applyMarkdownFootnoteRefs(text: string, footnotes: MarkdownFootnoteMap): string {
+function applyFootnoteRefs(text: string, footnotes: FootnoteMap): string {
   if (footnotes.size === 0) {
     return text;
   }
@@ -230,27 +306,40 @@ function applyMarkdownFootnoteRefs(text: string, footnotes: MarkdownFootnoteMap)
       return match;
     }
 
-    const safeId = slugifyFootnoteId(id);
-    return `<sup id="fnref-${safeId}" class="footnote-ref"><a href="#fn-${safeId}" aria-label="Reference ${escapeHtml(id)}">${escapeHtml(id)}</a></sup>`;
+    const footnote = footnotes.get(id);
+    if (!footnote) {
+      return match;
+    }
+
+    const label = escapeHtml(footnote.refLabel);
+    return `<sup id="fnref-${footnote.safeId}" class="footnote-ref"><a href="#fn-${footnote.safeId}" aria-label="Footnote ${label}">${label}</a></sup>`;
   });
 }
 
-function renderMarkdownFootnotes(text: string): string {
-  const footnotes = parseMarkdownFootnotes(text);
-  if (footnotes.length === 0) {
+async function renderFootnotes(footnotes: FootnoteMap): Promise<string> {
+  if (footnotes.size === 0) {
     return "";
   }
 
-  const items = footnotes
-    .map((footnote) => {
-      const safeId = slugifyFootnoteId(footnote.id);
-      const label = escapeHtml(footnote.title || footnote.url);
-      const url = escapeHtml(footnote.url);
-      return `<li id="fn-${safeId}"><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a> <a href="#fnref-${safeId}" class="footnote-backref" aria-label="Back to reference">↩</a></li>`;
-    })
-    .join("");
+  const items = await Promise.all(
+    [...footnotes.values()].map(async (footnote) => {
+      const contentHtml = await renderFootnoteContent(footnote);
+      return `<li id="fn-${footnote.safeId}">${contentHtml} <a href="#fnref-${footnote.safeId}" class="footnote-backref" aria-label="Back to reference">↩</a></li>`;
+    }),
+  );
 
-  return `<ol class="footnotes">${items}</ol>`;
+  return `<section class="footnotes" aria-label="Footnotes"><ol>${items.join("")}</ol></section>`;
+}
+
+async function renderFootnoteContent(footnote: Footnote): Promise<string> {
+  if (footnote.url) {
+    return `<a href="${escapeHtml(footnote.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(footnote.contentPlaintext)}</a>`;
+  }
+
+  const contentMarkdown = footnote.contentFacets?.length
+    ? applyFacets(footnote.contentPlaintext, footnote.contentFacets)
+    : escapeHtml(footnote.contentPlaintext);
+  return marked.parseInline(contentMarkdown);
 }
 
 function slugifyFootnoteId(id: string): string {
@@ -260,30 +349,39 @@ function slugifyFootnoteId(id: string): string {
 /**
  * Transforms header block to markdown with rich text
  */
-function transformHeaderBlock(block: HeaderBlock, footnotes: MarkdownFootnoteMap = new Map()): string {
+function transformHeaderBlock(
+  block: HeaderBlock,
+  footnotes: FootnoteMap = new Map(),
+): string {
   const hashes = "#".repeat(block.level);
   let text = block.plaintext || "";
   if (block.facets && block.facets.length > 0) {
-    text = applyFacets(text, block.facets);
+    text = applyFacets(text, block.facets, footnotes);
   }
-  return `${hashes} ${applyMarkdownFootnoteRefs(text, footnotes)}`;
+  return `${hashes} ${applyFootnoteRefs(text, footnotes)}`;
 }
 
 /**
  * Transforms blockquote to markdown with rich text
  */
-function transformBlockquoteBlock(block: BlockquoteBlock, footnotes: MarkdownFootnoteMap = new Map()): string {
+function transformBlockquoteBlock(
+  block: BlockquoteBlock,
+  footnotes: FootnoteMap = new Map(),
+): string {
   let text = block.plaintext || "";
   if (block.facets && block.facets.length > 0) {
-    text = applyFacets(text, block.facets);
+    text = applyFacets(text, block.facets, footnotes);
   }
-  return `> ${applyMarkdownFootnoteRefs(text, footnotes)}`;
+  return `> ${applyFootnoteRefs(text, footnotes)}`;
 }
 
 /**
  * Renders a list item's text content with facets applied
  */
-function renderListItemContent(item: ListItem, footnotes: MarkdownFootnoteMap = new Map()): string {
+function renderListItemContent(
+  item: ListItem,
+  footnotes: FootnoteMap = new Map(),
+): string {
   const content = item.content;
   if (!content) return "";
 
@@ -291,18 +389,18 @@ function renderListItemContent(item: ListItem, footnotes: MarkdownFootnoteMap = 
     const textBlock = content as TextBlock;
     let text = textBlock.plaintext || "";
     if (textBlock.facets && textBlock.facets.length > 0) {
-      text = applyFacets(text, textBlock.facets);
+      text = applyFacets(text, textBlock.facets, footnotes);
     }
-    return applyMarkdownFootnoteRefs(text, footnotes);
+    return applyFootnoteRefs(text, footnotes);
   }
 
   if (content.$type === "pub.leaflet.blocks.header") {
     const headerBlock = content as HeaderBlock;
     let text = headerBlock.plaintext || "";
     if (headerBlock.facets && headerBlock.facets.length > 0) {
-      text = applyFacets(text, headerBlock.facets);
+      text = applyFacets(text, headerBlock.facets, footnotes);
     }
-    return `**${applyMarkdownFootnoteRefs(text, footnotes)}**`;
+    return `**${applyFootnoteRefs(text, footnotes)}**`;
   }
 
   if (content.$type === "pub.leaflet.blocks.image") {
@@ -315,7 +413,12 @@ function renderListItemContent(item: ListItem, footnotes: MarkdownFootnoteMap = 
 /**
  * Recursively renders list items with indentation for nesting
  */
-function renderListItems(children: ListItem[], prefix: string, depth: number, footnotes: MarkdownFootnoteMap): string {
+function renderListItems(
+  children: ListItem[],
+  prefix: string,
+  depth: number,
+  footnotes: FootnoteMap,
+): string {
   const indent = "  ".repeat(depth);
   const lines: string[] = [];
 
@@ -337,7 +440,10 @@ function renderListItems(children: ListItem[], prefix: string, depth: number, fo
 /**
  * Transforms unordered list to markdown with nested children support
  */
-function transformUnorderedListBlock(block: UnorderedListBlock, footnotes: MarkdownFootnoteMap = new Map()): string {
+function transformUnorderedListBlock(
+  block: UnorderedListBlock,
+  footnotes: FootnoteMap = new Map(),
+): string {
   if (!block.children || !Array.isArray(block.children)) {
     return "";
   }
@@ -347,7 +453,10 @@ function transformUnorderedListBlock(block: UnorderedListBlock, footnotes: Markd
 /**
  * Transforms ordered list to markdown with nested children support
  */
-function transformOrderedListBlock(block: OrderedListBlock, footnotes: MarkdownFootnoteMap = new Map()): string {
+function transformOrderedListBlock(
+  block: OrderedListBlock,
+  footnotes: FootnoteMap = new Map(),
+): string {
   if (!block.children || !Array.isArray(block.children)) {
     return "";
   }
