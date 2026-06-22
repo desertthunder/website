@@ -1,5 +1,6 @@
 {
   "name": "desertthunder-dev",
+  "private": true,
   "type": "module",
   "version": "1.0.0",
   "repository": {
@@ -12,12 +13,14 @@
   },
   "scripts": {
     "astro": "astro",
+    "changeset": "changeset",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
     "format": "prettier src --write",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "version": "changeset version"
   },
   "dependencies": {
     "@astrojs/cloudflare": "13.7.0",
@@ -38,6 +41,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
+    "@changesets/cli": "^2.31.0",
     "@egoist/tailwindcss-icons": "1.9.2",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/ri": "1.2.10",

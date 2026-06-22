@@ -1,9 +1,11 @@
 ---
 import "$/styles/styles.css";
+import { getBuildInfo } from "$/lib/build-info";
 
 type Props = { title: string; description?: string; currentPath?: string; showTitle?: boolean };
 
 const { title, description = "", currentPath = "/", showTitle = true } = Astro.props;
+const buildInfo = getBuildInfo();
 
 const siteUrl = Astro.site || "https://desertthunder.dev";
 const ogImageUrl = new URL("/og.png", siteUrl).toString();
@@ -167,7 +169,7 @@ const externalLinks = [
                 target="_blank"
                 rel="noopener noreferrer">
                 <i class="i-ri-git-branch-line w-3 h-3"></i>
-                <span>main</span>
+                <span>{buildInfo.displayVersion}</span>
               </a>
             </div>
             <div class="flex items-center gap-2">
