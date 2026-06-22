@@ -349,10 +349,7 @@ function slugifyFootnoteId(id: string): string {
 /**
  * Transforms header block to markdown with rich text
  */
-function transformHeaderBlock(
-  block: HeaderBlock,
-  footnotes: FootnoteMap = new Map(),
-): string {
+function transformHeaderBlock(block: HeaderBlock, footnotes: FootnoteMap = new Map()): string {
   const hashes = "#".repeat(block.level);
   let text = block.plaintext || "";
   if (block.facets && block.facets.length > 0) {
@@ -364,10 +361,7 @@ function transformHeaderBlock(
 /**
  * Transforms blockquote to markdown with rich text
  */
-function transformBlockquoteBlock(
-  block: BlockquoteBlock,
-  footnotes: FootnoteMap = new Map(),
-): string {
+function transformBlockquoteBlock(block: BlockquoteBlock, footnotes: FootnoteMap = new Map()): string {
   let text = block.plaintext || "";
   if (block.facets && block.facets.length > 0) {
     text = applyFacets(text, block.facets, footnotes);
@@ -378,10 +372,7 @@ function transformBlockquoteBlock(
 /**
  * Renders a list item's text content with facets applied
  */
-function renderListItemContent(
-  item: ListItem,
-  footnotes: FootnoteMap = new Map(),
-): string {
+function renderListItemContent(item: ListItem, footnotes: FootnoteMap = new Map()): string {
   const content = item.content;
   if (!content) return "";
 
@@ -413,12 +404,7 @@ function renderListItemContent(
 /**
  * Recursively renders list items with indentation for nesting
  */
-function renderListItems(
-  children: ListItem[],
-  prefix: string,
-  depth: number,
-  footnotes: FootnoteMap,
-): string {
+function renderListItems(children: ListItem[], prefix: string, depth: number, footnotes: FootnoteMap): string {
   const indent = "  ".repeat(depth);
   const lines: string[] = [];
 
@@ -440,10 +426,7 @@ function renderListItems(
 /**
  * Transforms unordered list to markdown with nested children support
  */
-function transformUnorderedListBlock(
-  block: UnorderedListBlock,
-  footnotes: FootnoteMap = new Map(),
-): string {
+function transformUnorderedListBlock(block: UnorderedListBlock, footnotes: FootnoteMap = new Map()): string {
   if (!block.children || !Array.isArray(block.children)) {
     return "";
   }
@@ -453,10 +436,7 @@ function transformUnorderedListBlock(
 /**
  * Transforms ordered list to markdown with nested children support
  */
-function transformOrderedListBlock(
-  block: OrderedListBlock,
-  footnotes: FootnoteMap = new Map(),
-): string {
+function transformOrderedListBlock(block: OrderedListBlock, footnotes: FootnoteMap = new Map()): string {
   if (!block.children || !Array.isArray(block.children)) {
     return "";
   }

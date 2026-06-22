@@ -25,9 +25,9 @@ const contentHtml = await transformLeafletToMarkdown(doc, post.data.atUri);
   showTitle={false}>
   <div class="border-b border-terminal-border pb-4 sm:pb-6 mb-6 sm:mb-8">
     <div class="flex items-center gap-2 text-terminal-text-dim text-xs sm:text-sm mb-3 sm:mb-4">
-      <a href="/blog" class="terminal-link">blog</a>
-      <span>/</span>
-      <span class="truncate">{post.id}</span>
+      <a href="/blog" class="terminal-link">All Posts</a>
+      <span>|</span>
+      {post.data.description && <span class="truncate">{post.data.description}</span>}
     </div>
 
     <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-terminal-text mb-3 sm:mb-4">{post.data.title}</h1>

@@ -1,0 +1,15 @@
+---
+import TerminalLayout from "$/components/TerminalLayout.astro";
+
+const { frontmatter, url } = Astro.props;
+
+const title = frontmatter.title ?? "page";
+const description = frontmatter.description ?? "";
+const currentPath = url ?? "/";
+---
+
+<TerminalLayout title={title} description={description} currentPath={currentPath}>
+  <article class="prose-terminal">
+    <slot />
+  </article>
+</TerminalLayout>
