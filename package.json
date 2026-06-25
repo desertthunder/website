@@ -23,14 +23,14 @@
     "version": "changeset version"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "13.7.0",
+    "@astrojs/cloudflare": "14.0.0",
     "@astrojs/rss": "4.0.18",
     "@atproto/api": "0.19.3",
     "@tailwindcss/vite": "4.3.0",
     "@takumi-rs/image-response": "0.73.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "astro": "6.4.6",
+    "astro": "7.0.2",
     "marked": "17.0.4",
     "minisearch": "7.2.0",
     "obscenity": "^0.4.6",
