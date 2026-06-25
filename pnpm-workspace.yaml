@@ -1,6 +1,3 @@
-overrides:
-  vite: 7.3.5
-
 onlyBuiltDependencies:
   - esbuild
   - sharp
