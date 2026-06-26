@@ -1,7 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
-import { PROJECT_STATUS_META } from "$/lib/project-status";
+import { PROJECT_STATUS_META } from "$/lib/projects/status";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");

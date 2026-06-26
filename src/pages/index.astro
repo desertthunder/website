@@ -1,11 +1,16 @@
 ---
 import { getCollection } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
+import HighlightedProject from "$/components/HighlightedProject.astro";
 import { getLastPlayedTrack } from "$/lib/lastfm";
+import { getHighlightedProjectFrom } from "$/lib/projects/highlight";
 import { Image } from "astro:assets";
 
 const allPosts = await getCollection("blog");
+const allProjects = await getCollection("projects");
 const lastPlayedTrack = await getLastPlayedTrack("browais");
+
+const highlightedProject = getHighlightedProjectFrom(allProjects);
 ---
 
 <TerminalLayout title="home" description="Owais Jamil" showTitle={false} currentPath="/">
@@ -63,12 +68,27 @@ const lastPlayedTrack = await getLastPlayedTrack("browais");
     </div>
   </section>
 
+  {
+    highlightedProject && (
+      <section class="mb-8 sm:mb-12">
+        <div class="text-terminal-text-muted text-sm mb-3 flex items-center gap-2">
+          <span class="flex items-center">
+            <i class="i-ri-window-line w-4 h-4" />
+          </span>
+          <span class="uppercase">Featured</span>
+        </div>
+
+        <HighlightedProject project={highlightedProject} />
+      </section>
+    )
+  }
+
   <section class="mb-8 sm:mb-12">
     <div class="text-terminal-text-muted text-sm mb-3 flex items-center gap-2">
       <span class="flex items-center">
         <i class="i-ri-dashboard-line w-4 h-4"></i>
       </span>
-      <span>SYSTEM STATS</span>
+      <span class="uppercase">Stats</span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

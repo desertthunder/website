@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
-import { stripMarkdown } from "$/lib/clean-utils";
+import { stripMarkdown } from "$/lib/utils/clean";
 
 const allBookmarks = await getCollection("bookmarks");
 const bookmarks = [...allBookmarks].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());

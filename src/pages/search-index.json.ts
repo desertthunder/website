@@ -8,7 +8,7 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import experienceData from "$/content/data/experience.json";
-import { stripHtml } from "$/lib/clean-utils";
+import { stripHtml } from "$/lib/utils/clean";
 
 type EntryKind = "blog" | "project" | "bookmark" | "experience";
 

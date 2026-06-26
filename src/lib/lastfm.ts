@@ -1,4 +1,4 @@
-import { censorProfanity } from "./clean-utils";
+import { censorProfanity } from "./utils/clean";
 
 const BASE_URL = "https://ws.audioscrobbler.com/2.0/";
 

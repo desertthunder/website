@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import pkg from "../../package.json";
+import pkg from "../../../package.json";
 
 export type BuildInfo = {
   repo: string;

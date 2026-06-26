@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { PROJECT_STATUS_META } from "$/lib/projects/status";
+
+type Props = { project: CollectionEntry<"projects"> };
+
+const { project } = Astro.props;
+const statusMeta = PROJECT_STATUS_META[project.data.status];
+---
+
+<a
+  href={`/projects/${project.id}`}
+  class="relative block border border-terminal-primary hover:bg-terminal-primary/5 transition-colors group">
+  <span
+    class="absolute top-0 left-3 -translate-y-1/2 bg-terminal-bg px-2 text-xs text-terminal-primary whitespace-nowrap">
+    cat ~/projects/{project.id}/README.md
+  </span>
+
+  <div class="p-4 sm:p-5">
+    <div class="flex items-start justify-between gap-3 mb-2">
+      <h3 class="font-bold text-terminal-text text-base sm:text-lg leading-tight">{project.data.title}</h3>
+      <span class:list={["flex items-center gap-1 text-xs shrink-0 mt-1", statusMeta.color]}>
+        <i class:list={[statusMeta.icon, "w-2.5 h-2.5"]}></i>
+        <span>{statusMeta.label}</span>
+      </span>
+    </div>
+
+    <p class="text-terminal-text-muted text-sm mb-3 line-clamp-2">{project.data.description}</p>
+
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex flex-wrap gap-1.5">
+        {
+          project.data.tech.map((tech: string) => (
+            <span class="text-[10px] sm:text-xs text-terminal-secondary bg-terminal-secondary/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">
+              {tech}
+            </span>
+          ))
+        }
+      </div>
+      <span class="flex items-center gap-1 text-sm text-terminal-primary shrink-0 group-hover:underline">
+        <span>read more</span>
+        <span class="flex items-center">
+          <i class="i-ri-arrow-right-line w-4 h-4"></i>
+        </span>
+      </span>
+    </div>
+  </div>
+</a>

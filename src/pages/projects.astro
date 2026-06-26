@@ -1,48 +1,56 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import TerminalLayout from "$/components/TerminalLayout.astro";
-import { IN_PROGRESS_STATUSES, PROJECT_STATUS_KEYS, PROJECT_STATUS_META } from "$/lib/project-status";
+import HighlightedProject from "$/components/HighlightedProject.astro";
+import { IN_PROGRESS_STATUSES, PROJECT_STATUS_META } from "$/lib/projects/status";
+import { getHighlightedProjectFrom } from "$/lib/projects/highlight";
 
 const allProjects = await getCollection("projects");
-const projects: CollectionEntry<"projects">[] = [...allProjects].sort(
-  (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => {
+
+const highlightedProject = getHighlightedProjectFrom(allProjects);
+const projects: CollectionEntry<"projects">[] = [...allProjects]
+  .filter((p: CollectionEntry<"projects">) => !p.data.highlighted)
+  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => {
     if (a.data.featured && !b.data.featured) return -1;
     if (!a.data.featured && b.data.featured) return 1;
     return b.data.date.getTime() - a.data.date.getTime();
-  },
-);
-
-const presentStatuses = PROJECT_STATUS_KEYS.filter((status) =>
-  projects.some((project) => project.data.status === status),
-);
+  });
 ---
 
 <TerminalLayout title="projects" description="Open source projects and developer tools" currentPath="/projects">
   <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
     <div class="border border-terminal-border rounded p-3 sm:p-4">
       <div class="text-terminal-text-dim text-[10px] sm:text-xs">Total</div>
-      <div class="text-xl sm:text-2xl font-bold text-terminal-text">{projects.length}</div>
+      <div class="text-xl sm:text-2xl font-bold text-terminal-text">{allProjects.length}</div>
     </div>
     <div class="border border-terminal-border rounded p-3 sm:p-4">
       <div class="text-terminal-text-dim text-[10px] sm:text-xs">In progress</div>
       <div class="text-xl sm:text-2xl font-bold text-terminal-success">
-        {projects.filter((p) => IN_PROGRESS_STATUSES.includes(p.data.status)).length}
+        {allProjects.filter((p) => IN_PROGRESS_STATUSES.includes(p.data.status)).length}
       </div>
     </div>
     <div class="border border-terminal-border rounded p-3 sm:p-4">
       <div class="text-terminal-text-dim text-[10px] sm:text-xs">Featured</div>
       <div class="text-xl sm:text-2xl font-bold text-terminal-primary">
-        {projects.filter((p) => p.data.featured).length}
+        {allProjects.filter((p) => p.data.featured).length}
       </div>
     </div>
   </div>
+
+  {
+    highlightedProject && (
+      <div class="mb-4 sm:mb-6">
+        <HighlightedProject project={highlightedProject} />
+      </div>
+    )
+  }
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
     {
       projects.map((project) => (
         <a
           href={`/projects/${project.id}`}
-          class="block border border-terminal-border rounded-lg p-4 sm:p-5 hover:border-terminal-primary transition-colors">
+          class="block border border-terminal-border rounded-lg p-4 sm:p-5 hover:border-terminal-primary hover:bg-terminal-primary/5 transition-colors">
           <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               <span class="flex items-center shrink-0">
